@@ -14,6 +14,7 @@
 
 #!/usr/bin/env bash
 
+set -x
 set -euo pipefail
 
 # Setup default values
@@ -25,7 +26,7 @@ PROJECT_DIR=$(pwd)
 echo ${KIND_NODE_TAG}
 echo ${CLUSTER_NAME}
 
-cat <<EOF > "tools/hack/cluster.conf"
+cat <<EOF >"tools/hack/cluster.conf"
 # Copyright (c) 2022 Alibaba Group Holding Ltd.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,7 +68,7 @@ EOF
 
 ## Create kind cluster.
 if [[ -z "${KIND_NODE_TAG}" ]]; then
-  tools/bin/kind create cluster --name "${CLUSTER_NAME}" --config=tools/hack/cluster.conf
+    tools/bin/kind create cluster --name "${CLUSTER_NAME}" --config=tools/hack/cluster.conf
 else
-  tools/bin/kind create cluster --image "kindest/node:${KIND_NODE_TAG}" --name "${CLUSTER_NAME}" --config=tools/hack/cluster.conf
+    tools/bin/kind create cluster --image "kindest/node:${KIND_NODE_TAG}" --name "${CLUSTER_NAME}" --config=tools/hack/cluster.conf
 fi

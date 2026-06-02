@@ -1,14 +1,22 @@
+# workflow 的名称
 name: Build and Push Wasm Plugin Image
 
 on:
+  # 触发条件 1: 根据特定的 Tag 格式自动触发
   push:
     tags:
+      # 语法: 使用通配符匹配 Wasm 插件发布的特定命名规范.
+      # 例如: wasm-go-ratelimit-v1.0.0 或 wasm-rust-cors-v2.1.3
+      # 目的: 在一个大仓库(Monorepo)中, 有多个插件、不同语言, 通过 Tag 前缀精确区分发布的是哪个插件.
       - "wasm-*-*-v*.*.*" # 匹配 wasm-{go|rust}-{pluginName}-vX.Y.Z 格式的标签
+
+  # 触发条件 2: 网页端手动触发
   workflow_dispatch:
     inputs:
       plugin_type:
         description: "Type of the plugin"
         required: true
+        # 语法: 提供一个下拉菜单供用户选择, 防止拼写错误
         type: choice
         options:
           - go
@@ -25,35 +33,70 @@ on:
 jobs:
   build-and-push-wasm-plugin-image:
     runs-on: ubuntu-latest
+
+    # 绑定审批和环境变量上下文
     environment:
       name: image-registry-msg
+
     env:
+      # 语法: 读取后台配置 Variables, 若无则使用默认值.
       IMAGE_REGISTRY_SERVICE: ${{ vars.IMAGE_REGISTRY || 'higress-registry.cn-hangzhou.cr.aliyuncs.com' }}
       IMAGE_REPOSITORY: ${{ vars.PLUGIN_IMAGE_REPOSITORY || 'plugins' }}
+      # 目的: 将编译工具链的版本号抽离成环境变量, 方便后续升级维护, 避免代码中到处硬编码.
       RUST_VERSION: 1.82
       GO_VERSION: 1.24.0
       ORAS_VERSION: 1.0.0
+
     steps:
+      # 步骤 1: 解析入参或 Tag, 提取插件类型、名称和版本, 并计算构建环境
       - name: Set plugin_type, plugin_name and version from inputs or ref_name
         id: set_vars
         run: |
+
+          # 语法: 根据 github.event_name 判断触发来源
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+
+            # 手动触发: 直接读取表单输入
             plugin_type="${{ github.event.inputs.plugin_type }}"
             plugin_name="${{ github.event.inputs.plugin_name }}"
             version="${{ github.event.inputs.version }}"
+
           else
+
+            # Tag 触发: 使用纯 Bash 的字符串操作(Parameter Expansion)来解析 Tag.
+
+            # 假设 github.ref_name 为 "wasm-go-myplugin-v1.0.0"
             ref_name=${{ github.ref_name }}
+
+            # ${var#pattern} 语法: 从左边开始, 删除最短匹配.
+            # "wasm-go-myplugin-v1.0.0" 变成 "go-myplugin-v1.0.0"
             plugin_type=${ref_name#*-} # 删除插件类型前面的字段(wasm-)
+
+            # ${var%%pattern} 语法: 从右边开始, 删除最长匹配.
+            # "go-myplugin-v1.0.0" 变成 "go"
             plugin_type=${plugin_type%%-*} # 删除插件类型后面的字段(-{plugin_name}-vX.Y.Z)
+
+            # 删除前两个破折号前的内容: "wasm-go-myplugin-v1.0.0" 变成 "myplugin-v1.0.0"
             plugin_name=${ref_name#*-*-} # 删除插件名前面的字段(wasm-go-)
+
+            # ${var%pattern} 语法: 从右边开始, 删除最短匹配.
+            # "myplugin-v1.0.0" 变成 "myplugin"
             plugin_name=${plugin_name%-*} # 删除插件名后面的字段(-vX.Y.Z)
+
+            # 使用 awk 以 'v' 作为分隔符提取版本号: "v1.0.0" 提取出 "1.0.0"
             version=$(echo "$ref_name" | awk -F'v' '{print $2}')
+
           fi
+
+          # 目的: 根据前面提取出来的 plugin_type (go/rust), 动态决定使用哪个基础编译镜像
           if [[ "$plugin_type" == "rust" ]]; then
             builder_image="higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/wasm-rust-builder:rust${{ env.RUST_VERSION }}-oras${{ env.ORAS_VERSION }}"
           else
             builder_image="higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/wasm-go-builder:go${{ env.GO_VERSION }}-oras${{ env.ORAS_VERSION }}"
           fi
+
+          # 语法: 将计算出的变量写入 $GITHUB_ENV.
+          # 目的: 因为不同 Step 之间的 Bash 进程是隔离的, 这样才能在后面的 Step 中使用这些变量.
           echo "PLUGIN_TYPE=$plugin_type" >> $GITHUB_ENV
           echo "PLUGIN_NAME=$plugin_name" >> $GITHUB_ENV
           echo "VERSION=$version" >> $GITHUB_ENV
@@ -62,92 +105,157 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # 步骤 2: 组装 ORAS push 命令参数
+      # 目的: Wasm 插件不是普通的镜像, 通常通过 OCI Artifacts 标准推送.
+      # ORAS (OCI Registry As Storage) 允许我们把普通的配置文件、文档和 wasm 二进制包以特定 MediaType 形式推送到镜像仓库.
       - name: File Check
         run: |
+
           workspace=${{ github.workspace }}/plugins/wasm-${PLUGIN_TYPE}/extensions/${PLUGIN_NAME}
+
+          # 基础推送内容: 编译好的插件压缩包, 指定了标准的 OCI 媒体类型
           push_command="./plugin.tar.gz:application/vnd.oci.image.layer.v1.tar+gzip"
 
-          # 查找spec.yaml
+          # 查找 spec.yaml
+          # 自动发现机制: 检查并打包 spec.yaml 配置文件
           if [ -f "${workspace}/spec.yaml" ]; then
             echo "spec.yaml exists"
             push_command="./spec.yaml:application/vnd.module.wasm.spec.v1+yaml $push_command "
           fi
 
-          # 查找README.md
+          # 查找 README.md
+          # 自动发现机制: 检查并打包主 README 文档
           if [ -f "${workspace}/README.md" ];then
               echo "README.md exists"
               push_command="./README.md:application/vnd.module.wasm.doc.v1+markdown $push_command "
           fi
 
-          # 查找README_{lang}.md
+          # 查找 README_{lang}.md
+          # 自动发现机制: 检查并打包多语言 README 文档(如 README_zh.md)
           for file in ${workspace}/README_*.md; do
             if [ -f "$file" ]; then
               file_name=$(basename $file)
               echo "$file_name exists"
+              # 提取语言标识
               lang=$(basename $file | sed 's/README_//; s/.md//')
+              # 动态生成包含语言标识的媒体类型
               push_command="./$file_name:application/vnd.module.wasm.doc.v1.$lang+markdown $push_command "
             fi
           done
 
+          # 保存组装好的超长参数字符串, 供下文执行
           echo "PUSH_COMMAND=\"$push_command\"" >> $GITHUB_ENV
 
+      # 步骤 3: 启动后台编译容器 (Builder Container)
+      # 目的: GitHub 默认的虚拟机可能没有安装我们需要的特定版本的 Go/Rust/Wasm-toolchain/ORAS.
+      # 使用 `docker run -itd` 在后台启动一个包含完整依赖的容器, 挂载当前代码.
+      # 这种做法比在 Runner 上通过 apt-get 慢慢安装环境快得多, 也更纯净.
       - name: Run a wasm-builder
         env:
           PLUGIN_NAME: ${{ env.PLUGIN_NAME }}
           BUILDER_IMAGE: ${{ env.BUILDER_IMAGE }}
         run: |
+
+          # -i (交互式), -t (伪终端), -d (后台运行)
+          # -v 挂载本地 workspace 到容器内, 使得容器编译出的产物可以直接保存在 GitHub runner 的磁盘上
           docker run -itd --name builder -v ${{ github.workspace }}:/workspace -e PLUGIN_NAME=${{ env.PLUGIN_NAME }} --rm ${{ env.BUILDER_IMAGE }} /bin/bash
 
+      # 步骤 4: 在容器内执行具体的编译和推送操作
       - name: Build Image and Push
         run: |
-          push_command=${{ env.PUSH_COMMAND }}
-          push_command=${push_command#\"}
-          push_command=${push_command%\"} # 删除PUSH_COMMAND中的双引号，确保oras push正常解析
 
+          push_command=${{ env.PUSH_COMMAND }}
+
+          # 语法: 清理掉包裹变量的双引号, 防止 ORAS CLI 解析参数时出错
+          push_command=${push_command#\"}
+
+          # 删除 PUSH_COMMAND 中的双引号, 确保 oras push 正常解析
+          push_command=${push_command%\"}
+
+          # 定义要推送的远端地址, 包含明确版本号和 latest 版
           target_image="${{ env.IMAGE_REGISTRY_SERVICE }}/${{ env.IMAGE_REPOSITORY}}/${{ env.PLUGIN_NAME }}:${{ env.VERSION }}"
           target_image_latest="${{ env.IMAGE_REGISTRY_SERVICE }}/${{ env.IMAGE_REPOSITORY}}/${{ env.PLUGIN_NAME }}:latest"
           echo "TargetImage=${target_image}"
           echo "TargetImageLatest=${target_image_latest}"
 
           cd ${{ github.workspace }}/plugins/wasm-${PLUGIN_TYPE}/extensions/${PLUGIN_NAME}
+
+          # 提供给开发者自定义构建环境的钩子(Hook)
+          # 如果插件目录下有 .buildrc, 则 sourcing 加载它(可能包含特殊的 go proxy、私有库认证等环境变量)
           if [ -f ./.buildrc ]; then
             echo 'Found .buildrc file, sourcing it...'
             . ./.buildrc
           else
             echo '.buildrc file not found'
           fi
+
           echo "EXTRA_TAGS=${EXTRA_TAGS}"
+
+          # 构建脚本生成: 根据不同的语言, 组装一段将在 Builder 容器中执行的 Bash 脚本
           if [ "${PLUGIN_TYPE}" == "go" ]; then
-          command="
-          set -e
-          cd /workspace/plugins/wasm-go/extensions/${PLUGIN_NAME}
-          go mod tidy
-          GOOS=wasip1 GOARCH=wasm go build -buildmode=c-shared -o plugin.wasm .
-          tar czvf plugin.tar.gz plugin.wasm
-          echo ${{ secrets.REGISTRY_PASSWORD }} | oras login -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin ${{ env.IMAGE_REGISTRY_SERVICE }}
-          oras push ${target_image} ${push_command}
-          oras push ${target_image_latest} ${push_command}
-          "
+
+            command="
+            # 遇到错误立即退出
+            set -e
+
+            cd /workspace/plugins/wasm-go/extensions/${PLUGIN_NAME}
+
+            go mod tidy
+
+            #  核心编译: GOOS=wasip1 GOARCH=wasm 指定交叉编译目标为 WebAssembly
+            # -buildmode=c-shared 用于生成符合规范的 C ABI wasm
+            GOOS=wasip1 GOARCH=wasm go build -buildmode=c-shared -o plugin.wasm .
+
+            tar czvf plugin.tar.gz plugin.wasm
+
+            # 登录并将构建好的制品推送到镜像仓库
+            echo ${{ secrets.REGISTRY_PASSWORD }} | oras login -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin ${{ env.IMAGE_REGISTRY_SERVICE }}
+
+            oras push ${target_image} ${push_command}
+            oras push ${target_image_latest} ${push_command}
+            "
+
           elif [ "${PLUGIN_TYPE}" == "rust" ]; then
-          command="
-          set -e
-          cd /workspace/plugins/wasm-rust/extensions/${PLUGIN_NAME}
-          if [ -f ./.prebuild ]; then
-            echo 'Found .prebuild file, sourcing it...'
-            . ./.prebuild
-          fi
-          rustup target add wasm32-wasip1
-          cargo build --target wasm32-wasip1 --release
-          cp target/wasm32-wasip1/release/*.wasm plugin.wasm
-          tar czvf plugin.tar.gz plugin.wasm
-          echo ${{ secrets.REGISTRY_PASSWORD }} | oras login -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin ${{ env.IMAGE_REGISTRY_SERVICE }}
-          oras push ${target_image} ${push_command}
-          oras push ${target_image_latest} ${push_command}
-          "
+
+            command="
+            set -e
+
+            cd /workspace/plugins/wasm-rust/extensions/${PLUGIN_NAME}
+
+            # 提供 Rust 专用的预编译 Hook
+            if [ -f ./.prebuild ]; then
+              echo 'Found .prebuild file, sourcing it...'
+              . ./.prebuild
+            fi
+
+            # 添加 Wasm 编译目标
+            rustup target add wasm32-wasip1
+
+            # 核心编译: Release 模式构建 wasm32-wasip1
+            cargo build --target wasm32-wasip1 --release
+
+            # 提取产物并打包
+            cp target/wasm32-wasip1/release/*.wasm plugin.wasm
+            tar czvf plugin.tar.gz plugin.wasm
+
+            # 使用 ORAS 推送
+            echo ${{ secrets.REGISTRY_PASSWORD }} | oras login -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin ${{ env.IMAGE_REGISTRY_SERVICE }}
+            oras push ${target_image} ${push_command}
+            oras push ${target_image_latest} ${push_command}
+            "
+
           else
 
-          command="
-          echo "unkown type ${PLUGIN_TYPE}"
-          "
+            command="
+            echo "unkown type ${PLUGIN_TYPE}"
+            "
+
           fi
+
+          # 语法: 使用 docker exec 进入前一个 Step 启动的名为 'builder' 的后台容器,
+          # 将上面拼接好的 $command 作为参数传给 bash -c 执行!
+
           docker exec builder bash -c "$command"
+
+          # 制品: higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/mcp-server:2.0.0
+          # 制品: higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/mcp-server:latest

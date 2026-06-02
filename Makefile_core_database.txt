@@ -1,0 +1,2215 @@
+# make[1]: Entering directory '/work'
+
+# GNU Make 4.3
+# Built for x86_64-pc-linux-gnu
+# Copyright (C) 1988-2020 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+
+# Make data base, printed on Wed Jul  1 03:43:38 2026
+
+# Variables
+
+# default
+PREPROCESS.S = $(CC) -E $(CPPFLAGS)
+# environment
+GO111MODULE = on
+# default
+COMPILE.m = $(OBJC) $(OBJCFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
+# default
+ARFLAGS = rv
+# default
+AS = as
+# default
+AR = ar
+# makefile (from 'Makefile.core.mk', line 16)
+BASE_VERSION = $(HIGRESS_BASE_VERSION)
+# makefile (from 'Makefile.core.mk', line 43)
+OUT_LINUX := /work/out/linux_amd64
+# environment
+TARGET_OUT_LINUX = /work/out/linux_amd64
+# default
+OBJC = cc
+# makefile (from 'tools/tools.mk', line 5)
+GOOS := linux
+# environment
+IN_BUILD_CONTAINER = 1
+# default
+LINK.S = $(CC) $(ASFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_MACH)
+# makefile (from 'docker/docker.mk', line 48)
+HIGRESS_DOCKER_AMD64_RULE = $(foreach VARIANT,$(DOCKER_BUILD_VARIANTS), time (mkdir -p $(HIGRESS_DOCKER_BUILD_TOP)/$@ && TARGET_ARCH=amd64 ./docker/docker-copy.sh $^ $(HIGRESS_DOCKER_BUILD_TOP)/$@ && cd $(HIGRESS_DOCKER_BUILD_TOP)/$@ $(BUILD_PRE) && docker build $(BUILD_ARGS) --build-arg BASE_DISTRIBUTION=$(call normalize-tag,$(VARIANT)) --build-arg TARGETARCH=amd64 -t $(IMG_URL)$(call variant-tag,$(VARIANT)) -f Dockerfile.higress . ); )
+# default
+LINK.s = $(CC) $(ASFLAGS) $(LDFLAGS) $(TARGET_MACH)
+# default
+MAKE_COMMAND := make
+# environment
+GOPATH = /go
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# environment
+IMAGE_NAME = build-tools
+# default
+COFLAGS =
+# default
+COMPILE.mod = $(M2C) $(M2FLAGS) $(MODFLAGS) $(TARGET_ARCH)
+# default
+.VARIABLES := PREPROCESS.S GO111MODULE COMPILE.m ARFLAGS AS AR BASE_VERSION OUT_LINUX TARGET_OUT_LINUX OBJC GOOS IN_BUILD_CONTAINER LINK.S HIGRESS_DOCKER_AMD64_RULE LINK.s MAKE_COMMAND GOPATH @D IMAGE_NAME COFLAGS COMPILE.mod .VARIABLES PWD %D HOSTNAME PS1 GOCACHE XDG_DATA_DIRS LINK.o TEXI2DVI ^D CODESPELL_FLAGS %F CONDA_PROMPT_MODIFIER tools/golangci-lint LEX.l LANG HGCTL_BINARIES .LOADED GORACE .INCLUDE_DIRS COMPILE.c MAKEFLAGS KUBECONFIG LINK.f HIGRESS_DOCKER_BUILD_TOP HGCTL_PROJECT_DIR DOCKER_GID TANGLE CURDIR PREPROCESS.F CHARTS LESSOPEN LOCAL_ARCH *D TARGET_OS MFLAGS COMPILE.p .SHELLFLAGS M2C IMG_URL COMPILE.cpp TEX +D VALID_ARCHS INCLUDE_UNTAGGED_DEFAULT MAKEFILE_LIST F77FLAGS CONDA_SHLVL @F TARGET_ARCH XDG_SESSION_TYPE ?D COMPILE.def HIGRESS_BASE_VERSION CTANGLE GOOS_LOCAL CONDA_PYTHON_EXE TAG tools/kustomize CONTAINER_CLI *F VERSION_PACKAGE DBUS_SESSION_BUS_ADDRESS TIMEZONE <D COMPILE.C YACC.m GO LINK.C HIGRESS_DOCKER_RULE GOLANGCI_LINT_FLAGS MAKE_HOST LINK.c DOCKER_ALL_VARIANTS CONDA_PREFIX SHELL UID RUBYOPT LINK.F SHLVL BUILDX_PLATFORM TARGET_OUT MAKELEVEL DOCKER_BUILD_VARIANTS tools/kind MAKE FC PATH LINT HIGRESS_DOCKER_BUILDX_RULE PC MAKEFILES LOCAL_OS MOTD_SHOWN ^F cue LEX.m .LIBPATTERNS CONTAINER_TARGET_OUT_LINUX GOBIN GOROOT VARIANT TZ CPP LINK.cc SHELLCHECK_VERSION HIGRESS_BINARIES CHECKOUT,v DEFAULT_DISTRIBUTION COMPILE.f COMPILE.r tools/codespell LESSCLOSE HUB COMPILE.S ?F GET LINK.r ISTIO_BASE_REGISTRY ENVOY_PACKAGE_URL_PATTERN IMG ARM64_OUT_LINUX LS_COLORS +F MAKEINFO GNUMAKEFLAGS CONDA_DEFAULT_ENV PREPROCESS.r LINK.m LOGNAME LINK.p RELEASE_LDFLAGS tools.srcdir build-linux YACC ENVOY_LATEST_IMAGE_TAG BUILD_WITH_CONTAINER .DEFAULT_GOAL RM DIRS_TO_CLEAN tools/controller-gen SHELLCHECK_ARCH BUILD_ALL WEAVE GENERATE_API MAKE_VERSION .SHELLSTATUS ISTIO_LATEST_IMAGE_TAG MAKEOVERRIDES GSETTINGS_SCHEMA_DIR_CONDA_BACKUP IMAGE_VERSION F77 GIT_COMMIT GOSUMDB tools.bindir CWEAVE GOARCH -*-command-variables-*- CONDITIONAL_HOST_MOUNTS _ YACC.y LINK.cpp CO XDG_RUNTIME_DIR CONTAINER_TARGET_OUT MAKE_DOCKER OUTPUT_OPTION COMPILE.s GITHUB_ACTION GOARCH_LOCAL XDG_SESSION_CLASS HIGRESS_LATEST_IMAGE_TAG tools/shellcheck AMD64_OUT_LINUX HOME create_ns TAG_VARIANT LEX TERM CONTAINER_OPTIONS GSETTINGS_SCHEMA_DIR XDG_SESSION_ID LINT.c COMPILE.F PARENT_GIT_REVISION GOPROXY .RECIPEPREFIX <F OUT SUFFIXES LD tools/setup-envtest REPO_ROOT RUN PARENT_GIT_TAG SHELLCHECK_TXZ DEBUG .FEATURES CXX CC tools/yamllint CONDA_EXE COMPILE.cc GO_LDFLAGS
+# environment
+PWD = /work
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# environment
+HOSTNAME = k8s-a40-node02
+# environment
+PS1 = build-tools:\w\$ \[(B[m\]
+# environment
+GOCACHE = /gocache
+# environment
+XDG_DATA_DIRS = /usr/local/share:/usr/share:/var/lib/snapd/desktop
+# default
+LINK.o = $(CC) $(LDFLAGS) $(TARGET_ARCH)
+# default
+TEXI2DVI = texi2dvi
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# makefile (from 'tools/lint.mk', line 30)
+CODESPELL_FLAGS = $(if $(GITHUB_ACTION),--disable-colors)
+# automatic
+%F = $(notdir $%)
+# environment
+CONDA_PROMPT_MODIFIER = (base)
+# makefile (from 'tools/tools.mk', line 16)
+tools/golangci-lint = $(tools.bindir)/golangci-lint
+# default
+LEX.l = $(LEX) $(LFLAGS) -t
+# environment
+LANG = C.UTF-8
+# makefile (from 'Makefile.core.mk', line 65)
+HGCTL_BINARIES := ./cmd/hgctl
+# default
+.LOADED :=
+# environment
+GORACE = atexit_sleep_ms=0
+# default
+.INCLUDE_DIRS = /usr/local/include /usr/include /usr/include
+# default
+COMPILE.c = $(CC) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
+# environment under -e
+MAKEFLAGS = epqw -- $(MAKEOVERRIDES)
+# environment
+KUBECONFIG =
+# default
+LINK.f = $(FC) $(FFLAGS) $(LDFLAGS) $(TARGET_ARCH)
+# makefile (from 'Makefile.core.mk', line 60)
+HIGRESS_DOCKER_BUILD_TOP := /work/out/linux_amd64/docker_build
+# makefile (from 'Makefile.core.mk', line 64)
+HGCTL_PROJECT_DIR = ./hgctl
+# environment
+DOCKER_GID = 1002
+# default
+TANGLE = tangle
+# environment under -e
+CURDIR = /root/huzhi/higress
+# default
+PREPROCESS.F = $(FC) $(FFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -F
+# makefile (from 'Makefile.core.mk', line 18)
+CHARTS = higress-registry.cn-hangzhou.cr.aliyuncs.com/charts
+# environment
+LESSOPEN = | /usr/bin/lesspipe %s
+# environment
+LOCAL_ARCH = x86_64
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+TARGET_OS = linux
+# environment under -e
+MFLAGS = -epqw
+# default
+COMPILE.p = $(PC) $(PFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
+# default
+.SHELLFLAGS := -c
+# default
+M2C = m2c
+# makefile (from 'docker/docker.mk', line 44)
+IMG_URL = $(HUB)/$(IMG):$(TAG)
+# default
+COMPILE.cpp = $(COMPILE.cc)
+# default
+TEX = tex
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# makefile (from 'Makefile.core.mk', line 33)
+VALID_ARCHS := amd64 arm64
+# makefile (from 'docker/docker.mk', line 40)
+INCLUDE_UNTAGGED_DEFAULT = false
+# makefile (from 'tools/lint.mk', line 1)
+MAKEFILE_LIST := Makefile.core.mk docker/docker.mk tools/tools.mk tools/lint.mk
+# default
+F77FLAGS = $(FFLAGS)
+# environment
+CONDA_SHLVL = 1
+# automatic
+@F = $(notdir $@)
+# environment
+TARGET_ARCH = amd64
+# environment
+XDG_SESSION_TYPE = tty
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# default
+COMPILE.def = $(M2C) $(M2FLAGS) $(DEFFLAGS) $(TARGET_ARCH)
+# makefile (from 'Makefile.core.mk', line 10)
+HIGRESS_BASE_VERSION = 2023-07-20T20-50-43
+# default
+CTANGLE = ctangle
+# makefile (from 'Makefile.core.mk', line 39)
+GOOS_LOCAL := linux
+# environment
+CONDA_PYTHON_EXE = /root/anaconda3/bin/python
+# makefile (from 'Makefile.core.mk', line 48)
+TAG = $(shell git rev-parse --verify HEAD)
+# makefile (from 'tools/tools.mk', line 17)
+tools/kustomize = $(tools.bindir)/kustomize
+# environment
+CONTAINER_CLI = docker
+# automatic
+*F = $(notdir $*)
+# makefile (from 'Makefile.core.mk', line 20)
+VERSION_PACKAGE := github.com/alibaba/higress/v2/pkg/cmd/lversion
+# environment
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/0/bus
+# environment
+TIMEZONE = Asia/Shanghai
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# default
+COMPILE.C = $(COMPILE.cc)
+# default
+YACC.m = $(YACC) $(YFLAGS)
+# makefile (from 'Makefile.core.mk', line 27)
+GO = go
+# default
+LINK.C = $(LINK.cc)
+# makefile (from 'docker/docker.mk', line 47)
+HIGRESS_DOCKER_RULE = $(foreach VARIANT,$(DOCKER_BUILD_VARIANTS), time (mkdir -p $(HIGRESS_DOCKER_BUILD_TOP)/$@ && TARGET_ARCH=$(TARGET_ARCH) ./docker/docker-copy.sh $^ $(HIGRESS_DOCKER_BUILD_TOP)/$@ && cd $(HIGRESS_DOCKER_BUILD_TOP)/$@ $(BUILD_PRE) && docker build $(BUILD_ARGS) --build-arg BASE_DISTRIBUTION=$(call normalize-tag,$(VARIANT)) -t $(IMG_URL)$(call variant-tag,$(VARIANT)) -f Dockerfile.higress . ); )
+# makefile (from 'tools/lint.mk', line 17)
+GOLANGCI_LINT_FLAGS = $(if $(GITHUB_ACTION),--out-format=github-actions)
+# default
+MAKE_HOST := x86_64-pc-linux-gnu
+# default
+LINK.c = $(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
+# makefile (from 'docker/docker.mk', line 37)
+DOCKER_ALL_VARIANTS = debug distroless
+# environment
+CONDA_PREFIX = /root/anaconda3
+# makefile (from 'Makefile.core.mk', line 8)
+SHELL := /bin/bash -o pipefail
+# environment
+UID = 0
+# environment
+RUBYOPT = -KU -E utf-8:utf-8
+# default
+LINK.F = $(FC) $(FFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
+# environment
+SHLVL = 2
+# makefile (from 'Makefile.core.mk', line 45)
+BUILDX_PLATFORM =
+# environment
+TARGET_OUT = /work/out/linux_amd64
+# environment under -e
+MAKELEVEL := 1
+# makefile (from 'docker/docker.mk', line 36)
+DOCKER_BUILD_VARIANTS = default
+# makefile (from 'tools/tools.mk', line 18)
+tools/kind = $(tools.bindir)/kind
+# default
+MAKE = $(MAKE_COMMAND)
+# default
+FC = f77
+# environment
+PATH = /usr/local/go/bin:/gobin:/usr/local/google-cloud-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# default
+LINT = lint
+# makefile (from 'docker/docker.mk', line 46)
+HIGRESS_DOCKER_BUILDX_RULE = $(foreach VARIANT,$(DOCKER_BUILD_VARIANTS), time (mkdir -p $(HIGRESS_DOCKER_BUILD_TOP)/$@ && TARGET_ARCH=$(TARGET_ARCH) ./docker/docker-copy.sh $^ $(HIGRESS_DOCKER_BUILD_TOP)/$@ && cd $(HIGRESS_DOCKER_BUILD_TOP)/$@ $(BUILD_PRE) && docker buildx create --name higress --node higress0 --platform linux/amd64,linux/arm64 --use && docker buildx build --no-cache --platform linux/amd64,linux/arm64 $(BUILD_ARGS) --build-arg BASE_DISTRIBUTION=$(call normalize-tag,$(VARIANT)) -t $(IMG_URL)$(call variant-tag,$(VARIANT)) -f Dockerfile.higress . --push  ); )
+# default
+PC = pc
+# default
+MAKEFILES :=
+# environment
+LOCAL_OS = Linux
+# environment
+MOTD_SHOWN = pam
+# automatic
+^F = $(notdir $^)
+# makefile (from 'Makefile.core.mk', line 248)
+cue = cue-gen -paths=./external/api/common-protos
+# default
+LEX.m = $(LEX) $(LFLAGS) -t
+# default
+.LIBPATTERNS = lib%.so lib%.a
+# environment
+CONTAINER_TARGET_OUT_LINUX = /work/out/linux_amd64
+# environment
+GOBIN = /gobin
+# environment
+GOROOT = /usr/local/go
+# makefile (from 'Makefile.core.mk', line 53)
+VARIANT :=
+# environment
+TZ = Asia/Shanghai
+# default
+CPP = $(CC) -E
+# default
+LINK.cc = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
+# makefile (from 'tools/tools.mk', line 40)
+SHELLCHECK_VERSION = 0.8.0
+# makefile (from 'Makefile.core.mk', line 62)
+HIGRESS_BINARIES := ./cmd/higress
+# default
+CHECKOUT,v = +$(if $(wildcard $@),,$(CO) $(COFLAGS) $< $@)
+# makefile (from 'docker/docker.mk', line 41)
+DEFAULT_DISTRIBUTION = debug
+# default
+COMPILE.f = $(FC) $(FFLAGS) $(TARGET_ARCH) -c
+# default
+COMPILE.r = $(FC) $(FFLAGS) $(RFLAGS) $(TARGET_ARCH) -c
+# makefile (from 'tools/tools.mk', line 26)
+tools/codespell = $(tools.bindir)/codespell
+# environment
+LESSCLOSE = /usr/bin/lesspipe %s %s
+# environment
+HUB = higress-registry.cn-hangzhou.cr.aliyuncs.com/higress
+# default
+COMPILE.S = $(CC) $(ASFLAGS) $(CPPFLAGS) $(TARGET_MACH) -c
+# automatic
+?F = $(notdir $?)
+# default
+GET = get
+# default
+LINK.r = $(FC) $(FFLAGS) $(RFLAGS) $(LDFLAGS) $(TARGET_ARCH)
+# makefile (from 'Makefile.core.mk', line 14)
+ISTIO_BASE_REGISTRY = $(HUB)
+# makefile (from 'Makefile.core.mk', line 175)
+ENVOY_PACKAGE_URL_PATTERN = https://github.com/higress-group/proxy/releases/download/v2.2.2/envoy-symbol-ARCH.tar.gz
+# environment
+IMG = higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/build-tools:release-1.19-ef344298e65eeb2d9e2d07b87eb4e715c2def613
+# environment
+ARM64_OUT_LINUX = /root/huzhi/higress/out/linux_arm64
+# environment
+LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+# automatic
++F = $(notdir $+)
+# default
+MAKEINFO = makeinfo
+# 'override' directive
+GNUMAKEFLAGS :=
+# environment
+CONDA_DEFAULT_ENV = base
+# default
+PREPROCESS.r = $(FC) $(FFLAGS) $(RFLAGS) $(TARGET_ARCH) -F
+# default
+LINK.m = $(OBJC) $(OBJCFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
+# environment
+LOGNAME = root
+# default
+LINK.p = $(PC) $(PFLAGS) $(CPPFLAGS) $(LDFLAGS) $(TARGET_ARCH)
+# makefile (from 'Makefile.core.mk', line 40)
+RELEASE_LDFLAGS = '$(GO_LDFLAGS) -extldflags -static -s -w'
+# makefile (from 'tools/tools.mk', line 2)
+tools.srcdir = tools/src
+# makefile (from 'Makefile.core.mk', line 134)
+define build-linux
+.PHONY: $(OUT_LINUX)/$(shell basename $(1))
+ifeq ($(BUILD_ALL),true)
+$(OUT_LINUX)/$(shell basename $(1)): build-linux
+else
+$(OUT_LINUX)/$(shell basename $(1)): $(OUT_LINUX)
+	GOPROXY=$(GOPROXY) GOOS=linux GOARCH=$(GOARCH_LOCAL) LDFLAGS=$(RELEASE_LDFLAGS) tools/hack/gobuild.sh $(OUT_LINUX)/ -tags=$(2) $(1)
+endif
+endef
+# default
+YACC = yacc
+# makefile (from 'Makefile.core.mk', line 229)
+ENVOY_LATEST_IMAGE_TAG = 4219c3d8e99adb269e7db947011eca24717882af
+# environment
+BUILD_WITH_CONTAINER = 0
+# makefile
+.DEFAULT_GOAL := /work/out/linux_amd64
+# default
+RM = rm -f
+# makefile (from 'Makefile.core.mk', line 257)
+DIRS_TO_CLEAN := /work/out/linux_amd64 /work/out/linux_amd64
+# makefile (from 'tools/tools.mk', line 15)
+tools/controller-gen = $(tools.bindir)/controller-gen
+# makefile (from 'tools/tools.mk', line 41)
+SHELLCHECK_ARCH = $(shell uname -m)
+# makefile (from 'Makefile.core.mk', line 133)
+BUILD_ALL = true
+# default
+WEAVE = weave
+# environment
+GENERATE_API = 1
+# default
+MAKE_VERSION := 4.3
+# 'override' directive
+.SHELLSTATUS := 0
+# makefile (from 'Makefile.core.mk', line 230)
+ISTIO_LATEST_IMAGE_TAG = ce494feddfa817346404090dfc598badb02efa83
+# environment under -e
+MAKEOVERRIDES = ${-*-command-variables-*-}
+# environment
+GSETTINGS_SCHEMA_DIR_CONDA_BACKUP =
+# environment
+IMAGE_VERSION = release-1.19-ef344298e65eeb2d9e2d07b87eb4e715c2def613
+# default
+F77 = $(FC)
+# makefile (from 'Makefile.core.mk', line 22)
+GIT_COMMIT := 5cd6468650fe748ae675b92c0ec9871296a885ab
+# environment
+GOSUMDB = sum.golang.org
+# makefile (from 'tools/tools.mk', line 1)
+tools.bindir = tools/bin
+# default
+CWEAVE = cweave
+# makefile (from 'tools/tools.mk', line 8)
+GOARCH := amd64
+# automatic
+-*-command-variables-*- := DEBUG=1
+# environment
+CONDITIONAL_HOST_MOUNTS = --mount type=bind,source=/root/.docker,destination=/config/.docker,readonly
+# environment
+_ = /usr/bin/make
+# default
+YACC.y = $(YACC) $(YFLAGS)
+# default
+LINK.cpp = $(LINK.cc)
+# default
+CO = co
+# environment
+XDG_RUNTIME_DIR = /run/user/0
+# environment
+CONTAINER_TARGET_OUT = /work/out/linux_amd64
+# environment
+MAKE_DOCKER = ./tools/hack/run.sh make --no-print-directory -e -f Makefile.core.mk
+# default
+OUTPUT_OPTION = -o $@
+# default
+COMPILE.s = $(AS) $(ASFLAGS) $(TARGET_MACH)
+# makefile (from 'tools/lint.mk', line 7)
+GITHUB_ACTION =
+# makefile (from 'Makefile.core.mk', line 38)
+GOARCH_LOCAL := amd64
+# environment
+XDG_SESSION_CLASS = user
+# makefile (from 'Makefile.core.mk', line 228)
+HIGRESS_LATEST_IMAGE_TAG = latest
+# makefile (from 'tools/tools.mk', line 39)
+tools/shellcheck = $(tools.bindir)/shellcheck
+# environment
+AMD64_OUT_LINUX = /root/huzhi/higress/out/linux_amd64
+# environment
+HOME = /home
+# makefile (from 'Makefile.core.mk', line 220)
+create_ns =    kubectl get namespace | grep $(1) || kubectl create namespace $(1)
+# makefile (from 'Makefile.core.mk', line 55)
+TAG_VARIANT := 5cd6468650fe748ae675b92c0ec9871296a885ab
+# default
+LEX = lex
+# environment
+TERM = xterm
+# environment
+CONTAINER_OPTIONS = --mount type=bind,source=/tmp,destination=/tmp --net=host
+# environment
+GSETTINGS_SCHEMA_DIR = /root/anaconda3/share/glib-2.0/schemas
+# environment
+XDG_SESSION_ID = 29888
+# default
+LINT.c = $(LINT) $(LINTFLAGS) $(CPPFLAGS) $(TARGET_ARCH)
+# default
+COMPILE.F = $(FC) $(FFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
+# makefile (from 'Makefile.core.mk', line 173)
+PARENT_GIT_REVISION := 5cd6468650fe748ae675b92c0ec9871296a885ab
+# environment
+GOPROXY = https://proxy.golang.org
+# default
+.RECIPEPREFIX :=
+# automatic
+<F = $(notdir $<)
+# makefile (from 'Makefile.core.mk', line 42)
+OUT := /work/out/linux_amd64
+# default
+SUFFIXES := .out .a .ln .o .c .cc .C .cpp .p .f .F .m .r .y .l .ym .yl .s .S .mod .sym .def .h .info .dvi .tex .texinfo .texi .txinfo .w .ch .web .sh .elc .el
+# default
+LD = ld
+# makefile (from 'tools/tools.mk', line 19)
+tools/setup-envtest = $(tools.bindir)/setup-envtest
+# environment
+REPO_ROOT = /work
+# environment
+RUN = ./tools/hack/run.sh
+# makefile (from 'Makefile.core.mk', line 172)
+PARENT_GIT_TAG := v2.2.2
+# makefile (from 'tools/tools.mk', line 46)
+SHELLCHECK_TXZ = https://github.com/koalaman/shellcheck/releases/download/v$(SHELLCHECK_VERSION)/shellcheck-v$(SHELLCHECK_VERSION).$(GOOS).$(SHELLCHECK_ARCH).tar.xz
+# command line
+DEBUG = 1
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
+# default
+CXX = g++
+# default
+CC = cc
+# makefile (from 'tools/tools.mk', line 27)
+tools/yamllint = $(tools.bindir)/yamllint
+# environment
+CONDA_EXE = /root/anaconda3/bin/conda
+# default
+COMPILE.cc = $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
+# makefile (from 'Makefile.core.mk', line 24)
+GO_LDFLAGS = -X $(VERSION_PACKAGE).higressVersion=$(shell cat VERSION) -X $(VERSION_PACKAGE).gitCommitID=$(GIT_COMMIT)
+# variable set hash-table stats:
+# Load=225/1024=22%, Rehash=0, Collisions=547/2681=20%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# docker/RCS: could not be stat'd.
+# RCS: could not be stat'd.
+# SCCS: could not be stat'd.
+# tools/SCCS: could not be stat'd.
+# tools (device 64768, inode 3015925): 7 files, 38 impossibilities.
+# . (device 64768, inode 3015836): 61 files, 19 impossibilities.
+# docker/SCCS: could not be stat'd.
+# docker (device 64768, inode 3015979): 6 files, 19 impossibilities.
+# tools/RCS: could not be stat'd.
+
+# 74 files, 76 impossibilities in 9 directories.
+
+# Implicit Rules
+
+tools/bin/%: tools/src/%/pin.go tools/src/%/go.mod
+#  recipe to execute (from 'tools/tools.mk', line 21):
+	cd $(<D) && GOOS= GOARCH= go build -o $(abspath $@) $$(sed -En 's,^import "(.*)".*,\1,p' pin.go)
+
+tools/bin/%.d/venv: tools/src/%/requirements.txt
+#  recipe to execute (from 'tools/tools.mk', line 29):
+	mkdir -p $(@D)
+	python3 -m venv $@
+	$@/bin/pip3 install -r $< || (rm -rf $@; exit 1)
+
+tools/bin/%: tools/bin/%.d/venv
+#  recipe to execute (from 'tools/tools.mk', line 33):
+	ln -sf $*.d/venv/bin/$* $@
+
+%/bin/shellcheck: %/bin/shellcheck-v0.8.0.linux.x86_64.tar.xz
+#  recipe to execute (from 'tools/tools.mk', line 51):
+	mkdir -p $(@D)
+	tar -C $(@D) -Jxmf $< --strip-components=1 shellcheck-v$(SHELLCHECK_VERSION)/shellcheck
+
+%.out:
+
+%.a:
+
+%.ln:
+
+%.o:
+
+%: %.o
+#  recipe to execute (built-in):
+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+%.c:
+
+%: %.c
+#  recipe to execute (built-in):
+	$(LINK.c) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+%.ln: %.c
+#  recipe to execute (built-in):
+	$(LINT.c) -C$* $<
+
+%.o: %.c
+#  recipe to execute (built-in):
+	$(COMPILE.c) $(OUTPUT_OPTION) $<
+
+%.cc:
+
+%: %.cc
+#  recipe to execute (built-in):
+	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+%.o: %.cc
+#  recipe to execute (built-in):
+	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+
+%.C:
+
+%: %.C
+#  recipe to execute (built-in):
+	$(LINK.C) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+%.o: %.C
+#  recipe to execute (built-in):
+	$(COMPILE.C) $(OUTPUT_OPTION) $<
+
+%.cpp:
+
+%: %.cpp
+#  recipe to execute (built-in):
+	$(LINK.cpp) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+%.o: %.cpp
+#  recipe to execute (built-in):
+	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
+
+%.p:
+
+%: %.p
+#  recipe to execute (built-in):
+	$(LINK.p) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+%.o: %.p
+#  recipe to execute (built-in):
+	$(COMPILE.p) $(OUTPUT_OPTION) $<
+
+%.f:
+
+%: %.f
+#  recipe to execute (built-in):
+	$(LINK.f) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+%.o: %.f
+#  recipe to execute (built-in):
+	$(COMPILE.f) $(OUTPUT_OPTION) $<
+
+%.F:
+
+%: %.F
+#  recipe to execute (built-in):
+	$(LINK.F) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+%.o: %.F
+#  recipe to execute (built-in):
+	$(COMPILE.F) $(OUTPUT_OPTION) $<
+
+%.f: %.F
+#  recipe to execute (built-in):
+	$(PREPROCESS.F) $(OUTPUT_OPTION) $<
+
+%.m:
+
+%: %.m
+#  recipe to execute (built-in):
+	$(LINK.m) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+%.o: %.m
+#  recipe to execute (built-in):
+	$(COMPILE.m) $(OUTPUT_OPTION) $<
+
+%.r:
+
+%: %.r
+#  recipe to execute (built-in):
+	$(LINK.r) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+%.o: %.r
+#  recipe to execute (built-in):
+	$(COMPILE.r) $(OUTPUT_OPTION) $<
+
+%.f: %.r
+#  recipe to execute (built-in):
+	$(PREPROCESS.r) $(OUTPUT_OPTION) $<
+
+%.y:
+
+%.ln: %.y
+#  recipe to execute (built-in):
+	$(YACC.y) $<
+	 $(LINT.c) -C$* y.tab.c
+	 $(RM) y.tab.c
+
+%.c: %.y
+#  recipe to execute (built-in):
+	$(YACC.y) $<
+	 mv -f y.tab.c $@
+
+%.l:
+
+%.ln: %.l
+#  recipe to execute (built-in):
+	@$(RM) $*.c
+	 $(LEX.l) $< > $*.c
+	$(LINT.c) -i $*.c -o $@
+	 $(RM) $*.c
+
+%.c: %.l
+#  recipe to execute (built-in):
+	@$(RM) $@
+	 $(LEX.l) $< > $@
+
+%.r: %.l
+#  recipe to execute (built-in):
+	$(LEX.l) $< > $@
+	 mv -f lex.yy.r $@
+
+%.ym:
+
+%.m: %.ym
+#  recipe to execute (built-in):
+	$(YACC.m) $<
+	 mv -f y.tab.c $@
+
+%.yl:
+
+%.s:
+
+%: %.s
+#  recipe to execute (built-in):
+	$(LINK.s) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+%.o: %.s
+#  recipe to execute (built-in):
+	$(COMPILE.s) -o $@ $<
+
+%.S:
+
+%: %.S
+#  recipe to execute (built-in):
+	$(LINK.S) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+%.o: %.S
+#  recipe to execute (built-in):
+	$(COMPILE.S) -o $@ $<
+
+%.s: %.S
+#  recipe to execute (built-in):
+	$(PREPROCESS.S) $< > $@
+
+%.mod:
+
+%: %.mod
+#  recipe to execute (built-in):
+	$(COMPILE.mod) -o $@ -e $@ $^
+
+%.o: %.mod
+#  recipe to execute (built-in):
+	$(COMPILE.mod) -o $@ $<
+
+%.sym:
+
+%.def:
+
+%.sym: %.def
+#  recipe to execute (built-in):
+	$(COMPILE.def) -o $@ $<
+
+%.h:
+
+%.info:
+
+%.dvi:
+
+%.tex:
+
+%.dvi: %.tex
+#  recipe to execute (built-in):
+	$(TEX) $<
+
+%.texinfo:
+
+%.info: %.texinfo
+#  recipe to execute (built-in):
+	$(MAKEINFO) $(MAKEINFO_FLAGS) $< -o $@
+
+%.dvi: %.texinfo
+#  recipe to execute (built-in):
+	$(TEXI2DVI) $(TEXI2DVI_FLAGS) $<
+
+%.texi:
+
+%.info: %.texi
+#  recipe to execute (built-in):
+	$(MAKEINFO) $(MAKEINFO_FLAGS) $< -o $@
+
+%.dvi: %.texi
+#  recipe to execute (built-in):
+	$(TEXI2DVI) $(TEXI2DVI_FLAGS) $<
+
+%.txinfo:
+
+%.info: %.txinfo
+#  recipe to execute (built-in):
+	$(MAKEINFO) $(MAKEINFO_FLAGS) $< -o $@
+
+%.dvi: %.txinfo
+#  recipe to execute (built-in):
+	$(TEXI2DVI) $(TEXI2DVI_FLAGS) $<
+
+%.w:
+
+%.c: %.w
+#  recipe to execute (built-in):
+	$(CTANGLE) $< - $@
+
+%.tex: %.w
+#  recipe to execute (built-in):
+	$(CWEAVE) $< - $@
+
+%.ch:
+
+%.web:
+
+%.p: %.web
+#  recipe to execute (built-in):
+	$(TANGLE) $<
+
+%.tex: %.web
+#  recipe to execute (built-in):
+	$(WEAVE) $<
+
+%.sh:
+
+%: %.sh
+#  recipe to execute (built-in):
+	cat $< >$@
+	 chmod a+x $@
+
+%.elc:
+
+%.el:
+
+(%): %
+#  recipe to execute (built-in):
+	$(AR) $(ARFLAGS) $@ $<
+
+%.out: %
+#  recipe to execute (built-in):
+	@rm -f $@
+	 cp $< $@
+
+%.c: %.w %.ch
+#  recipe to execute (built-in):
+	$(CTANGLE) $^ $@
+
+%.tex: %.w %.ch
+#  recipe to execute (built-in):
+	$(CWEAVE) $^ $@
+
+%:: %,v
+#  recipe to execute (built-in):
+	$(CHECKOUT,v)
+
+%:: RCS/%,v
+#  recipe to execute (built-in):
+	$(CHECKOUT,v)
+
+%:: RCS/%
+#  recipe to execute (built-in):
+	$(CHECKOUT,v)
+
+%:: s.%
+#  recipe to execute (built-in):
+	$(GET) $(GFLAGS) $(SCCS_OUTPUT_OPTION) $<
+
+%:: SCCS/s.%
+#  recipe to execute (built-in):
+	$(GET) $(GFLAGS) $(SCCS_OUTPUT_OPTION) $<
+
+# 96 implicit rules, 5 (5.2%) terminal.
+# Files
+
+# Not a target:
+.cpp:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(LINK.cpp) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+go.test.coverage: prebuild
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 90):
+	go test ./cmd/... ./pkg/... -race -coverprofile=coverage.xml -covermode=atomic
+
+build-hgctl: prebuild /work/out/linux_amd64
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 108):
+	GOPROXY=$(GOPROXY) GOOS=$(GOOS_LOCAL) GOARCH=$(GOARCH_LOCAL) LDFLAGS=$(RELEASE_LDFLAGS) PROJECT_DIR="$(HGCTL_PROJECT_DIR)" tools/hack/gobuild.sh $(OUT)/ $(HGCTL_BINARIES)
+
+# Not a target:
+tools/bin/golangci-lint:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+clean-higress:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 260):
+	rm -rf $(DIRS_TO_CLEAN)
+
+clean-istio:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 263):
+	rm -rf external/api
+	rm -rf external/client-go
+	rm -rf external/istio
+	rm -rf external/pkg
+
+# Not a target:
+.c.o:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(COMPILE.c) $(OUTPUT_OPTION) $<
+
+# Not a target:
+tools/tools.mk:
+#  Implicit rule search has been done.
+#  Last modified 2026-07-01 03:25:56.848714748
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+.h:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+higress-wasmplugin-test: tools/bin/kind delete-cluster create-cluster docker-build kube-load-image install-dev-wasmplugin run-higress-e2e-test-wasmplugin delete-cluster
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+.sh:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	cat $< >$@
+	 chmod a+x $@
+
+# Not a target:
+.ch:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+build-pilot-local: prebuild
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 185):
+	TARGET_ARCH=${TARGET_ARCH} ./tools/hack/build-istio-pilot.sh
+
+tools/bin/shellcheck-v0.8.0.linux.x86_64.tar.xz:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'tools/tools.mk', line 48):
+	mkdir -p $(@D)
+	curl -sfL $(SHELLCHECK_TXZ) -o $@
+
+# Not a target:
+.r.f:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(PREPROCESS.r) $(OUTPUT_OPTION) $<
+
+# Not a target:
+.dvi:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Makefile.core.mk:
+#  Implicit rule search has been done.
+#  Last modified 2026-07-01 03:25:57.64078965
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+docker/Dockerfile.higress:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.def.sym:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(COMPILE.def) -o $@ $<
+
+# Not a target:
+.m.o:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(COMPILE.m) $(OUTPUT_OPTION) $<
+
+# Not a target:
+.lm.m:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	@$(RM) $@
+	 $(LEX.m) $< > $@
+
+lint: lint.golint lint.yamllint lint.codespell lint.shellcheck
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+.p.o:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(COMPILE.p) $(OUTPUT_OPTION) $<
+
+run-higress-e2e-test-wasmplugin-run:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 451):
+	@echo -e "\n\033[36mRunning higress conformance tests...\033[0m"
+	@echo -e "\n\033[36mWaiting higress-controller to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-controller --for=condition=Available
+	@echo -e "\n\033[36mWaiting higress-gateway to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-gateway --for=condition=Available
+	go test -v -tags conformance ./test/e2e/e2e_test.go -isWasmPluginTest=true -wasmPluginType=$(PLUGIN_TYPE) -wasmPluginName=$(PLUGIN_NAME) --ingress-class=higress --debug=true --test-area=run --execute-tests=$(TEST_SHORTNAME)
+
+build-gateway-local: prebuild build-golang-filter-amd64
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 196):
+	TARGET_ARCH=${TARGET_ARCH} DOCKER_TARGETS="docker.proxyv2" ./tools/hack/build-istio-image.sh docker
+
+# Not a target:
+.texinfo:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+default: build
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+.ln:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.C:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(LINK.C) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+# Not a target:
+.web:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+/higress: build
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.elc:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.y.ln:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(YACC.y) $<
+	 $(LINT.c) -C$* y.tab.c
+	 $(RM) y.tab.c
+
+# Not a target:
+.l.c:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	@$(RM) $@
+	 $(LEX.l) $< > $@
+
+submodule:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 78):
+	git submodule update --init
+
+# Not a target:
+.sym:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.r.o:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(COMPILE.r) $(OUTPUT_OPTION) $<
+
+# Not a target:
+.mod:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(COMPILE.mod) -o $@ -e $@ $^
+
+# Not a target:
+.def:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+/work/out/linux_amd64/higress: build-linux
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+docker/docker.mk:
+#  Implicit rule search has been done.
+#  Last modified 2026-07-01 03:25:57.560782084
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+.S:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(LINK.S) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+build-hgctl-multiarch: prebuild /work/out/linux_amd64
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 116):
+	GOPROXY=$(GOPROXY) GOOS=linux GOARCH=amd64 LDFLAGS=$(RELEASE_LDFLAGS) PROJECT_DIR="$(HGCTL_PROJECT_DIR)" tools/hack/gobuild.sh ../out/linux_amd64/ $(HGCTL_BINARIES)
+	GOPROXY=$(GOPROXY) GOOS=linux GOARCH=arm64 LDFLAGS=$(RELEASE_LDFLAGS) PROJECT_DIR="$(HGCTL_PROJECT_DIR)" tools/hack/gobuild.sh ../out/linux_arm64/ $(HGCTL_BINARIES)
+	GOPROXY=$(GOPROXY) GOOS=windows GOARCH=amd64 LDFLAGS=$(RELEASE_LDFLAGS) PROJECT_DIR="$(HGCTL_PROJECT_DIR)" tools/hack/gobuild.sh ../out/windows_amd64/ $(HGCTL_BINARIES)
+	GOPROXY=$(GOPROXY) GOOS=windows GOARCH=arm64 LDFLAGS=$(RELEASE_LDFLAGS) PROJECT_DIR="$(HGCTL_PROJECT_DIR)" tools/hack/gobuild.sh ../out/windows_arm64/ $(HGCTL_BINARIES)
+
+# Not a target:
+tools/bin/shellcheck:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.texi.dvi:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(TEXI2DVI) $(TEXI2DVI_FLAGS) $<
+
+lint-deps: tools/bin/golangci-lint tools/bin/yamllint tools/bin/codespell tools/bin/shellcheck
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+.txinfo.dvi:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(TEXI2DVI) $(TEXI2DVI_FLAGS) $<
+
+install-dev: pre-install
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 233):
+	helm install higress helm/core -n higress-system --create-namespace --set 'controller.tag=$(TAG)' --set 'gateway.replicas=1' --set 'pilot.tag=$(ISTIO_LATEST_IMAGE_TAG)' --set 'gateway.tag=$(ENVOY_LATEST_IMAGE_TAG)' --set 'global.local=true'
+
+uninstall:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 238):
+	helm uninstall higress -n higress-system
+
+build-linux-hgctl: prebuild /work/out/linux_amd64
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 112):
+	GOPROXY=$(GOPROXY) GOOS=linux GOARCH=$(GOARCH_LOCAL) LDFLAGS=$(RELEASE_LDFLAGS) PROJECT_DIR="$(HGCTL_PROJECT_DIR)" tools/hack/gobuild.sh $(OUT_LINUX)/ $(HGCTL_BINARIES)
+
+higress-conformance-test-clean: tools/bin/kind delete-cluster
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+.y.c:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(YACC.y) $<
+	 mv -f y.tab.c $@
+
+clean: clean-higress clean-gateway clean-istio clean-env clean-tool
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+build-istio: prebuild buildx-prepare
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 209):
+	DOCKER_TARGETS="docker.pilot" IMG_URL="${IMG_URL}" ./tools/hack/build-istio-image.sh docker.buildx
+
+# Not a target:
+.cpp.o:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(COMPILE.cpp) $(OUTPUT_OPTION) $<
+
+run-higress-e2e-test-wasmplugin:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 441):
+	@echo -e "\n\033[36mRunning higress conformance tests...\033[0m"
+	@echo -e "\n\033[36mWaiting higress-controller to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-controller --for=condition=Available
+	@echo -e "\n\033[36mWaiting higress-gateway to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-gateway --for=condition=Available
+	go test -v -tags conformance ./test/e2e/e2e_test.go -isWasmPluginTest=true -wasmPluginType=$(PLUGIN_TYPE) -wasmPluginName=$(PLUGIN_NAME) --ingress-class=higress --debug=true --test-area=all --execute-tests=$(TEST_SHORTNAME)
+
+create-cluster: tools/bin/kind
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 341):
+	tools/hack/create-cluster.sh
+
+run-higress-e2e-test:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 401):
+	@echo -e "\n\033[36mRunning higress conformance tests...\033[0m"
+	@echo -e "\n\033[36mWaiting higress-controller to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-controller --for=condition=Available
+	@echo -e "\n\033[36mWaiting higress-gateway to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-gateway --for=condition=Available
+	go test -v -tags conformance ./test/e2e/e2e_test.go --ingress-class=higress --debug=true --test-area=all --execute-tests=$(TEST_SHORTNAME)
+
+# Not a target:
+.el:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.cc:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+buildx-prepare:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 188):
+	docker buildx inspect multi-arch >/dev/null 2>&1 || docker buildx create --name multi-arch --platform linux/amd64,linux/arm64 --use
+
+# Not a target:
+.tex:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.m:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(LINK.m) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+# Not a target:
+.F:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(LINK.F) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+# Not a target:
+.web.tex:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(WEAVE) $<
+
+# Not a target:
+.texinfo.info:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(MAKEINFO) $(MAKEINFO_FLAGS) $< -o $@
+
+# Not a target:
+.ym.m:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(YACC.m) $<
+	 mv -f y.tab.c $@
+
+# Not a target:
+tools/bin/codespell:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+install-dev-wasmplugin: build-wasmplugins pre-install
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 235):
+	helm install higress helm/core -n higress-system --create-namespace --set 'controller.tag=$(TAG)' --set 'gateway.replicas=1' --set 'pilot.tag=$(ISTIO_LATEST_IMAGE_TAG)' --set 'gateway.tag=$(ENVOY_LATEST_IMAGE_TAG)' --set 'global.local=true'  --set 'global.volumeWasmPlugins=true' --set 'global.onlyPushRouteCluster=false'
+
+# makefile (from 'docker/docker.mk', line 25)
+docker.higress-buildx: BUILD_ARGS = --build-arg BASE_VERSION=${HIGRESS_BASE_VERSION} --build-arg HUB=${HUB}
+docker.higress-buildx: docker/Dockerfile.higress /root/huzhi/higress/out/linux_amd64/higress /root/huzhi/higress/out/linux_arm64/higress
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+# variable set hash-table stats:
+# Load=1/32=3%, Rehash=0, Collisions=0/2=0%
+#  recipe to execute (from 'docker/docker.mk', line 29):
+	$(HIGRESS_DOCKER_BUILDX_RULE)
+
+higress-wasmplugin-test-prepare: tools/bin/kind delete-cluster create-cluster docker-build kube-load-image install-dev-wasmplugin
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+upgrade: pre-install
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 241):
+	cd helm/higress; helm dependency build
+	helm upgrade higress helm/higress -n higress-system --set 'global.local=true'
+
+higress-wasmplugin-test-prepare-skip-docker-build: tools/bin/kind delete-cluster create-cluster prebuild
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 317):
+	@export TAG="$(HIGRESS_LATEST_IMAGE_TAG)" && \
+	$(MAKE) kube-load-image && \
+	$(MAKE) install-dev-wasmplugin
+
+# Not a target:
+.l:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+higress-conformance-test: tools/bin/kind delete-cluster create-cluster docker-build kube-load-image install-dev run-higress-e2e-test delete-cluster
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+push:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+.f:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(LINK.f) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+# Not a target:
+.texi:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+/root/huzhi/higress/out/linux_amd64/higress:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 101):
+	GOPROXY="$(GOPROXY)" GOOS=linux GOARCH=amd64 LDFLAGS=$(RELEASE_LDFLAGS) tools/hack/gobuild.sh ./out/linux_amd64/ $(HIGRESS_BINARIES)
+
+higress: build
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+gateway-conformance-test:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+tools/bin/yamllint:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.r:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(LINK.r) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+# Not a target:
+.a:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+kube-load-image: tools/bin/kind
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 355):
+	@if [ "$(TAG)" = "$(HIGRESS_LATEST_IMAGE_TAG)" ]; then \
+		tools/hack/docker-pull-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/higress $(TAG); \
+	fi
+	tools/hack/kind-load-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/higress $(TAG)
+	tools/hack/docker-pull-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/pilot $(ISTIO_LATEST_IMAGE_TAG)
+	tools/hack/docker-pull-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/gateway $(ENVOY_LATEST_IMAGE_TAG)
+	tools/hack/docker-pull-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/dubbo-provider-demo 0.0.3-x86
+	tools/hack/docker-pull-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/nacos-standlone-rc3 1.0.0-RC3
+	tools/hack/docker-pull-image.sh docker.io/hashicorp/consul 1.16.0
+	tools/hack/docker-pull-image.sh docker.io/charlie1380/eureka-registry-provider v0.3.0
+	tools/hack/docker-pull-image.sh docker.io/bitinit/eureka latest
+	tools/hack/docker-pull-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/httpbin 1.0.2
+	tools/hack/docker-pull-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/echo-server 1.3.0
+	tools/hack/docker-pull-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/echo-server v1.0
+	tools/hack/docker-pull-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/echo-body 1.0.0
+	tools/hack/docker-pull-image.sh openpolicyagent/opa 0.61.0
+	tools/hack/docker-pull-image.sh curlimages/curl latest
+	tools/hack/docker-pull-image.sh registry.cn-hangzhou.aliyuncs.com/2456868764/httpbin 1.0.2
+	tools/hack/docker-pull-image.sh registry.cn-hangzhou.aliyuncs.com/hinsteny/nacos-standlone-rc3 1.0.0-RC3
+	tools/hack/kind-load-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/dubbo-provider-demo 0.0.3-x86
+	tools/hack/kind-load-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/nacos-standlone-rc3 1.0.0-RC3
+	tools/hack/kind-load-image.sh docker.io/hashicorp/consul 1.16.0
+	tools/hack/kind-load-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/httpbin 1.0.2
+	tools/hack/kind-load-image.sh docker.io/charlie1380/eureka-registry-provider v0.3.0
+	tools/hack/kind-load-image.sh docker.io/bitinit/eureka latest
+	tools/hack/kind-load-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/echo-server 1.3.0
+	tools/hack/kind-load-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/echo-server v1.0
+	tools/hack/kind-load-image.sh higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/echo-body 1.0.0
+	tools/hack/kind-load-image.sh openpolicyagent/opa 0.61.0
+	tools/hack/kind-load-image.sh curlimages/curl latest
+	tools/hack/kind-load-image.sh registry.cn-hangzhou.aliyuncs.com/2456868764/httpbin 1.0.2
+	tools/hack/kind-load-image.sh registry.cn-hangzhou.aliyuncs.com/hinsteny/nacos-standlone-rc3 1.0.0-RC3
+
+build-gateway: prebuild buildx-prepare build-golang-filter
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 191):
+	USE_REAL_USER=1 TARGET_ARCH=amd64 DOCKER_TARGETS="docker.proxyv2" ./tools/hack/build-istio-image.sh init
+	USE_REAL_USER=1 TARGET_ARCH=arm64 DOCKER_TARGETS="docker.proxyv2" ./tools/hack/build-istio-image.sh init
+	DOCKER_TARGETS="docker.proxyv2" IMG_URL="${IMG_URL}" ./tools/hack/build-istio-image.sh docker.buildx
+
+# Not a target:
+.w.tex:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(CWEAVE) $< - $@
+
+docker-build-amd64: clean-higress docker.higress-amd64
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.s.o:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(COMPILE.s) -o $@ $<
+
+# Not a target:
+.txinfo:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.c.ln:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(LINT.c) -C$* $<
+
+# Not a target:
+.tex.dvi:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(TEX) $<
+
+# Not a target:
+.info:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.out:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.texinfo.dvi:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(TEXI2DVI) $(TEXI2DVI_FLAGS) $<
+
+build: prebuild /work/out/linux_amd64
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 94):
+	GOPROXY="$(GOPROXY)" GOOS=$(GOOS_LOCAL) GOARCH=$(GOARCH_LOCAL) LDFLAGS=$(RELEASE_LDFLAGS) tools/hack/gobuild.sh $(OUT)/ $(HIGRESS_BINARIES)
+
+# Not a target:
+.F.o:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(COMPILE.F) $(OUTPUT_OPTION) $<
+
+/work/out/linux_amd64:
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: ''
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := /work/out/linux_amd64
+# automatic
+# * :=
+# automatic
+# < :=
+# automatic
+# + :=
+# automatic
+# % :=
+# automatic
+# ^ :=
+# automatic
+# ? :=
+# automatic
+# | :=
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=1/12=8%
+#  recipe to execute (from 'Makefile.core.mk', line 75):
+	@mkdir -p $@
+
+lint.golint: tools/bin/golangci-lint
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'tools/lint.mk', line 22):
+	$(tools/golangci-lint) run $(GOLANGCI_LINT_FLAGS) --config=tools/linter/golangci-lint/.golangci.yml
+
+helm-push:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 245):
+	cp api/kubernetes/customresourcedefinitions.gen.yaml helm/core/crds
+	cd helm; tar -zcf higress.tgz higress; helm push higress.tgz "oci://$(CHARTS)"
+
+higress-conformance-test-prepare: tools/bin/kind delete-cluster create-cluster docker-build kube-load-image install-dev
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+build-hgctl-macos-amd64: prebuild /work/out/linux_amd64
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 127):
+	CGO_ENABLED=1 STATIC=0 GOPROXY=$(GOPROXY) GOOS=darwin GOARCH=amd64 PROJECT_DIR="$(HGCTL_PROJECT_DIR)" tools/hack/gobuild.sh ../out/darwin_amd64/ $(HGCTL_BINARIES)
+
+/root/huzhi/higress/out/linux_arm64/higress:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 104):
+	GOPROXY="$(GOPROXY)" GOOS=linux GOARCH=arm64 LDFLAGS=$(RELEASE_LDFLAGS) tools/hack/gobuild.sh ./out/linux_arm64/ $(HIGRESS_BINARIES)
+
+# Not a target:
+.yl:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.s:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(LINK.s) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+run-higress-e2e-test-wasmplugin-clean:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 461):
+	@echo -e "\n\033[36mRunning higress conformance tests...\033[0m"
+	@echo -e "\n\033[36mWaiting higress-controller to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-controller --for=condition=Available
+	@echo -e "\n\033[36mWaiting higress-gateway to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-gateway --for=condition=Available
+	go test -v -tags conformance ./test/e2e/e2e_test.go -isWasmPluginTest=true -wasmPluginType=$(PLUGIN_TYPE) -wasmPluginName=$(PLUGIN_NAME) --ingress-class=higress --debug=true --test-area=clean
+
+higress-wasmplugin-test-clean: tools/bin/kind delete-cluster
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+.S.o:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(COMPILE.S) -o $@ $<
+
+higress-wasmplugin-test-skip-docker-build: tools/bin/kind delete-cluster create-cluster prebuild
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 328):
+	@export TAG="$(HIGRESS_LATEST_IMAGE_TAG)" && \
+	$(MAKE) kube-load-image && \
+	$(MAKE) install-dev-wasmplugin && \
+	$(MAKE) run-higress-e2e-test-wasmplugin && \
+	$(MAKE) delete-cluster
+
+build-pilot: prebuild
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 181):
+	TARGET_ARCH=amd64 ./tools/hack/build-istio-pilot.sh
+	TARGET_ARCH=arm64 ./tools/hack/build-istio-pilot.sh
+
+build-envoy: prebuild
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 178):
+	./tools/hack/build-envoy.sh
+
+# Not a target:
+.o:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(LINK.o) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+build-wasmplugins:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 215):
+	./tools/hack/build-wasm-plugins.sh
+
+clean-env:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 276):
+	rm -rf out/
+
+# Not a target:
+.C.o:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(COMPILE.C) $(OUTPUT_OPTION) $<
+
+install: pre-install
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 225):
+	cd helm/higress; helm dependency build
+	helm install higress helm/higress -n higress-system --create-namespace --set 'global.local=true'
+
+# Not a target:
+.c:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(LINK.c) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+# Not a target:
+.txinfo.info:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(MAKEINFO) $(MAKEINFO_FLAGS) $< -o $@
+
+# Not a target:
+.texi.info:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(MAKEINFO) $(MAKEINFO_FLAGS) $< -o $@
+
+clean-gateway: clean-istio
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 269):
+	rm -rf external/envoy
+	rm -rf external/proxy
+	rm -rf external/go-control-plane
+	rm -rf external/package/envoy.tar.gz
+	rm -rf external/package/*.so
+
+run-higress-e2e-test-run:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 411):
+	@echo -e "\n\033[36mRunning higress conformance tests...\033[0m"
+	@echo -e "\n\033[36mWaiting higress-controller to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-controller --for=condition=Available
+	@echo -e "\n\033[36mWaiting higress-gateway to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-gateway --for=condition=Available
+	go test -v -tags conformance ./test/e2e/e2e_test.go --ingress-class=higress --debug=true --test-area=run --execute-tests=$(TEST_SHORTNAME)
+
+# Not a target:
+.y:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+build-linux: prebuild /work/out/linux_amd64
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 98):
+	GOPROXY="$(GOPROXY)" GOOS=linux GOARCH=$(GOARCH_LOCAL) LDFLAGS=$(RELEASE_LDFLAGS) tools/hack/gobuild.sh $(OUT_LINUX)/ $(HIGRESS_BINARIES)
+
+build-istio-local: prebuild
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 212):
+	TARGET_ARCH=${TARGET_ARCH} DOCKER_TARGETS="docker.pilot" ./tools/hack/build-istio-image.sh docker
+
+lint.shellcheck: tools/bin/shellcheck
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'tools/lint.mk', line 58):
+	$(tools/shellcheck) tools/hack/*.sh
+
+docker-build: clean-higress docker.higress
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+tools/lint.mk:
+#  Implicit rule search has been done.
+#  Last modified 2026-07-01 03:25:56.420674271
+#  File has been updated.
+#  Successfully updated.
+
+run-higress-e2e-test-setup:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 391):
+	@echo -e "\n\033[36mRunning higress conformance tests...\033[0m"
+	@echo -e "\n\033[36mWaiting higress-controller to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-controller --for=condition=Available
+	@echo -e "\n\033[36mWaiting higress-gateway to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-gateway --for=condition=Available
+	go test -v -tags conformance ./test/e2e/e2e_test.go --ingress-class=higress --debug=true --test-area=setup
+
+# 'override' directive
+lint.codespell: .SHELLSTATUS := 0
+# makefile (from 'tools/lint.mk', line 34)
+lint.codespell: CODESPELL_SKIP := .git,.idea,*.png,*.woff,*.woff2,*.eot,*.ttf,*.jpg,*.ico,*.svg,./docs/html/*,go.mod,go.sum,bin,
+lint.codespell: tools/bin/codespell
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+# variable set hash-table stats:
+# Load=2/32=6%, Rehash=0, Collisions=0/6=0%
+#  recipe to execute (from 'tools/lint.mk', line 46):
+	@PS4=; set -e; { \
+	  if test -n "$$GITHUB_ACTION"; then \
+	    printf '::add-matcher::$(CURDIR)/tools/linter/codespell/matcher.json\n'; \
+	    trap "printf '::remove-matcher owner=codespell-matcher-default::\n::remove-matcher owner=codespell-matcher-specified::\n'" EXIT; \
+	  fi; \
+	  (set -x; $(tools/codespell) $(CODESPELL_FLAGS) --skip $(CODESPELL_SKIP) --ignore-words tools/linter/codespell/.codespell.ignorewords --check-filenames --check-hidden -q2); \
+	}
+
+# Not a target:
+.l.r:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(LEX.l) $< > $@
+	 mv -f lex.yy.r $@
+
+# Not a target:
+.p:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(LINK.p) $^ $(LOADLIBES) $(LDLIBS) -o $@
+
+lint.yamllint: tools/bin/yamllint
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'tools/lint.mk', line 28):
+	$(tools/yamllint) --config-file=tools/linter/yamllint/.yamllint $$(git ls-files :*.yml :*.yaml | xargs -L1 dirname | sort -u)
+
+build-golang-filter-arm64:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 202):
+	TARGET_ARCH=arm64 ./tools/hack/build-golang-filters.sh
+
+# Not a target:
+.l.ln:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	@$(RM) $*.c
+	 $(LEX.l) $< > $*.c
+	$(LINT.c) -i $*.c -o $@
+	 $(RM) $*.c
+
+# makefile (from 'docker/docker.mk', line 20)
+docker.higress-amd64: BUILD_ARGS = --build-arg BASE_VERSION=${HIGRESS_BASE_VERSION} --build-arg HUB=${HUB}
+docker.higress-amd64: docker/Dockerfile.higress /root/huzhi/higress/out/linux_amd64/higress
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+# variable set hash-table stats:
+# Load=1/32=3%, Rehash=0, Collisions=0/2=0%
+#  recipe to execute (from 'docker/docker.mk', line 23):
+	$(HIGRESS_DOCKER_AMD64_RULE)
+
+gen-api: prebuild
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 251):
+	cd api;./gen.sh
+
+run-higress-e2e-test-clean:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 421):
+	@echo -e "\n\033[36mRunning higress conformance tests...\033[0m"
+	@echo -e "\n\033[36mWaiting higress-controller to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-controller --for=condition=Available
+	@echo -e "\n\033[36mWaiting higress-gateway to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-gateway --for=condition=Available
+	go test -v -tags conformance ./test/e2e/e2e_test.go --ingress-class=higress --debug=true --test-area=clean
+
+# Not a target:
+.w:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.SUFFIXES: .out .a .ln .o .c .cc .C .cpp .p .f .F .m .r .y .l .ym .yl .s .S .mod .sym .def .h .info .dvi .tex .texinfo .texi .txinfo .w .ch .web .sh .elc .el
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+.PHONY: prebuild default go.test.coverage build build-linux build-hgctl build-linux-hgctl build-hgctl-multiarch build-hgctl-macos-arm64 build-hgctl-macos-amd64 /work/out/linux_amd64/higress push lint lint-deps lint.golint lint.yamllint lint.codespell lint.shellcheck gateway-conformance-test higress-conformance-test-prepare higress-conformance-test higress-conformance-test-clean higress-wasmplugin-test-prepare higress-wasmplugin-test-prepare-skip-docker-build higress-wasmplugin-test higress-wasmplugin-test-skip-docker-build higress-wasmplugin-test-clean create-cluster delete-cluster kube-load-image run-higress-e2e-test run-higress-e2e-test-run run-higress-e2e-test-clean run-higress-e2e-test-wasmplugin-setup run-higress-e2e-test-wasmplugin run-higress-e2e-test-wasmplugin-run run-higress-e2e-test-wasmplugin-clean
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.mod.o:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(COMPILE.mod) -o $@ $<
+
+build-hgctl-macos-arm64: prebuild /work/out/linux_amd64
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 123):
+	CGO_ENABLED=1 STATIC=0 GOPROXY=$(GOPROXY) GOOS=darwin GOARCH=arm64 PROJECT_DIR="$(HGCTL_PROJECT_DIR)" tools/hack/gobuild.sh ../out/darwin_arm64/ $(HGCTL_BINARIES)
+
+gen-client: gen-api
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 254):
+	cd client; make generate-k8s-client
+
+# Not a target:
+.web.p:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(TANGLE) $<
+
+build-golang-filter-amd64:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 199):
+	TARGET_ARCH=amd64 ./tools/hack/build-golang-filters.sh
+
+run-higress-e2e-test-wasmplugin-setup:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 431):
+	@echo -e "\n\033[36mRunning higress conformance tests...\033[0m"
+	@echo -e "\n\033[36mWaiting higress-controller to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-controller --for=condition=Available
+	@echo -e "\n\033[36mWaiting higress-gateway to be ready...\033[0m\n"
+	kubectl wait --timeout=10m -n higress-system deployment/higress-gateway --for=condition=Available
+	go test -v -tags conformance ./test/e2e/e2e_test.go -isWasmPluginTest=true -wasmPluginType=$(PLUGIN_TYPE) -wasmPluginName=$(PLUGIN_NAME) --ingress-class=higress --debug=true --test-area=setup
+
+docker-buildx-push: clean-env docker.higress-buildx
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.S.s:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(PREPROCESS.S) $< > $@
+
+# makefile (from 'docker/docker.mk', line 15)
+docker.higress: BUILD_ARGS = --build-arg BASE_VERSION=${HIGRESS_BASE_VERSION} --build-arg HUB=${HUB}
+docker.higress: docker/Dockerfile.higress /work/out/linux_amd64/higress
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+# variable set hash-table stats:
+# Load=1/32=3%, Rehash=0, Collisions=0/2=0%
+#  recipe to execute (from 'docker/docker.mk', line 18):
+	$(HIGRESS_DOCKER_RULE)
+
+# Not a target:
+.f.o:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(COMPILE.f) $(OUTPUT_OPTION) $<
+
+clean-tool:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 279):
+	rm -rf tools/bin
+
+delete-cluster: tools/bin/kind
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 346):
+	$(tools/kind) delete cluster --name higress
+
+.PHONT: run-higress-e2e-test-setup
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.ym:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.cc.o:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+
+# Not a target:
+tools/bin/kind:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+.F.f:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(PREPROCESS.F) $(OUTPUT_OPTION) $<
+
+build-golang-filter:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 205):
+	TARGET_ARCH=amd64 ./tools/hack/build-golang-filters.sh
+	TARGET_ARCH=arm64 ./tools/hack/build-golang-filters.sh
+
+# Not a target:
+.w.c:
+#  Builtin rule
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (built-in):
+	$(CTANGLE) $< - $@
+
+pre-install:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 218):
+	cp api/kubernetes/customresourcedefinitions.gen.yaml helm/core/crds
+
+prebuild: submodule
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.core.mk', line 83):
+	./tools/hack/prebuild.sh
+
+# files hash-table stats:
+# Load=162/1024=16%, Rehash=0, Collisions=338/2278=15%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 2 (1) / strings = 820 / storage = 14409 B / avg = 17 B
+# current buf: size = 8162 B / used = 6251 B / count = 304 / avg = 20 B
+# other used: total = 8158 B / count = 516 / avg = 15 B
+# other free: total = 4 B / max = 4 B / min = 4 B / avg = 4 B
+
+# strcache performance: lookups = 1503 / hit rate = 45%
+# hash-table stats:
+# Load=820/8192=10%, Rehash=0, Collisions=69/1503=5%
+# Finished Make data base on Wed Jul  1 03:43:38 2026
+
+# make[1]: Leaving directory '/work'

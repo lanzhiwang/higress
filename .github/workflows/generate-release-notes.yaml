@@ -54,7 +54,7 @@ jobs:
           else
               echo "No old release notes directory found for version ${CLEAN_VERSION}."
           fi
-          
+
       - name: Create Release Report Script
         run: |
           cat > generate_release_report.sh << 'EOF'
@@ -76,7 +76,7 @@ jobs:
 
           with open('release_page.html', 'r') as f:
               soup = BeautifulSoup(f, 'html.parser')
-          
+
           system_prompt_header = soup.find('h2', string='system prompt')
           if system_prompt_header:
               content = []
@@ -144,7 +144,7 @@ jobs:
           cp report.EN.md ../
           cd ..
 
-          # 去除主库版本号前缀v，以主库版本号为路径
+          # 去除主库版本号前缀v, 以主库版本号为路径
           CLEAN_VERSION=${MAIN_RELEASE_VERSION#v}
 
           echo "Creating release notes directory for main version ${MAIN_RELEASE_VERSION}..."

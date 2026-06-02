@@ -14,11 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set x
 set -euo pipefail
 
 TARGET_ARCH=${TARGET_ARCH-"amd64"}
 
-ROOT=$(cd "$(dirname -- "$0")/../.." > /dev/null && pwd -P)
+ROOT=$(cd "$(dirname -- "$0")/../.." >/dev/null && pwd -P)
 
 ISTIO_ENVOY_LINUX_RELEASE_URL="${ENVOY_PACKAGE_URL_PATTERN/ARCH/${TARGET_ARCH}}"
 

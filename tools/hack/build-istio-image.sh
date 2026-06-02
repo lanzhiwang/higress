@@ -14,12 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set -x
 set -euo pipefail
 
 source "$(dirname -- "$0")/setup-istio-env.sh"
 
 cd ${ROOT}/external/istio
-rm -rf out/linux_${TARGET_ARCH}; 
+rm -rf out/linux_${TARGET_ARCH}
 
 CONDITIONAL_HOST_MOUNTS+="--mount type=bind,source=${ROOT}/external/package,destination=/home/package "
 
@@ -32,12 +33,12 @@ ORIGINAL_HUB=${HUB}
 echo "IMG_URL=$IMG_URL"
 
 if [ -n "$IMG_URL" ]; then
-  TAG=${IMG_URL#*:}
-  HUB=${IMG_URL%:*}
-  HUB=${HUB%/*}
-  if [ "$TAG" == "${IMG_URL}" ]; then
-    TAG=latest
-  fi
+    TAG=${IMG_URL#*:}
+    HUB=${IMG_URL%:*}
+    HUB=${HUB%/*}
+    if [ "$TAG" == "${IMG_URL}" ]; then
+        TAG=latest
+    fi
 fi
 
 echo "HUB=$HUB"

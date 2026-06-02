@@ -1,38 +1,68 @@
+# workflow 的名称, 会显示在 GitHub 仓库的 Actions 页面列表中
 name: Build Plugin Server Image and Push
 
+# on 关键字定义了触发这个 workflow 的条件
 on:
+  # 触发条件 1: 当有代码推送到仓库, 并且推送的是特定的 Tag 时触发
   push:
     tags:
+      # 语法规则: 通配符匹配. 例如 v1.0.0, v2.1.3-beta 都会触发
       - "v*.*.*"
+
+  # 触发条件 2: 允许在 GitHub 网页上手动触发此 workflow
   workflow_dispatch:
+    # 定义手动触发时需要用户填写的表单参数(inputs)
     inputs:
+      # 目的: 因为下面的构建可能需要拉取特定分支或提交的代码进行测试, 这里提供了极大的灵活性
       plugin_server_ref:
         description: "plugin-server repo ref (branch/tag/commit, default: main)"
         required: false
         default: "main"
         type: string
+      # 目的: 允许手动指定打出的镜像版本号, 方便紧急修复或自定义发布
       version:
         description: "Version tag (optional, without leading v)"
         required: false
         type: string
 
 jobs:
+  # 定义一个名为 build-plugin-server-image 的任务
   build-plugin-server-image:
+    # 运行环境: 使用 GitHub 提供的最新版 Ubuntu 虚拟机
     runs-on: ubuntu-latest
+
+    # 环境变量上下文: 绑定一个 GitHub Environment
+    # 目的: Environment 可以配置独立的审批流程(Protection rules)和独立的变量/密钥(Secrets/Vars).
+    # 这里绑定后, 才能读取到下面专属于 image-registry-plugin-server 环境的配置.
     environment:
       name: image-registry-plugin-server
+
+    # 定义整个 job 级别的环境变量
     env:
+      # 语法: ${{ }} 是 GitHub Actions 的表达式语法. || 表示逻辑或.
+      # vars.xxx 读取的是 GitHub 仓库/环境设置里的 Variables(非敏感明文配置).
+      # 目的: 优先使用后台配置的变量, 如果没有配置, 则使用硬编码的默认值(阿里云镜像服务). 增加代码的可移植性.
       IMAGE_REGISTRY: ${{ vars.IMAGE_REGISTRY || 'higress-registry.cn-hangzhou.cr.aliyuncs.com' }}
       IMAGE_NAME: ${{ vars.PLUGIN_SERVER_IMAGE_NAME || 'higress/plugin-server' }}
+
     steps:
+      # 步骤 1: 拉取代码
       - name: "Clone plugin-server repository"
         uses: actions/checkout@v4
         with:
+          # 高级用法: 拉取的不是当前 workflow 所在的仓库, 而是跨仓库拉取 higress-group/plugin-server
           repository: higress-group/plugin-server
+          # 读取 workflow_dispatch 的输入作为拉取的分支/Tag. 如果是 push 触发的, 则 fallback 到 main
           ref: ${{ github.event.inputs.plugin_server_ref || 'main' }}
+          # 将代码放在当前工作区的 plugin-server 目录下, 防止与默认代码冲突
           path: plugin-server
+          # 浅克隆, 只拉取最新的一次提交. 目的: 大幅加快代码拉取速度, 节省时间.
           fetch-depth: 1
 
+      # 步骤 2: 清理 GitHub Runner 的磁盘空间
+      # 目的: GitHub 提供的标准 Ubuntu Runner 磁盘空间有限(约 14GB 可用).
+      # 构建多架构(amd64+arm64)的 Docker 镜像会占用极大的磁盘空间.
+      # 这个第三方 action 会删除安卓 SDK、.NET、Haskell 等我们用不到的预装工具, 腾出几十 GB 的空间防止构建时"Disk out of space".
       - name: Free Up GitHub Actions Ubuntu Runner Disk Space
         uses: jlumbroso/free-disk-space@main
         with:
@@ -43,64 +73,125 @@ jobs:
           large-packages: true
           swap-storage: true
 
+      # 步骤 3: 配置 QEMU
+      # 目的: QEMU 是一个硬件模拟器. 因为当前的机器是 amd64 架构, 如果要构建 arm64 的镜像,
+      # 必须依赖 QEMU 来模拟 ARM 指令集. 这是多架构镜像构建的前提.
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
           image: tonistiigi/binfmt:qemu-v7.0.0
 
+      # 步骤 4: 配置 Docker Buildx
+      # 目的: Docker 默认的 builder 不支持同时构建多架构并合并 Manifest.
+      # Buildx 是 Docker 的高级构建引擎, 支持多架构并行构建和高级缓存特性.
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # 步骤 5: 缓存 Docker 构建层 (Layers)
+      # 目的: 由于多架构构建(尤其是 arm64 模拟构建)非常慢, 缓存之前构建过的基础层可以节省数十分钟的时间.
       - name: Cache Docker layers
         uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
+          # key 规则: 绑定操作系统、标识和当前代码的 SHA.
           key: ${{ runner.os }}-buildx-plugin-server-${{ github.sha }}
+          # 恢复策略: 如果当前 SHA 没缓存, 就找前缀匹配的最新的缓存(即上一次构建的缓存)来用.
           restore-keys: |
+
             ${{ runner.os }}-buildx-plugin-server-
 
+      # 步骤 6: 计算并确定版本号
       - name: Determine version
+        # 定义 step ID, 以便后续通过 steps.version.outputs 获取这里的输出
         id: version
         run: |
+
+          # 语法: 判断触发事件是否是手动触发, 并且输入的 version 变量不为空
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && -n "${{ github.event.inputs.version }}" ]]; then
+            # 语法: 将变量写入 GITHUB_OUTPUT 环境变量, 这是 GitHub Actions 传递 step 间参数的官方推荐方式
             echo "manual_version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
           fi
 
+      # 步骤 7: 智能生成 Docker 标签 (Metadata)
+      # 目的: 这个官方 action 非常强大, 它会根据你的触发事件自动生成一堆合适的 Tags.
       - name: Calculate Docker metadata
         id: docker-meta
         uses: docker/metadata-action@v5
         with:
+          # 组合出完整的镜像前缀
           images: |
+
             ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}
+
+          # 标签生成规则(满足条件才会生成):
           tags: |
+
+            # 1. 总是生成带有代码 commit SHA 缩写的 tag (如 sha-a1b2c3d)
             type=sha
+
+            # 2. 如果是 push tag 触发, 生成与 git tag 相同的镜像 tag (如 v1.0.0)
             type=ref,event=tag
+
+            # 3. 提取语义化版本 (如把 v1.0.0 变成 1.0.0)
             type=semver,pattern={{version}}
+
+            # 4. 如果前面通过手动触发获取到了 manual_version, 则生成这个自定义 tag
             type=raw,value=${{ steps.version.outputs.manual_version }},enable=${{ steps.version.outputs.manual_version != '' }}
+
+            # 5. 如果是 push tag 触发(以 refs/tags/ 开头), 则自动打上 'latest' 标签
             type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/') }}
 
+      # 步骤 8: 登录 Docker 镜像仓库
+      # 目的: 使用配置在 Secrets 中的账号密码进行身份验证, 以便后续推送镜像.
       - name: Login to Docker Registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.IMAGE_REGISTRY }}
+          # 敏感信息从 secrets 读取, 不会在日志中泄露
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
+      # 步骤 9: 执行构建和推送(高级优化写法)
       - name: Build Docker Image and Push
         run: |
+
           BUILT_IMAGE=""
+
+          # 语法: 将上一步生成的多个 tags 字符串按换行符读取为 Bash 数组 IMAGES
           readarray -t IMAGES <<< "${{ steps.docker-meta.outputs.tags }}"
+
+          # 遍历所有需要打的标签
           for image in "${IMAGES[@]}"; do
+
+            # 核心目的说明:
+            # 多架构镜像的 push 实际上是推送一个 "Manifest List" (包含 amd64 和 arm64 的索引).
+            # 如果每次循环都执行 docker buildx build --push, 由于存在网络等因素, 可能会非常慢甚至出错.
+            # 这里的巧妙逻辑是:
+
             echo "Image: $image"
+
             if [ "$BUILT_IMAGE" == "" ]; then
+
+              # [首次遍历]: 真实执行一次漫长的多架构编译, 并直接 push 到远端仓库, 打上第一个 tag.
               docker buildx build \
                   --platform linux/amd64,linux/arm64 \
                   -t "$image" \
                   -f plugin-server/Dockerfile \
                   --push \
                   plugin-server
+
+              # 制品: higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/plugin-server:2.2.3
+
+              # 记录下这个已经成功推送到远端的镜像的完整 tag 名字
               BUILT_IMAGE="$image"
+
             else
+
+              # [后续遍历]: 因为多架构镜像已经在远端仓库里了.
+              # 我们不需要重新编译, 甚至不需要重新推送镜像层(Layers).
+              # 直接使用 `imagetools create` 命令, 在远端仓库直接把第一个 tag 的 manifest 拷贝并赋予新的 tag.
+              # 速度极快(几秒钟搞定), 完美避免了重复构建和推送.
               docker buildx imagetools create "$BUILT_IMAGE" --tag "$image"
+
             fi
           done

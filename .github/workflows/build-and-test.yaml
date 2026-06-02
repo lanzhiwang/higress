@@ -1,25 +1,42 @@
+# Workflow 名称: 编译与测试流水线
 name: "Build and Test"
 
 on:
+  # 语法规则: 配置触发器.
+  # 目的: 在合并入主干时(push main)以及提交任何 PR 时触发, 确保进入 main 的代码都是绿色的.
   push:
     branches: [main]
   pull_request:
     branches: ["*"]
 
+# 语法规则: 全局环境变量.
+# 目的: 将整个 Workflow 依赖的 Go 版本抽离到顶层.
+# 这样下面所有 Job 如果需要变更 Go 版本, 只需在这里改一处即可(DRY 原则: Don't Repeat Yourself).
 env:
   GO_VERSION: 1.24
+
 jobs:
+  # ==========================================
+  # 阶段一(并行): 代码检查 (Lint)
+  # ==========================================
   lint:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-go@v5
         with:
+          # 语法规则: 使用 ${{ env.变量名 }} 引用全局变量
           go-version: ${{ env.GO_VERSION }}
-    # There are too many lint errors in current code bases
-    # uncomment when we decide what lint should be addressed or ignored.
-    # - run: make lint
 
+      # 策略: 暂时关闭 Lint, 以免老旧的不规范代码阻塞 CI, 待团队统一排查后再开启.
+      # There are too many lint errors in current code bases
+      # uncomment when we decide what lint should be addressed or ignored.
+      # - run: make lint
+
+  # ==========================================
+  # 阶段一(并行): 单元测试与覆盖率 (Coverage)
+  # ==========================================
   coverage-test:
     runs-on: ubuntu-22.04
     steps:
@@ -30,6 +47,7 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
 
+      # 缓存机制: 加速 Go 依赖包和编译中间层的拉取
       - name: Setup Golang Caches
         uses: actions/cache@v4
         with:
@@ -39,30 +57,47 @@ jobs:
           key: ${{ runner.os }}-go-${{ github.run_id }}
           restore-keys: ${{ runner.os }}-go
 
+      # 还原工作区, 保证测试环境干净
       - run: git stash # restore patch
 
+      # 执行涵盖覆盖率的测试命令
       # test
       - name: Run Coverage Tests
         run: |-
           go version
+
           GOPROXY="https://proxy.golang.org,direct" make go.test.coverage
+
+      # 语法与工具: Codecov 覆盖率上报
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         env:
+          # 目的: 读取 GitHub Secrets 里的 token, 用于安全认证
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
+          # 高级防御性配置: 如果 Codecov 服务宕机导致上传失败, 不会因此判定整个 CI 失败(阻塞 PR 合并).
           fail_ci_if_error: false
           files: ./coverage.xml
           verbose: true
 
+  # ==========================================
+  # 阶段二: 代码构建与归档 (Build)
+  # ==========================================
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-22.04
+
+    # 语法规则: needs 关键字定义依赖关系(Workflow 的核心逻辑)
+    # 目的: 只有当 lint 和 coverage-test 两个 Job 都成功跑完后, 才会启动 build.
+    # 这遵循了"快速失败(Fail-Fast)"原则: 如果单测没过, 就不浪费算力去编译二进制了.
     needs: [lint, coverage-test]
+
     steps:
       - name: "Checkout ${{ github.ref }}"
         uses: actions/checkout@v4
         with:
+          # 高级配置: 拉取深度为 2(默认是 1).
+          # 目的: 不仅拉取最新 commit, 还拉取前一个 commit. 有些编译脚本或分析工具需要对比 HEAD 与上一次的变更.
           fetch-depth: 2
 
       - name: "Setup Go"
@@ -84,24 +119,38 @@ jobs:
       - name: "Build Higress Binary"
         run: GOPROXY="https://proxy.golang.org,direct" make build
 
+      # 语法规则: 利用 actions/upload-artifact 将构建产物保存下来
+      # 目的: 把生成的二进制文件 (out/ 目录) 暂存在 GitHub 云端.
+      # 这样后续的其他任务(比如发布或 E2E 测试)可以下载这个统一的二进制, 避免重复编译, 也确保测试的一致性.
       - name: Upload Higress Binary
         uses: actions/upload-artifact@v4
         with:
           name: higress
           path: out/
 
+  # ==========================================
+  # 阶段三(并行): 网关 API 一致性测试
+  # ==========================================
   gateway-conformance-test:
     runs-on: ubuntu-22.04
+    # 必须在 build 成功后执行
     needs: [build]
     steps:
+      # TODO: 此处目前只是个空壳, 后续会扩展下载二进制并进行 K8s Gateway API 的标准测试
       - uses: actions/checkout@v3
 
+  # ==========================================
+  # 阶段三(并行): Higress E2E 一致性测试
+  # ==========================================
   higress-conformance-test:
     runs-on: ubuntu-22.04
+
     needs: [build]
+
     steps:
       - uses: actions/checkout@v4
 
+      # 运维级黑科技: 规避 GitHub 官方镜像引入的 containerd-snapshotter 导致某些基于 Docker 旧版存储的 E2E 测试崩溃的问题
       - name: Disable containerd image store
         run: |
           sudo bash -c 'cat > /etc/docker/daemon.json << EOF
@@ -114,6 +163,7 @@ jobs:
           sudo systemctl restart docker
           docker info -f '{{ .DriverStatus }}'
 
+      # 清理机器空间: E2E 测试往往需要拉起整个 K8s(KinD)集群和各种控制器镜像, 极其吃硬盘.
       - name: Free Up GitHub Actions Ubuntu Runner Disk Space 🔧
         uses: jlumbroso/free-disk-space@main
         with:
@@ -136,22 +186,28 @@ jobs:
             ~/.cache/go-build
             ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ github.run_id }}
-          # key: ${{ runner.os }}-go-${{ env.GO_VERSION }}
-
           restore-keys: ${{ runner.os }}-go
 
       - run: git stash # restore patch
 
+      # 规范化: 确保依赖树是干净且最新的(防止由于依赖冲突导致测试失败)
       - name: update go mod
         run: |-
           make prebuild
           go mod tidy
 
+      # 执行端到端 (E2E) 重量级测试
       - name: "Run Higress E2E Conformance Tests"
         run: GOPROXY="https://proxy.golang.org,direct" make higress-conformance-test
 
+  # ==========================================
+  # 阶段四: 发布 (Publish)
+  # ==========================================
   publish:
     runs-on: ubuntu-22.04
+
+    # 前提条件: 只有网关一致性测试和原生一致性测试(阶段三的所有 Job)全部通过, 才能进入最终的发布环节!
     needs: [higress-conformance-test, gateway-conformance-test]
+
     steps:
       - uses: actions/checkout@v4

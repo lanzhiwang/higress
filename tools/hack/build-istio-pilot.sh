@@ -14,12 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set -x
 set -euo pipefail
 
 source "$(dirname -- "$0")/setup-istio-env.sh"
 
 cd ${ROOT}/external/istio
-rm -rf out/linux_${TARGET_ARCH};
+rm -rf out/linux_${TARGET_ARCH}
 
 BUILD_TOOLS_IMG=${BUILD_TOOLS_IMG:-"higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/build-tools:release-1.19-ef344298e65eeb2d9e2d07b87eb4e715c2def613"}
 

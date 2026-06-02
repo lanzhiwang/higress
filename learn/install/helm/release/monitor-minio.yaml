@@ -1,0 +1,567 @@
+NAME: monitor-minio
+LAST DEPLOYED: Mon Jun 15 10:00:48 2026
+NAMESPACE: onecloud-monitoring
+STATUS: deployed
+REVISION: 1
+CHART: minio
+VERSION: 8.0.6
+APP_VERSION: master
+TEST SUITE: None
+USER-SUPPLIED VALUES:
+accessKey: monitor-admin
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - preference:
+        matchExpressions:
+        - key: onecloud.yunion.io/controller
+          operator: In
+          values:
+          - enable
+      weight: 1
+drivesPerNode: 1
+enabled: true
+helmKubectlJqImage:
+  repository: registry.cn-beijing.aliyuncs.com/yunionio/helm-kubectl-jq
+  tag: 3.1.0
+image:
+  repository: registry.cn-beijing.aliyuncs.com/yunionio/minio
+  tag: RELEASE.2021-06-17T00-10-46Z
+mcImage:
+  repository: registry.cn-beijing.aliyuncs.com/yunionio/mc
+  tag: RELEASE.2021-06-13T17-48-22Z
+mode: standalone
+mountPath: /export
+persistence:
+  enabled: true
+  size: 1024Gi
+  storageClass: local-path
+replicas: 1
+resources:
+  limits:
+    cpu: "2"
+    memory: 2048Mi
+  requests:
+    cpu: "0.01"
+    memory: 10Mi
+secretKey: KSFfWdUtbcvA9b4S
+tolerations:
+- effect: NoSchedule
+  key: node-role.kubernetes.io/master
+- effect: NoSchedule
+  key: node-role.kubernetes.io/controlplane
+zones: 0
+
+COMPUTED VALUES:
+DeploymentUpdate:
+  maxSurge: 100%
+  maxUnavailable: 0
+  type: RollingUpdate
+StatefulSetUpdate:
+  updateStrategy: RollingUpdate
+accessKey: monitor-admin
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - preference:
+        matchExpressions:
+        - key: onecloud.yunion.io/controller
+          operator: In
+          values:
+          - enable
+      weight: 1
+azuregateway:
+  enabled: false
+  replicas: 4
+bucketRoot: ""
+buckets: []
+certsPath: /etc/minio/certs/
+clusterDomain: cluster.local
+configPathmc: /etc/minio/mc/
+defaultBucket:
+  enabled: false
+  name: bucket
+  policy: none
+  purge: false
+drivesPerNode: 1
+enabled: true
+environment: null
+etcd:
+  clientCert: ""
+  clientCertKey: ""
+  corednsPathPrefix: ""
+  endpoints: []
+  pathPrefix: ""
+existingSecret: ""
+extraArgs: []
+fullnameOverride: ""
+gcsgateway:
+  enabled: false
+  gcsKeyJson: ""
+  projectId: ""
+  replicas: 4
+helmKubectlJqImage:
+  pullPolicy: IfNotPresent
+  repository: registry.cn-beijing.aliyuncs.com/yunionio/helm-kubectl-jq
+  tag: 3.1.0
+image:
+  pullPolicy: IfNotPresent
+  repository: registry.cn-beijing.aliyuncs.com/yunionio/minio
+  tag: RELEASE.2021-06-17T00-10-46Z
+imagePullSecrets: []
+ingress:
+  annotations: {}
+  enabled: false
+  hosts:
+  - chart-example.local
+  labels: {}
+  path: /
+  tls: []
+makeBucketJob:
+  annotations: null
+  podAnnotations: null
+  resources:
+    requests:
+      memory: 128Mi
+  securityContext:
+    enabled: false
+    fsGroup: 1000
+    runAsGroup: 1000
+    runAsUser: 1000
+mcImage:
+  pullPolicy: IfNotPresent
+  repository: registry.cn-beijing.aliyuncs.com/yunionio/mc
+  tag: RELEASE.2021-06-13T17-48-22Z
+metrics:
+  serviceMonitor:
+    additionalLabels: {}
+    enabled: false
+mode: standalone
+mountPath: /export
+nameOverride: ""
+nasgateway:
+  enabled: false
+  pv: null
+  replicas: 4
+networkPolicy:
+  allowExternal: true
+  enabled: false
+nodeSelector: {}
+persistence:
+  VolumeName: ""
+  accessMode: ReadWriteOnce
+  enabled: true
+  existingClaim: ""
+  size: 1024Gi
+  storageClass: local-path
+  subPath: ""
+podAnnotations: {}
+podDisruptionBudget:
+  enabled: false
+  maxUnavailable: 1
+podLabels: {}
+priorityClassName: ""
+replicas: 1
+resources:
+  limits:
+    cpu: "2"
+    memory: 2048Mi
+  requests:
+    cpu: "0.01"
+    memory: 10Mi
+s3gateway:
+  accessKey: ""
+  enabled: false
+  replicas: 4
+  secretKey: ""
+  serviceEndpoint: ""
+secretKey: KSFfWdUtbcvA9b4S
+securityContext:
+  enabled: true
+  fsGroup: 1000
+  runAsGroup: 1000
+  runAsUser: 1000
+service:
+  annotations: {}
+  clusterIP: null
+  externalIPs: []
+  nodePort: 32000
+  port: 9000
+  type: ClusterIP
+serviceAccount:
+  create: true
+  name: null
+tls:
+  certSecret: ""
+  enabled: false
+  privateKey: private.key
+  publicCrt: public.crt
+tolerations:
+- effect: NoSchedule
+  key: node-role.kubernetes.io/master
+- effect: NoSchedule
+  key: node-role.kubernetes.io/controlplane
+trustedCertsSecret: ""
+updatePrometheusJob:
+  annotations: null
+  podAnnotations: null
+  securityContext:
+    enabled: false
+    fsGroup: 1000
+    runAsGroup: 1000
+    runAsUser: 1000
+zones: 0
+
+HOOKS:
+MANIFEST:
+---
+# Source: minio/templates/post-install-prometheus-metrics-serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: monitor-minio-update-prometheus-secret
+  labels:
+    app: minio-update-prometheus-secret
+    chart: minio-8.0.6
+    release: monitor-minio
+    heritage: Helm
+---
+# Source: minio/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "monitor-minio"
+  namespace: "onecloud-monitoring"
+  labels:
+    app: minio
+    chart: minio-8.0.6
+    release: "monitor-minio"
+---
+# Source: minio/templates/secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: monitor-minio
+  labels:
+    app: minio
+    chart: minio-8.0.6
+    release: monitor-minio
+    heritage: Helm
+type: Opaque
+data:
+  accesskey: "bW9uaXRvci1hZG1pbg=="
+  secretkey: "S1NGZldkVXRiY3ZBOWI0Uw=="
+---
+# Source: minio/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitor-minio
+  labels:
+    app: minio
+    chart: minio-8.0.6
+    release: monitor-minio
+    heritage: Helm
+data:
+  initialize: |-
+    #!/bin/sh
+    set -e ; # Have script exit in the event of a failed command.
+    MC_CONFIG_DIR="/etc/minio/mc/"
+    MC="/usr/bin/mc --insecure --config-dir ${MC_CONFIG_DIR}"
+    
+    # connectToMinio
+    # Use a check-sleep-check loop to wait for Minio service to be available
+    connectToMinio() {
+      SCHEME=$1
+      ATTEMPTS=0 ; LIMIT=29 ; # Allow 30 attempts
+      set -e ; # fail if we can't read the keys.
+      ACCESS=$(cat /config/accesskey) ; SECRET=$(cat /config/secretkey) ;
+      set +e ; # The connections to minio are allowed to fail.
+      echo "Connecting to Minio server: $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT" ;
+      MC_COMMAND="${MC} config host add myminio $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT $ACCESS $SECRET" ;
+      $MC_COMMAND ;
+      STATUS=$? ;
+      until [ $STATUS = 0 ]
+      do
+        ATTEMPTS=`expr $ATTEMPTS + 1` ;
+        echo \"Failed attempts: $ATTEMPTS\" ;
+        if [ $ATTEMPTS -gt $LIMIT ]; then
+          exit 1 ;
+        fi ;
+        sleep 2 ; # 1 second intervals between attempts
+        $MC_COMMAND ;
+        STATUS=$? ;
+      done ;
+      set -e ; # reset `e` as active
+      return 0
+    }
+    
+    # checkBucketExists ($bucket)
+    # Check if the bucket exists, by using the exit code of `mc ls`
+    checkBucketExists() {
+      BUCKET=$1
+      CMD=$(${MC} ls myminio/$BUCKET > /dev/null 2>&1)
+      return $?
+    }
+    
+    # createBucket ($bucket, $policy, $purge)
+    # Ensure bucket exists, purging if asked to
+    createBucket() {
+      BUCKET=$1
+      POLICY=$2
+      PURGE=$3
+      VERSIONING=$4
+    
+      # Purge the bucket, if set & exists
+      # Since PURGE is user input, check explicitly for `true`
+      if [ $PURGE = true ]; then
+        if checkBucketExists $BUCKET ; then
+          echo "Purging bucket '$BUCKET'."
+          set +e ; # don't exit if this fails
+          ${MC} rm -r --force myminio/$BUCKET
+          set -e ; # reset `e` as active
+        else
+          echo "Bucket '$BUCKET' does not exist, skipping purge."
+        fi
+      fi
+    
+      # Create the bucket if it does not exist
+      if ! checkBucketExists $BUCKET ; then
+        echo "Creating bucket '$BUCKET'"
+        ${MC} mb myminio/$BUCKET
+      else
+        echo "Bucket '$BUCKET' already exists."
+      fi
+    
+    
+      # set versioning for bucket
+      if [ ! -z $VERSIONING ] ; then
+        if [ $VERSIONING = true ] ; then
+            echo "Enabling versioning for '$BUCKET'"
+            ${MC} version enable myminio/$BUCKET
+        elif [ $VERSIONING = false ] ; then
+            echo "Suspending versioning for '$BUCKET'"
+            ${MC} version suspend myminio/$BUCKET
+        fi
+      else
+          echo "Bucket '$BUCKET' versioning unchanged."
+      fi
+    
+      # At this point, the bucket should exist, skip checking for existence
+      # Set policy on the bucket
+      echo "Setting policy of bucket '$BUCKET' to '$POLICY'."
+      ${MC} policy set $POLICY myminio/$BUCKET
+    }
+    
+    # Try connecting to Minio instance
+    scheme=http
+    connectToMinio $scheme
+---
+# Source: minio/templates/pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: monitor-minio
+  labels:
+    app: minio
+    chart: minio-8.0.6
+    release: monitor-minio
+    heritage: Helm
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "1024Gi"
+  storageClassName: "local-path"
+---
+# Source: minio/templates/post-install-prometheus-metrics-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: monitor-minio-update-prometheus-secret
+  labels:
+    app: minio-update-prometheus-secret
+    chart: minio-8.0.6
+    release: monitor-minio
+    heritage: Helm
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - create
+      - update
+      - patch
+    resourceNames:
+      - monitor-minio-prometheus
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+  - apiGroups:
+      - monitoring.coreos.com
+    resources:
+      - servicemonitors
+    verbs:
+      - get
+    resourceNames:
+      - monitor-minio
+---
+# Source: minio/templates/post-install-prometheus-metrics-rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: monitor-minio-update-prometheus-secret
+  labels:
+    app: minio-update-prometheus-secret
+    chart: minio-8.0.6
+    release: monitor-minio
+    heritage: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: monitor-minio-update-prometheus-secret
+subjects:
+  - kind: ServiceAccount
+    name: monitor-minio-update-prometheus-secret
+    namespace: "onecloud-monitoring"
+---
+# Source: minio/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: monitor-minio
+  labels:
+    app: minio
+    chart: minio-8.0.6
+    release: monitor-minio
+    heritage: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 9000
+      protocol: TCP
+      targetPort: 9000
+  selector:
+    app: minio
+    release: monitor-minio
+---
+# Source: minio/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitor-minio
+  labels:
+    app: minio
+    chart: minio-8.0.6
+    release: monitor-minio
+    heritage: Helm
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: minio
+      release: monitor-minio
+  template:
+    metadata:
+      name: monitor-minio
+      labels:
+        app: minio
+        release: monitor-minio
+      annotations:
+        checksum/secrets: 0eeec6db899d0edd81035a2c03a8e0713103fd9fa9e844e08bbf9ac8f9facc8c
+        checksum/config: 0c4ef27c896525988020280d34ad7c5a43665fb5ac14c5dfb958d04b530a8d06
+    spec:
+      serviceAccountName: "monitor-minio"
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: minio
+          image: "registry.cn-beijing.aliyuncs.com/yunionio/minio:RELEASE.2021-06-17T00-10-46Z"
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/bin/sh"
+            - "-ce"
+            - "/usr/bin/docker-entrypoint.sh minio -S /etc/minio/certs/ server /export"
+          volumeMounts:
+            - name: export
+              mountPath: /export            
+          ports:
+            - name: http
+              containerPort: 9000
+          env:
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: monitor-minio
+                  key: accesskey
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: monitor-minio
+                  key: secretkey
+          resources:
+            limits:
+              cpu: "2"
+              memory: 2048Mi
+            requests:
+              cpu: "0.01"
+              memory: 10Mi      
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: onecloud.yunion.io/controller
+                operator: In
+                values:
+                - enable
+            weight: 1
+      tolerations:
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/master
+        - effect: NoSchedule
+          key: node-role.kubernetes.io/controlplane
+      volumes:
+        - name: export
+          persistentVolumeClaim:
+            claimName: monitor-minio
+        - name: minio-user
+          secret:
+            secretName: monitor-minio
+
+NOTES:
+Minio can be accessed via port 9000 on the following DNS name from within your cluster:
+monitor-minio.onecloud-monitoring.svc.cluster.local
+
+To access Minio from localhost, run the below commands:
+
+  1. export POD_NAME=$(kubectl get pods --namespace onecloud-monitoring -l "release=monitor-minio" -o jsonpath="{.items[0].metadata.name}")
+
+  2. kubectl port-forward $POD_NAME 9000 --namespace onecloud-monitoring
+
+Read more about port forwarding here: http://kubernetes.io/docs/user-guide/kubectl/kubectl_port-forward/
+
+You can now access Minio server on http://localhost:9000. Follow the below steps to connect to Minio server with mc client:
+
+  1. Download the Minio mc client - https://docs.minio.io/docs/minio-client-quickstart-guide
+
+  2. Get the ACCESS_KEY=$(kubectl get secret monitor-minio -o jsonpath="{.data.accesskey}" | base64 --decode) and the SECRET_KEY=$(kubectl get secret monitor-minio -o jsonpath="{.data.secretkey}" | base64 --decode)
+
+  3. mc alias set monitor-minio-local http://localhost:9000 "$ACCESS_KEY" "$SECRET_KEY" --api s3v4
+
+  4. mc ls monitor-minio-local
+
+Alternately, you can use your browser or the Minio SDK to access the server - https://docs.minio.io/categories/17

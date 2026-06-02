@@ -19,10 +19,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ifeq ($(DEBUG),1)
+$(info Shell Environment Variables1: $(shell env))
+$(info *************)
+$(foreach v,$(.VARIABLES),$(info $(v) = $($(v))))
+$(info -----------------------------------)
+endif
+
 SHELL := /bin/bash
 
 # allow optional per-repo overrides
 -include Makefile.overrides.mk
+
+ifeq ($(DEBUG),1)
+$(info Shell Environment Variables2: $(shell env))
+$(info *************)
+$(foreach v,$(.VARIABLES),$(info $(v) = $($(v))))
+$(info -----------------------------------)
+endif
 
 # Set the environment variable BUILD_WITH_CONTAINER to use a container
 # to build the repo. The only dependencies in this mode are to have make and
@@ -30,17 +44,45 @@ SHELL := /bin/bash
 # figure out all the tools you need in your environment to make that work.
 export BUILD_WITH_CONTAINER ?= 0
 
+ifeq ($(DEBUG),1)
+$(info Shell Environment Variables3: $(shell env))
+$(info *************)
+$(foreach v,$(.VARIABLES),$(info $(v) = $($(v))))
+$(info -----------------------------------)
+endif
+
 ifeq ($(BUILD_WITH_CONTAINER),1)
 
 # An export free of arguments in a Makefile places all variables in the Makefile into the
 # environment. This is needed to allow overrides from Makefile.overrides.mk.
 export
 
+ifeq ($(DEBUG),1)
+$(info Shell Environment Variables4: $(shell env))
+$(info *************)
+$(foreach v,$(.VARIABLES),$(info $(v) = $($(v))))
+$(info -----------------------------------)
+endif
+
 $(shell $(shell pwd)/tools/hack/setup_env.sh)
+
+ifeq ($(DEBUG),1)
+$(info Shell Environment Variables5: $(shell env))
+$(info *************)
+$(foreach v,$(.VARIABLES),$(info $(v) = $($(v))))
+$(info -----------------------------------)
+endif
 
 RUN = ./tools/hack/run.sh
 
 MAKE_DOCKER = $(RUN) make --no-print-directory -e -f Makefile.core.mk
+
+ifeq ($(DEBUG),1)
+$(info Shell Environment Variables6: $(shell env))
+$(info *************)
+$(foreach v,$(.VARIABLES),$(info $(v) = $($(v))))
+$(info -----------------------------------)
+endif
 
 %:
 	@$(MAKE_DOCKER) $@
@@ -52,6 +94,13 @@ shell:
 	@$(RUN) /bin/bash
 
 .PHONY: default shell
+
+ifeq ($(DEBUG),1)
+$(info Shell Environment Variables7: $(shell env))
+$(info *************)
+$(foreach v,$(.VARIABLES),$(info $(v) = $($(v))))
+$(info -----------------------------------)
+endif
 
 else
 

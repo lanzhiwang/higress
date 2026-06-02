@@ -1,55 +1,105 @@
+# Workflow 名称: 打包制品(主要指 Helm Charts)并部署到 OSS
 name: Deploy Artifacts to OSS
 
 on:
+  # 触发条件 1: 当向本仓库推送符合版本号规范的 Tag 时触发(例如: v1.2.3)
   push:
     tags:
-    - "v*.*.*"
+      - "v*.*.*"
+
+  # 触发条件 2: 允许手动在 GitHub UI 上触发
   workflow_dispatch: ~
 
 jobs:
   deploy-to-oss:
     runs-on: ubuntu-latest
+
+    # 语法: 环境(Environment)隔离
+    # 目的: 使用名为 "oss" 的环境. 这样在 GitHub 仓库配置中, 我们可以对 "oss" 环境设置审批流,
+    # 并且限定与 OSS 交互的 ACCESS_KEY 只能被该环境的 job 读取, 提升了安全性.
     environment:
       name: oss
+
     steps:
-      # Step 1
+      # Step 1: 拉取代码
       - name: Checkout
         uses: actions/checkout@v4
-      # Step 2
+
+      # Step 2: 下载现有的 Helm Charts 索引文件
+      # 目的: Helm 仓库的核心是一个名为 index.yaml 的大字典文件, 记录了所有历史版本的下载地址.
+      # 每次发布新版本不能直接覆盖它, 而是要先把它从 OSS 上下载下来.
       - name: Download Helm Charts Index
         uses: go-choppy/ossutil-github-action@master
         with:
-          ossArgs: 'cp oss://higress-ai/helm-charts/index.yaml ./artifact/'
-          accessKey: ${{ secrets.ACCESS_KEYID }}
-          accessSecret: ${{ secrets.ACCESS_KEYSECRET }}
-          endpoint: oss-cn-hongkong.aliyuncs.com
-      # Step 3
-      - id: calc-version
-        name: Calculate Version Number
-        run: |
-          version=$(echo ${{ github.ref_name }} | cut -c2-)
-          echo "Version=$version"
-          echo "version=$version" >> $GITHUB_OUTPUT
-      # Step 4
-      - name: Build Artifact
-        uses: stefanprodan/kube-tools@v1
-        with:
-          helmv3: 3.7.2
-          command: |
-            cp api/kubernetes/customresourcedefinitions.gen.yaml helm/core/crds
-            helmv3 repo add higress.io https://higress.io/helm-charts
-            helmv3 package helm/core --debug --app-version ${{steps.calc-version.outputs.version}} --version ${{steps.calc-version.outputs.version}} -d ./artifact
-            helmv3 dependency build helm/higress
-            helmv3 package helm/higress --debug --app-version ${{steps.calc-version.outputs.version}} --version ${{steps.calc-version.outputs.version}} -d ./artifact
-            helmv3 repo index --url https://higress.io/helm-charts/ --merge ./artifact/index.yaml ./artifact
-            cp ./artifact/index.yaml ./artifact/cn-index.yaml
-            sed -i 's/higress\.io/higress\.cn/g' ./artifact/cn-index.yaml
-      # Step 5
-      - name: Upload to OSS
-        uses: go-choppy/ossutil-github-action@master
-        with:
-          ossArgs: 'cp -r -u ./artifact/ oss://higress-ai/helm-charts/'
+          # 执行 ossutil 命令, 将线上的 index.yaml 拉取到当前的 ./artifact/ 临时目录
+          ossArgs: "cp oss://higress-ai/helm-charts/index.yaml ./artifact/"
           accessKey: ${{ secrets.ACCESS_KEYID }}
           accessSecret: ${{ secrets.ACCESS_KEYSECRET }}
           endpoint: oss-cn-hongkong.aliyuncs.com
 
+      # Step 3: 计算并传递纯数字版本号
+      # 设置 id, 方便后续 step 引用它的输出
+      - id: calc-version
+        name: Calculate Version Number
+        run: |
+
+          # 语法: ${{ github.ref_name }} 获取当前的 tag(如 v1.2.3)
+          # cut -c2-: 从第 2 个字符开始截取, 目的是去掉前缀 'v', 变成 1.2.3.
+          # 原因: Helm Chart 的标准规范(SemVer)不建议甚至不允许版本号带 'v' 前缀.
+          version=$(echo ${{ github.ref_name }} | cut -c2-)
+
+          echo "Version=$version"
+
+          # 语法: 将计算结果写入 $GITHUB_OUTPUT(GitHub 官方推荐的最新的跨 Step 传参方式)
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      # Step 4: 构建并打包 Helm 制品(核心构建过程)
+      - name: Build Artifact
+        # 一个集成了 helm, kubectl, kustomize 等各种 K8s 工具的现成环境
+        uses: stefanprodan/kube-tools@v1
+        with:
+          # 指定使用 helm 3.7.2 版本
+          helmv3: 3.7.2
+          command: |
+
+            # 1. 动态注入 CRD (自定义资源定义):
+            # 从 api 目录提取自动生成的 CRD, 放到 helm core chart 的 crds 目录.
+            # 这样用户通过 Helm 安装时就会自动注册 K8s 的 CRD.
+            cp api/kubernetes/customresourcedefinitions.gen.yaml helm/core/crds
+
+            # 2. 注册已有的远端 Helm 仓库源
+            helmv3 repo add higress.io https://higress.io/helm-charts
+
+            # 3. 打包 core Chart:
+            # 将 helm/core 目录打包为 .tgz, 强制注入在 step 3 算出的版本号, 并输出到 ./artifact 目录
+            helmv3 package helm/core --debug --app-version ${{steps.calc-version.outputs.version}} --version ${{steps.calc-version.outputs.version}} -d ./artifact
+
+            # 4. 构建 higress Chart 的依赖:
+            # 下载此 chart 依赖的其他 chart(例如前面打包好的 core 或第三方的依赖)
+            helmv3 dependency build helm/higress
+
+            # 5. 打包 higress Chart:
+            helmv3 package helm/higress --debug --app-version ${{steps.calc-version.outputs.version}} --version ${{steps.calc-version.outputs.version}} -d ./artifact
+
+            # 6. [最核心步骤]合并并生成新的索引:
+            # 读取新生成的 .tgz 包, 将其元数据追加 (--merge) 到第一步下载好的老的 index.yaml 中,
+            # 并且强制指定新版本文件的下载 Base URL 是 https://higress.io/helm-charts/
+            helmv3 repo index --url https://higress.io/helm-charts/ --merge ./artifact/index.yaml ./artifact
+
+            # 7. 为中国大陆网络环境做特殊适配(多域名镜像支持):
+            # 复制一份刚才生成好的 index.yaml
+            cp ./artifact/index.yaml ./artifact/cn-index.yaml
+
+            # 使用 sed 字符串替换, 把内部文件下载链接从 higress.io 全部无缝替换为 higress.cn
+            sed -i 's/higress\.io/higress\.cn/g' ./artifact/cn-index.yaml
+
+      # Step 5: 将新的包和索引文件上传回 OSS
+      - name: Upload to OSS
+        uses: go-choppy/ossutil-github-action@master
+        with:
+          # -r 递归上传整个 artifact 目录, -u (update) 增量上传, 跳过已存在且没改变的文件
+          # 结果: 新的 .tgz 被传到了 OSS, 线上的 index.yaml 被覆盖为了包含了新版本的最新字典文件, 同时多了一个 cn-index.yaml
+          ossArgs: "cp -r -u ./artifact/ oss://higress-ai/helm-charts/"
+          accessKey: ${{ secrets.ACCESS_KEYID }}
+          accessSecret: ${{ secrets.ACCESS_KEYSECRET }}
+          endpoint: oss-cn-hongkong.aliyuncs.com

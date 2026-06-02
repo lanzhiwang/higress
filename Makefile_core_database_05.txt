@@ -1,0 +1,240 @@
+Makefile.core.mk Shell Environment Variables5: CONTAINER_CLI=docker CONDA_EXE=/root/anaconda3/bin/conda HOSTNAME=k8s-a40-node02 AMD64_OUT_LINUX=/root/huzhi/higress/out/linux_amd64 TARGET_OS=linux REPO_ROOT=/work HUB=higress-registry.cn-hangzhou.cr.aliyuncs.com/higress CONTAINER_OPTIONS=--mount type=bind,source=/tmp,destination=/tmp --net=host GNUMAKEFLAGS= GOBIN=/gobin PWD=/work BUILD_WITH_CONTAINER=0 GSETTINGS_SCHEMA_DIR=/root/anaconda3/share/glib-2.0/schemas LOGNAME=root XDG_SESSION_TYPE=tty CONDA_PREFIX=/root/anaconda3 ARM64_OUT_LINUX=/root/huzhi/higress/out/linux_arm64 GSETTINGS_SCHEMA_DIR_CONDA_BACKUP= MAKEOVERRIDES=${-*-command-variables-*-} _=/usr/bin/env LOCAL_OS=Linux GORACE=atexit_sleep_ms=0 TZ=Asia/Shanghai CURDIR=/root/huzhi/higress MOTD_SHOWN=pam HOME=/home LANG=C.UTF-8 DOCKER_GID=1002 LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36: GOSUMDB=sum.golang.org CONDITIONAL_HOST_MOUNTS=--mount type=bind,source=/root/.docker,destination=/config/.docker,readonly  CONDA_PROMPT_MODIFIER=(base)  TIMEZONE=Asia/Shanghai IMAGE_NAME=build-tools GOROOT=/usr/local/go RUN=./tools/hack/run.sh MAKE_DOCKER=./tools/hack/run.sh make --no-print-directory -e -f Makefile.core.mk MFLAGS= LESSCLOSE=/usr/bin/lesspipe %s %s XDG_SESSION_CLASS=user TERM=xterm IN_BUILD_CONTAINER=1 LESSOPEN=| /usr/bin/lesspipe %s CONDA_SHLVL=1 GOPROXY=https://proxy.golang.org SHLVL=2 LOCAL_ARCH=x86_64 MAKELEVEL=1 XDG_SESSION_ID=29888 GOCACHE=/gocache KUBECONFIG= CONDA_PYTHON_EXE=/root/anaconda3/bin/python XDG_RUNTIME_DIR=/run/user/0 GO111MODULE=on CONDA_DEFAULT_ENV=base TARGET_ARCH=amd64 XDG_DATA_DIRS=/usr/local/share:/usr/share:/var/lib/snapd/desktop PATH=/usr/local/go/bin:/gobin:/usr/local/google-cloud-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/0/bus GENERATE_API=1 IMG=higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/build-tools:release-1.19-ef344298e65eeb2d9e2d07b87eb4e715c2def613 CONTAINER_TARGET_OUT=/work/out/linux_amd64 TARGET_OUT=/work/out/linux_amd64 IMAGE_VERSION=release-1.19-ef344298e65eeb2d9e2d07b87eb4e715c2def613 DEBUG=0 UID=0 RUBYOPT=-KU -E utf-8:utf-8 CONTAINER_TARGET_OUT_LINUX=/work/out/linux_amd64 TARGET_OUT_LINUX=/work/out/linux_amd64 GOPATH=/go
+*************
+PREPROCESS.S = cc -E
+GO111MODULE = on
+COMPILE.m = cc   amd64 -c
+ARFLAGS = rv
+AS = as
+AR = ar
+BASE_VERSION = 2023-07-20T20-50-43
+OUT_LINUX = /work/out/linux_amd64
+TARGET_OUT_LINUX = /work/out/linux_amd64
+OBJC = cc
+GOOS = linux
+IN_BUILD_CONTAINER = 1
+LINK.S = cc
+HIGRESS_DOCKER_AMD64_RULE =  time (mkdir -p /work/out/linux_amd64/docker_build/ && TARGET_ARCH=amd64 ./docker/docker-copy.sh  /work/out/linux_amd64/docker_build/ && cd /work/out/linux_amd64/docker_build/  && docker build  --build-arg BASE_DISTRIBUTION= --build-arg TARGETARCH=amd64 -t higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/build-tools:release-1.19-ef344298e65eeb2d9e2d07b87eb4e715c2def613:5cd6468650fe748ae675b92c0ec9871296a885ab -f Dockerfile.higress . );
+LINK.s = cc
+MAKE_COMMAND = make
+GOPATH = /go
+@D =
+IMAGE_NAME = build-tools
+COFLAGS =
+COMPILE.mod = m2c   amd64
+.VARIABLES = PREPROCESS.S GO111MODULE COMPILE.m ARFLAGS AS AR BASE_VERSION OUT_LINUX TARGET_OUT_LINUX OBJC GOOS IN_BUILD_CONTAINER LINK.S HIGRESS_DOCKER_AMD64_RULE LINK.s MAKE_COMMAND GOPATH @D IMAGE_NAME COFLAGS COMPILE.mod .VARIABLES PWD %D HOSTNAME PS1 GOCACHE XDG_DATA_DIRS LINK.o TEXI2DVI ^D CODESPELL_FLAGS %F CONDA_PROMPT_MODIFIER tools/golangci-lint LEX.l LANG HGCTL_BINARIES .LOADED GORACE .INCLUDE_DIRS COMPILE.c MAKEFLAGS KUBECONFIG LINK.f HIGRESS_DOCKER_BUILD_TOP HGCTL_PROJECT_DIR DOCKER_GID TANGLE CURDIR PREPROCESS.F CHARTS LESSOPEN LOCAL_ARCH *D TARGET_OS MFLAGS COMPILE.p .SHELLFLAGS M2C IMG_URL COMPILE.cpp TEX +D VALID_ARCHS INCLUDE_UNTAGGED_DEFAULT MAKEFILE_LIST F77FLAGS CONDA_SHLVL @F TARGET_ARCH XDG_SESSION_TYPE ?D COMPILE.def HIGRESS_BASE_VERSION CTANGLE GOOS_LOCAL CONDA_PYTHON_EXE TAG tools/kustomize CONTAINER_CLI *F VERSION_PACKAGE DBUS_SESSION_BUS_ADDRESS TIMEZONE <D COMPILE.C YACC.m GO LINK.C HIGRESS_DOCKER_RULE GOLANGCI_LINT_FLAGS MAKE_HOST LINK.c DOCKER_ALL_VARIANTS CONDA_PREFIX SHELL UID RUBYOPT LINK.F SHLVL BUILDX_PLATFORM TARGET_OUT MAKELEVEL DOCKER_BUILD_VARIANTS tools/kind MAKE FC PATH LINT HIGRESS_DOCKER_BUILDX_RULE PC MAKEFILES LOCAL_OS MOTD_SHOWN ^F cue LEX.m .LIBPATTERNS CONTAINER_TARGET_OUT_LINUX GOBIN GOROOT VARIANT TZ CPP LINK.cc SHELLCHECK_VERSION HIGRESS_BINARIES CHECKOUT,v DEFAULT_DISTRIBUTION COMPILE.f COMPILE.r tools/codespell LESSCLOSE HUB COMPILE.S ?F GET LINK.r ISTIO_BASE_REGISTRY ENVOY_PACKAGE_URL_PATTERN IMG ARM64_OUT_LINUX LS_COLORS +F MAKEINFO GNUMAKEFLAGS CONDA_DEFAULT_ENV PREPROCESS.r LINK.m LOGNAME LINK.p RELEASE_LDFLAGS tools.srcdir build-linux YACC ENVOY_LATEST_IMAGE_TAG BUILD_WITH_CONTAINER .DEFAULT_GOAL RM DIRS_TO_CLEAN tools/controller-gen SHELLCHECK_ARCH BUILD_ALL WEAVE GENERATE_API MAKE_VERSION .SHELLSTATUS ISTIO_LATEST_IMAGE_TAG MAKEOVERRIDES GSETTINGS_SCHEMA_DIR_CONDA_BACKUP IMAGE_VERSION F77 GIT_COMMIT GOSUMDB tools.bindir CWEAVE GOARCH -*-command-variables-*- CONDITIONAL_HOST_MOUNTS _ YACC.y LINK.cpp CO XDG_RUNTIME_DIR CONTAINER_TARGET_OUT MAKE_DOCKER OUTPUT_OPTION COMPILE.s GITHUB_ACTION GOARCH_LOCAL XDG_SESSION_CLASS HIGRESS_LATEST_IMAGE_TAG tools/shellcheck AMD64_OUT_LINUX HOME create_ns TAG_VARIANT LEX TERM CONTAINER_OPTIONS GSETTINGS_SCHEMA_DIR XDG_SESSION_ID LINT.c COMPILE.F PARENT_GIT_REVISION GOPROXY .RECIPEPREFIX <F OUT SUFFIXES LD tools/setup-envtest REPO_ROOT RUN PARENT_GIT_TAG SHELLCHECK_TXZ DEBUG .FEATURES CXX CC tools/yamllint CONDA_EXE COMPILE.cc GO_LDFLAGS
+PWD = /work
+%D =
+HOSTNAME = k8s-a40-node02
+PS1 = build-tools:\w\\[(B[m\]
+GOCACHE = /gocache
+XDG_DATA_DIRS = /usr/local/share:/usr/share:/var/lib/snapd/desktop
+LINK.o = cc  amd64
+TEXI2DVI = texi2dvi
+^D =
+CODESPELL_FLAGS =
+%F =
+CONDA_PROMPT_MODIFIER = (base)
+tools/golangci-lint = tools/bin/golangci-lint
+LEX.l = lex  -t
+LANG = C.UTF-8
+HGCTL_BINARIES = ./cmd/hgctl
+.LOADED =
+GORACE = atexit_sleep_ms=0
+.INCLUDE_DIRS = /usr/local/include /usr/include /usr/include
+COMPILE.c = cc   amd64 -c
+MAKEFLAGS = epqw
+KUBECONFIG =
+LINK.f = f77   amd64
+HIGRESS_DOCKER_BUILD_TOP = /work/out/linux_amd64/docker_build
+HGCTL_PROJECT_DIR = ./hgctl
+DOCKER_GID = 1002
+TANGLE = tangle
+CURDIR = /root/huzhi/higress
+PREPROCESS.F = f77   amd64 -F
+CHARTS = higress-registry.cn-hangzhou.cr.aliyuncs.com/charts
+LESSOPEN = | /usr/bin/lesspipe %s
+LOCAL_ARCH = x86_64
+*D =
+TARGET_OS = linux
+MFLAGS = -epqw
+COMPILE.p = pc   amd64 -c
+.SHELLFLAGS = -c
+M2C = m2c
+IMG_URL = higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/build-tools:release-1.19-ef344298e65eeb2d9e2d07b87eb4e715c2def613:5cd6468650fe748ae675b92c0ec9871296a885ab
+COMPILE.cpp = g++   amd64 -c
+TEX = tex
++D =
+VALID_ARCHS = amd64 arm64
+INCLUDE_UNTAGGED_DEFAULT = false
+MAKEFILE_LIST = Makefile.core.mk docker/docker.mk tools/tools.mk tools/lint.mk
+F77FLAGS =
+CONDA_SHLVL = 1
+@F =
+TARGET_ARCH = amd64
+XDG_SESSION_TYPE = tty
+?D =
+COMPILE.def = m2c   amd64
+HIGRESS_BASE_VERSION = 2023-07-20T20-50-43
+CTANGLE = ctangle
+GOOS_LOCAL = linux
+CONDA_PYTHON_EXE = /root/anaconda3/bin/python
+TAG = 5cd6468650fe748ae675b92c0ec9871296a885ab
+tools/kustomize = tools/bin/kustomize
+CONTAINER_CLI = docker
+*F =
+VERSION_PACKAGE = github.com/alibaba/higress/v2/pkg/cmd/lversion
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/0/bus
+TIMEZONE = Asia/Shanghai
+<D =
+COMPILE.C = g++   amd64 -c
+YACC.m = yacc
+GO = go
+LINK.C = g++    amd64
+HIGRESS_DOCKER_RULE =  time (mkdir -p /work/out/linux_amd64/docker_build/ && TARGET_ARCH=amd64 ./docker/docker-copy.sh  /work/out/linux_amd64/docker_build/ && cd /work/out/linux_amd64/docker_build/  && docker build  --build-arg BASE_DISTRIBUTION= -t higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/build-tools:release-1.19-ef344298e65eeb2d9e2d07b87eb4e715c2def613:5cd6468650fe748ae675b92c0ec9871296a885ab -f Dockerfile.higress . );
+GOLANGCI_LINT_FLAGS =
+MAKE_HOST = x86_64-pc-linux-gnu
+LINK.c = cc    amd64
+DOCKER_ALL_VARIANTS = debug distroless
+CONDA_PREFIX = /root/anaconda3
+SHELL = /bin/bash -o pipefail
+UID = 0
+RUBYOPT = -KU -E utf-8:utf-8
+LINK.F = f77    amd64
+SHLVL = 2
+BUILDX_PLATFORM =
+TARGET_OUT = /work/out/linux_amd64
+MAKELEVEL = 1
+DOCKER_BUILD_VARIANTS = default
+tools/kind = tools/bin/kind
+MAKE = make
+FC = f77
+PATH = /usr/local/go/bin:/gobin:/usr/local/google-cloud-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+LINT = lint
+HIGRESS_DOCKER_BUILDX_RULE =  time (mkdir -p /work/out/linux_amd64/docker_build/ && TARGET_ARCH=amd64 ./docker/docker-copy.sh  /work/out/linux_amd64/docker_build/ && cd /work/out/linux_amd64/docker_build/  && docker buildx create --name higress --node higress0 --platform linux/amd64,linux/arm64 --use && docker buildx build --no-cache --platform linux/amd64,linux/arm64  --build-arg BASE_DISTRIBUTION= -t higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/build-tools:release-1.19-ef344298e65eeb2d9e2d07b87eb4e715c2def613:5cd6468650fe748ae675b92c0ec9871296a885ab -f Dockerfile.higress . --push  );
+PC = pc
+MAKEFILES =
+LOCAL_OS = Linux
+MOTD_SHOWN = pam
+^F =
+cue = cue-gen -paths=./external/api/common-protos
+LEX.m = lex  -t
+.LIBPATTERNS = lib%.so lib%.a
+CONTAINER_TARGET_OUT_LINUX = /work/out/linux_amd64
+GOBIN = /gobin
+GOROOT = /usr/local/go
+VARIANT =
+TZ = Asia/Shanghai
+CPP = cc -E
+LINK.cc = g++    amd64
+SHELLCHECK_VERSION = 0.8.0
+HIGRESS_BINARIES = ./cmd/higress
+CHECKOUT,v = +co
+DEFAULT_DISTRIBUTION = debug
+COMPILE.f = f77  amd64 -c
+COMPILE.r = f77   amd64 -c
+tools/codespell = tools/bin/codespell
+LESSCLOSE = /usr/bin/lesspipe %s %s
+HUB = higress-registry.cn-hangzhou.cr.aliyuncs.com/higress
+COMPILE.S = cc    -c
+?F =
+GET = get
+LINK.r = f77    amd64
+ISTIO_BASE_REGISTRY = higress-registry.cn-hangzhou.cr.aliyuncs.com/higress
+ENVOY_PACKAGE_URL_PATTERN = https://github.com/higress-group/proxy/releases/download/v2.2.2/envoy-symbol-ARCH.tar.gz
+IMG = higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/build-tools:release-1.19-ef344298e65eeb2d9e2d07b87eb4e715c2def613
+ARM64_OUT_LINUX = /root/huzhi/higress/out/linux_arm64
+LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
++F =
+MAKEINFO = makeinfo
+GNUMAKEFLAGS =
+CONDA_DEFAULT_ENV = base
+PREPROCESS.r = f77   amd64 -F
+LINK.m = cc    amd64
+LOGNAME = root
+LINK.p = pc    amd64
+RELEASE_LDFLAGS = '-X github.com/alibaba/higress/v2/pkg/cmd/lversion.higressVersion=v2.2.2 -X github.com/alibaba/higress/v2/pkg/cmd/lversion.gitCommitID=5cd6468650fe748ae675b92c0ec9871296a885ab -extldflags -static -s -w'
+tools.srcdir = tools/src
+basename: missing operand
+Try 'basename --help' for more information.
+basename: missing operand
+Try 'basename --help' for more information.
+basename: missing operand
+Try 'basename --help' for more information.
+build-linux = .PHONY: /work/out/linux_amd64/
+ifeq (true,true)
+/work/out/linux_amd64/: build-linux
+else
+/work/out/linux_amd64/: /work/out/linux_amd64
+	GOPROXY=https://proxy.golang.org GOOS=linux GOARCH=amd64 LDFLAGS='-X github.com/alibaba/higress/v2/pkg/cmd/lversion.higressVersion=v2.2.2 -X github.com/alibaba/higress/v2/pkg/cmd/lversion.gitCommitID=5cd6468650fe748ae675b92c0ec9871296a885ab -extldflags -static -s -w' tools/hack/gobuild.sh /work/out/linux_amd64/ -tags=
+endif
+YACC = yacc
+ENVOY_LATEST_IMAGE_TAG = 4219c3d8e99adb269e7db947011eca24717882af
+BUILD_WITH_CONTAINER = 0
+.DEFAULT_GOAL = /work/out/linux_amd64
+RM = rm -f
+DIRS_TO_CLEAN = /work/out/linux_amd64 /work/out/linux_amd64
+tools/controller-gen = tools/bin/controller-gen
+SHELLCHECK_ARCH = x86_64
+BUILD_ALL = true
+WEAVE = weave
+GENERATE_API = 1
+MAKE_VERSION = 4.3
+.SHELLSTATUS = 0
+ISTIO_LATEST_IMAGE_TAG = ce494feddfa817346404090dfc598badb02efa83
+MAKEOVERRIDES = DEBUG=1
+GSETTINGS_SCHEMA_DIR_CONDA_BACKUP =
+IMAGE_VERSION = release-1.19-ef344298e65eeb2d9e2d07b87eb4e715c2def613
+F77 = f77
+GIT_COMMIT = 5cd6468650fe748ae675b92c0ec9871296a885ab
+GOSUMDB = sum.golang.org
+tools.bindir = tools/bin
+CWEAVE = cweave
+GOARCH = amd64
+-*-command-variables-*- = DEBUG=1
+CONDITIONAL_HOST_MOUNTS = --mount type=bind,source=/root/.docker,destination=/config/.docker,readonly
+_ = /usr/bin/make
+YACC.y = yacc
+LINK.cpp = g++    amd64
+CO = co
+XDG_RUNTIME_DIR = /run/user/0
+CONTAINER_TARGET_OUT = /work/out/linux_amd64
+MAKE_DOCKER = ./tools/hack/run.sh make --no-print-directory -e -f Makefile.core.mk
+OUTPUT_OPTION = -o
+COMPILE.s = as
+GITHUB_ACTION =
+GOARCH_LOCAL = amd64
+XDG_SESSION_CLASS = user
+HIGRESS_LATEST_IMAGE_TAG = latest
+tools/shellcheck = tools/bin/shellcheck
+AMD64_OUT_LINUX = /root/huzhi/higress/out/linux_amd64
+HOME = /home
+create_ns =    kubectl get namespace | grep  || kubectl create namespace
+TAG_VARIANT = 5cd6468650fe748ae675b92c0ec9871296a885ab
+LEX = lex
+TERM = xterm
+CONTAINER_OPTIONS = --mount type=bind,source=/tmp,destination=/tmp --net=host
+GSETTINGS_SCHEMA_DIR = /root/anaconda3/share/glib-2.0/schemas
+XDG_SESSION_ID = 29888
+LINT.c = lint   amd64
+COMPILE.F = f77   amd64 -c
+PARENT_GIT_REVISION = 5cd6468650fe748ae675b92c0ec9871296a885ab
+GOPROXY = https://proxy.golang.org
+.RECIPEPREFIX =
+<F =
+OUT = /work/out/linux_amd64
+SUFFIXES = .out .a .ln .o .c .cc .C .cpp .p .f .F .m .r .y .l .ym .yl .s .S .mod .sym .def .h .info .dvi .tex .texinfo .texi .txinfo .w .ch .web .sh .elc .el
+LD = ld
+tools/setup-envtest = tools/bin/setup-envtest
+REPO_ROOT = /work
+RUN = ./tools/hack/run.sh
+PARENT_GIT_TAG = v2.2.2
+SHELLCHECK_TXZ = https://github.com/koalaman/shellcheck/releases/download/v0.8.0/shellcheck-v0.8.0.linux.x86_64.tar.xz
+DEBUG = 1
+.FEATURES = target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
+CXX = g++
+CC = cc
+tools/yamllint = tools/bin/yamllint
+CONDA_EXE = /root/anaconda3/bin/conda
+COMPILE.cc = g++   amd64 -c
+GO_LDFLAGS = -X github.com/alibaba/higress/v2/pkg/cmd/lversion.higressVersion=v2.2.2 -X github.com/alibaba/higress/v2/pkg/cmd/lversion.gitCommitID=5cd6468650fe748ae675b92c0ec9871296a885ab
+-----------------------------------

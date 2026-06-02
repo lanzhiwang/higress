@@ -1,24 +1,68 @@
+# [名称定义]
+# 这个工作流的名称, 在 GitHub 仓库的 "Actions" 页面中展示.
+# 目的: 清晰地传达此工作流的职责 - 将合并后的 CRD 部署/发布到 GitHub Release 附件中.
 name: Release CRD to GitHub
 
+# [触发器定义]
+# on: 定义什么事件可以触发当前工作流运行.
 on:
+  # 触发器 1: 当有新的 Git Tag 被推送时
   push:
+    # 进一步限制: 只有推送的 Tag 名称符合语义化版本格式(例如 v1.0.0, v2.3.4-rc1)时才触发.
+    # 这里的 `*` 是通配符, 表示匹配任意字符(除了 `/`).
+    # 目的: 防止普通的分支推送、或者不规范的临时 Tag 错误地触发发布流程.
     tags:
-    - "v*.*.*"
+      - "v*.*.*"
+
+  # 触发器 2: 手动触发
+  # `~` 在 YAML 中表示 null. 这里的意思是: 启用手动触发功能, 且不需要任何额外的输入参数(inputs).
+  # 目的: 为管理员保留一条"后路". 如果自动发布因某种原因中断, 或者需要对未打 Tag 的分支进行测试,
+  # 开发者可以在 GitHub 网页端手动点击 "Run workflow" 来启动此任务.
   workflow_dispatch: ~
 
+# [任务定义]
 jobs:
+  # 定义一个名为 `release-crd` 的任务
   release-crd:
+    # 运行环境: 使用最新版本的 Ubuntu 虚拟机.
+    # 目的: 因为任务只需要执行简单的文件合并和网络上传, Ubuntu 启动最快, 且完全够用.
     runs-on: ubuntu-latest
+
+    # 执行步骤
     steps:
-    - uses: actions/checkout@v4
+      # ================= step 1 =================
+      # 步骤 1: 拉取代码仓库
+      # 目的: 由于需要读取和处理项目中的 YAML 文件, 必须将代码拉取到当前构建机的临时工作目录中.
+      - uses: actions/checkout@v4
 
-    - name: generate crds
-      run: |
-        cat helm/core/crds/customresourcedefinitions.gen.yaml helm/core/crds/istio-envoyfilter.yaml > crd.yaml
+      # ================= step 2 =================
+      # 步骤 2: 生成/合并 CRD 文件
+      - name: generate crds
+        # run: 执行 Shell 命令. 这里使用了多行命令写法(`|`).
+        # 用 `cat` 命令读取两个不同的 YAML 文件, 并通过重定向符号 `>` 将它们的内容拼接合并到一个全新的 `crd.yaml` 中.
+        run: |
 
-    - name: Upload hgctl packages to the GitHub release
-      uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        files: |
-          crd.yaml
+          # 目的: 在实际应用中, 用户下载并安装 CRD 时, 更倾向于一次性执行 `kubectl apply -f crd.yaml`.
+          # 将散落的 CRD 合并成一个完整的文件, 能大幅度提升最终用户的体验, 减少安装步骤.
+          cat helm/core/crds/customresourcedefinitions.gen.yaml helm/core/crds/istio-envoyfilter.yaml > crd.yaml
+
+      # ================= step 3 =================
+      # 步骤 3: 将生成的 CRD 附件上传到 GitHub Release
+      - name: Upload hgctl packages to the GitHub release
+        # 使用了社区非常流行且稳定的 GitHub Release 管理插件(softprops/action-gh-release).
+        # 安全实践: 同样锁定了特定的 Commit SHA(da05d552573...), 防止由于依赖库被篡改引发供应链安全漏洞.
+        uses: softprops/action-gh-release@da05d552573ad5aba039eaac05058a918a7bf631
+
+        # [核心逻辑控制: 条件判断]
+        # `if`: 判断当前执行环境.
+        # 只有当当前的 Git 引用(github.ref)是以 'refs/tags/' 开头(即确实是由推送 Tag 触发的运行)时, 此步骤才会执行.
+        # 目的: 因为上面我们配置了 `workflow_dispatch` 手动触发, 手动触发可能是在任意普通分支上进行的.
+        # 如果不是 Tag 触发, 尝试发布到 Release 就会报错(因为没有关联的 Release 版本). 此 if 条件可以避免手动测试时 CI 报错.
+        if: startsWith(github.ref, 'refs/tags/')
+
+        # with: 传递给 action-gh-release 插件的参数.
+        with:
+          # files: 指定要上传到 Release 附件列表中的文件.
+          # 目的: 把我们在 Step 2 中刚刚合并生成的 `crd.yaml` 上传上去.
+          files: |
+            crd.yaml

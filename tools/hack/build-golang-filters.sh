@@ -14,6 +14,7 @@
 
 #!/usr/bin/env bash
 
+set -x
 set -euo pipefail
 
 OUTPUT_PACKAGE_DIR=${OUTPUT_PACKAGE_DIR:-"../../external/package/"}
@@ -27,5 +28,3 @@ echo "🚀 Build Go Filter"
 GOARCH=${TARGET_ARCH} make build
 
 cp ${GO_FILTERS_DIR}/golang-filter_${TARGET_ARCH}.so ${OUTPUT_PACKAGE_DIR}
-
-

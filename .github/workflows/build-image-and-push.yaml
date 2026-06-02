@@ -1,25 +1,45 @@
+# Workflow 名称
 name: Build Docker Images and Push to Image Registry
 
 on:
+  # 触发条件 1: 当推送符合语义化版本号的 Tag 时触发(例如: v1.2.0)
   push:
     tags:
-    - "v*.*.*"
+      - "v*.*.*"
+
+  # 触发条件 2: 允许手动在 GitHub UI 上触发
   workflow_dispatch: ~
 
+# 语法: jobs 下定义了 3 个平级的任务.
+# 目的: 由于没有配置 needs 关键字, 这 3 个任务(构建 Controller、Pilot、Gateway)将会完全[并行执行].
+# 这样原本需要 1 小时的串行构建, 现在 20 分钟就能同时跑完, 极大提升发布效率.
 jobs:
+  # ==========================================
+  # 任务 1: 构建 Controller 镜像
+  # ==========================================
   build-controller-image:
     runs-on: ubuntu-latest
+
+    # 语法: 环境(Environment).
+    # 目的: 隔离不同环境的 Secrets, 同时可以在 GitHub 后台配置人工审批流.
     environment:
       name: image-registry-controller
+
     env:
+      # 语法: 变量回退机制 `${{ vars.XXX || 'fallback' }}`
+      # 目的: 优先读取后台 Variables, 没有则使用阿里云 ACR 作为默认 registry.
       CONTROLLER_IMAGE_REGISTRY: ${{ vars.IMAGE_REGISTRY || 'higress-registry.cn-hangzhou.cr.aliyuncs.com' }}
       CONTROLLER_IMAGE_NAME: ${{ vars.CONTROLLER_IMAGE_NAME || 'higress/higress' }}
+
     steps:
       - name: "Checkout ${{ github.ref }}"
         uses: actions/checkout@v4
         with:
+          # 浅克隆, 加快拉取速度
           fetch-depth: 1
 
+      # 压榨 Runner 磁盘空间.
+      # 目的: 因为构建大型 Go 和 C++ 项目会产生大量中间产物和镜像层, 容易触发 "No space left on device" 错误.
       - name: Free Up GitHub Actions Ubuntu Runner Disk Space 🔧
         uses: jlumbroso/free-disk-space@main
         with:
@@ -41,19 +61,31 @@ jobs:
           path: |-
             ~/.cache/go-build
             ~/go/pkg/mod
+          # 强制每次运行都生成新 Cache
           key: ${{ runner.os }}-go-${{ github.run_id }}
           restore-keys: ${{ runner.os }}-go
 
+      # 智能标签生成器
       - name: Calculate Docker metadata
         id: docker-meta
         uses: docker/metadata-action@v5
         with:
           images: |
+
             ${{ env.CONTROLLER_IMAGE_REGISTRY }}/${{ env.CONTROLLER_IMAGE_NAME }}
+
           tags: |
+
+            # 生成基于 Git Commit Hash 的 Tag
             type=sha
+
+            # 原样保留 Git Tag
             type=ref,event=tag
+
+            # 提取纯版本号 (v1.2.0 -> 1.2.0)
             type=semver,pattern={{version}}
+
+            # 语法: 只有当代码在 main 分支被构建时, 才打 latest 标签.
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
 
       - name: Login to Docker Registry
@@ -63,27 +95,43 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
+      # 核心逻辑: 执行真实的构建与镜像推送
       - name: Build Docker Image and Push
         run: |
+
           BUILT_IMAGE=""
+
+          # 语法: 将 docker-meta 产出的多行字符串 Tags 转换为 Bash 数组 IMAGES
           readarray -t IMAGES <<< "${{ steps.docker-meta.outputs.tags }}"
+
           for image in ${IMAGES[@]}; do
             echo "Image: $image"
             if [ "$BUILT_IMAGE" == "" ]; then
+              # [首次遍历]: 传入 IMG_URL 变量, 调用底层的 Makefile 进行真实的编译和推送.
               GOPROXY="https://proxy.golang.org,direct" IMG_URL="$image" make docker-buildx-push
+
+              # 记录第一个成功推送到远端的镜像 Tag
               BUILT_IMAGE="$image"
+
+              # 制品: higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/higress:2.2.3
+
             else
+              # [后续遍历]: 使用 buildx imagetools, 直接在远端镜像仓库给已有镜像打新 Tag.
+              # 避免了重复构建和重复上传百兆大小的镜像层.
               docker buildx imagetools create $BUILT_IMAGE --tag $image
             fi
           done
 
   build-pilot-image:
     runs-on: ubuntu-latest
+
     environment:
       name: image-registry-pilot
+
     env:
       PILOT_IMAGE_REGISTRY: ${{ vars.IMAGE_REGISTRY || 'higress-registry.cn-hangzhou.cr.aliyuncs.com' }}
       PILOT_IMAGE_NAME: ${{ vars.PILOT_IMAGE_NAME || 'higress/pilot' }}
+
     steps:
       - name: "Checkout ${{ github.ref }}"
         uses: actions/checkout@v4
@@ -114,6 +162,9 @@ jobs:
           key: ${{ runner.os }}-go-${{ github.run_id }}
           restore-keys: ${{ runner.os }}-go
 
+      # [不同点 1]: Pilot/Gateway 需要支持多架构镜像 (Multi-arch, amd64/arm64)
+      # 目的: Controller 可能是纯 Go 的无状态组件, 而 Pilot 和 Gateway 涉及到 Envoy 等底层网络代理, 通常需要跨平台构建.
+      # 所以这里比 Controller 多了 QEMU 和 Buildx 的配置.
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
@@ -135,11 +186,17 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
+
             ${{ env.PILOT_IMAGE_REGISTRY }}/${{ env.PILOT_IMAGE_NAME }}
+
           tags: |
+
             type=sha
+
             type=ref,event=tag
+
             type=semver,pattern={{version}}
+
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
 
       - name: Login to Docker Registry
@@ -149,19 +206,42 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
+      # [不同点 2]: 极度"硬核"的 Bash 字符串操作适配 Makefile
       - name: Build Pilot-Discovery Image and Push
         run: |
+
           BUILT_IMAGE=""
+
           readarray -t IMAGES <<< "${{ steps.docker-meta.outputs.tags }}"
+
           for image in ${IMAGES[@]}; do
             echo "Image: $image"
+
             if [ "$BUILT_IMAGE" == "" ]; then
+              # 假设当前的完整 $image 为: "higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/pilot:v1.2.0"
+
+              # 语法 ${var#*:}: 从左到右, 删除最短匹配 "*:" 的内容.
+              # 结果 TAG="v1.2.0"
               TAG=${image#*:}
+
+              # 语法 ${var%:*}: 从右到左, 删除最短匹配 ":*" 的内容.
+              # 结果 HUB="higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/pilot"
               HUB=${image%:*}
+
+              # 语法 ${var%/*}: 从右到左, 删除最短匹配 "/*" 的内容.
+              # 结果 HUB="higress-registry.cn-hangzhou.cr.aliyuncs.com/higress" (剥离了原本的镜像名 pilot)
               HUB=${HUB%/*}
+
+              # 重新拼接镜像路径, 强制将原生的名字替换为底层 Makefile 期望的名字(HUB/pilot:TAG)
               BUILT_IMAGE="$HUB/pilot:$TAG"
+
+              # 调用底层的 istio 编译脚本
               GOPROXY="https://proxy.golang.org,direct" IMG_URL="$BUILT_IMAGE" make build-istio
             fi
+
+            # 制品: higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/pilot:2.2.3
+
+            # 使用 imagetools 同步其它 Tag
             if [ "$BUILT_IMAGE" != "$image" ]; then
               docker buildx imagetools create $BUILT_IMAGE --tag $image
             fi
@@ -169,11 +249,14 @@ jobs:
 
   build-gateway-image:
     runs-on: ubuntu-latest
+
     environment:
       name: image-registry-gateway
+
     env:
       GATEWAY_IMAGE_REGISTRY: ${{ vars.IMAGE_REGISTRY || 'higress-registry.cn-hangzhou.cr.aliyuncs.com' }}
       GATEWAY_IMAGE_NAME: ${{ vars.GATEWAY_IMAGE_NAME || 'higress/gateway' }}
+
     steps:
       - name: "Checkout ${{ github.ref }}"
         uses: actions/checkout@v4
@@ -225,11 +308,17 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
+
             ${{ env.GATEWAY_IMAGE_REGISTRY }}/${{ env.GATEWAY_IMAGE_NAME }}
+
           tags: |
+
             type=sha
+
             type=ref,event=tag
+
             type=semver,pattern={{version}}
+
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
 
       - name: Login to Docker Registry
@@ -241,18 +330,35 @@ jobs:
 
       - name: Build Gateway Image and Push
         run: |
+
           BUILT_IMAGE=""
+
           readarray -t IMAGES <<< "${{ steps.docker-meta.outputs.tags }}"
+
           for image in ${IMAGES[@]}; do
+
             echo "Image: $image"
+
             if [ "$BUILT_IMAGE" == "" ]; then
+
               TAG=${image#*:}
+
               HUB=${image%:*}
+
               HUB=${HUB%/*}
+
               BUILT_IMAGE="$HUB/proxyv2:$TAG"
+
               GOPROXY="https://proxy.golang.org,direct" IMG_URL="$BUILT_IMAGE" make build-gateway
+
             fi
+
+            # 制品: higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/proxyv2:2.2.3
+            # 制品: higress-registry.cn-hangzhou.cr.aliyuncs.com/higress/gateway:v2.2.3
+
             if [ "$BUILT_IMAGE" != "$image" ]; then
               docker buildx imagetools create $BUILT_IMAGE --tag $image
+
             fi
+
           done

@@ -22,7 +22,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e
+set -ex
 
 LOCAL_ARCH=$(uname -m)
 export LOCAL_ARCH
@@ -66,10 +66,10 @@ fi
 
 # Build image to use
 if [[ "${IMAGE_VERSION:-}" == "" ]]; then
-  export IMAGE_VERSION=34b06c08ee613a15e08c5888ac269ad22f23d23e
+    export IMAGE_VERSION=34b06c08ee613a15e08c5888ac269ad22f23d23e
 fi
 if [[ "${IMAGE_NAME:-}" == "" ]]; then
-  export IMAGE_NAME=build-tools
+    export IMAGE_NAME=build-tools
 fi
 
 export UID
@@ -95,9 +95,8 @@ export CONTAINER_CLI="${CONTAINER_CLI:-docker}"
 export ENV_BLOCKLIST="${ENV_BLOCKLIST:-^_\|PATH\|SHELL\|EDITOR\|TMUX\|USER\|HOME\|PWD\|TERM\|GO\|rvm\|SSH\|TMPDIR\|CC\|CXX\|MAKEFILE_LIST}"
 
 # Remove functions from the list of exported variables, they mess up with the `env` command.
-for f in $(declare -F -x | cut -d ' ' -f 3);
-do
-  unset -f "${f}"
+for f in $(declare -F -x | cut -d ' ' -f 3); do
+    unset -f "${f}"
 done
 
 # Set conditional host mounts
@@ -106,34 +105,34 @@ container_kubeconfig=''
 
 # docker conditional host mount (needed for make docker push)
 if [[ -d "${HOME}/.docker" ]]; then
-  CONDITIONAL_HOST_MOUNTS+="--mount type=bind,source=${HOME}/.docker,destination=/config/.docker,readonly "
+    CONDITIONAL_HOST_MOUNTS+="--mount type=bind,source=${HOME}/.docker,destination=/config/.docker,readonly "
 fi
 
 # gcloud conditional host mount (needed for docker push with the gcloud auth configure-docker)
 if [[ -d "${HOME}/.config/gcloud" ]]; then
-  CONDITIONAL_HOST_MOUNTS+="--mount type=bind,source=${HOME}/.config/gcloud,destination=/config/.config/gcloud,readonly "
+    CONDITIONAL_HOST_MOUNTS+="--mount type=bind,source=${HOME}/.config/gcloud,destination=/config/.config/gcloud,readonly "
 fi
 
 # gitconfig conditional host mount (needed for git commands inside container)
 if [[ -f "${HOME}/.gitconfig" ]]; then
-  CONDITIONAL_HOST_MOUNTS+="--mount type=bind,source=${HOME}/.gitconfig,destination=/home/.gitconfig,readonly "
+    CONDITIONAL_HOST_MOUNTS+="--mount type=bind,source=${HOME}/.gitconfig,destination=/home/.gitconfig,readonly "
 fi
 
 # .netrc conditional host mount (needed for git commands inside container)
 if [[ -f "${HOME}/.netrc" ]]; then
-  CONDITIONAL_HOST_MOUNTS+="--mount type=bind,source=${HOME}/.netrc,destination=/home/.netrc,readonly "
+    CONDITIONAL_HOST_MOUNTS+="--mount type=bind,source=${HOME}/.netrc,destination=/home/.netrc,readonly "
 fi
 
 # echo ${CONDITIONAL_HOST_MOUNTS}
 
 # This function checks if the file exists. If it does, it creates a randomly named host location
 # for the file, adds it to the host KUBECONFIG, and creates a mount for it.
-add_KUBECONFIG_if_exists () {
-  if [[ -f "$1" ]]; then
-    kubeconfig_random="$(od -vAn -N4 -tx /dev/random | tr -d '[:space:]' | cut -c1-8)"
-    container_kubeconfig+="/config/${kubeconfig_random}:"
-    CONDITIONAL_HOST_MOUNTS+="--mount type=bind,source=${1},destination=/config/${kubeconfig_random},readonly "
-  fi
+add_KUBECONFIG_if_exists() {
+    if [[ -f "$1" ]]; then
+        kubeconfig_random="$(od -vAn -N4 -tx /dev/random | tr -d '[:space:]' | cut -c1-8)"
+        container_kubeconfig+="/config/${kubeconfig_random}:"
+        CONDITIONAL_HOST_MOUNTS+="--mount type=bind,source=${1},destination=/config/${kubeconfig_random},readonly "
+    fi
 }
 
 # This function is designed for maximum compatibility with various platforms. This runs on
@@ -146,29 +145,29 @@ add_KUBECONFIG_if_exists () {
 # testcase: "a:b c:d"
 # testcase: "a b:c d:e f"
 # testcase: "a b:c:d e"
-parse_KUBECONFIG () {
-TMPDIR=""
-if [[ "$1" =~ ([^:]*):(.*) ]]; then
-  while true; do
-    rematch=${BASH_REMATCH[1]}
-    add_KUBECONFIG_if_exists "$rematch"
-    remainder="${BASH_REMATCH[2]}"
-    if [[ ! "$remainder" =~ ([^:]*):(.*) ]]; then
-      if [[ -n "$remainder" ]]; then
-        add_KUBECONFIG_if_exists "$remainder"
-        break
-      fi
+parse_KUBECONFIG() {
+    TMPDIR=""
+    if [[ "$1" =~ ([^:]*):(.*) ]]; then
+        while true; do
+            rematch=${BASH_REMATCH[1]}
+            add_KUBECONFIG_if_exists "$rematch"
+            remainder="${BASH_REMATCH[2]}"
+            if [[ ! "$remainder" =~ ([^:]*):(.*) ]]; then
+                if [[ -n "$remainder" ]]; then
+                    add_KUBECONFIG_if_exists "$remainder"
+                    break
+                fi
+            fi
+        done
+    else
+        add_KUBECONFIG_if_exists "$1"
     fi
-  done
-else
-  add_KUBECONFIG_if_exists "$1"
-fi
 }
 
 KUBECONFIG=${KUBECONFIG:="$HOME/.kube/config"}
 parse_KUBECONFIG "${KUBECONFIG}"
 if [[ "${BUILD_WITH_CONTAINER:-1}" -eq "1" ]]; then
-  export KUBECONFIG="${container_kubeconfig%?}"
+    export KUBECONFIG="${container_kubeconfig%?}"
 fi
 
 # Avoid recursive calls to make from attempting to start an additional container
@@ -176,14 +175,14 @@ export BUILD_WITH_CONTAINER=0
 
 # For non container build, we need to write env to file
 if [[ "${1}" == "envfile" ]]; then
-  echo "AMD64_OUT_LINUX=${AMD64_OUT_LINUX}"
-  echo "ARM64_OUT_LINUX=${ARM64_OUT_LINUX}"
-  echo "TARGET_OUT_LINUX=${TARGET_OUT_LINUX}"
-  echo "TARGET_OUT=${TARGET_OUT}"
-  echo "TIMEZONE=${TIMEZONE}"
-  echo "LOCAL_OS=${LOCAL_OS}"
-  echo "TARGET_OS=${TARGET_OS}"
-  echo "LOCAL_ARCH=${LOCAL_ARCH}"
-  echo "TARGET_ARCH=${TARGET_ARCH}"
-  echo "BUILD_WITH_CONTAINER=0"
+    echo "AMD64_OUT_LINUX=${AMD64_OUT_LINUX}"
+    echo "ARM64_OUT_LINUX=${ARM64_OUT_LINUX}"
+    echo "TARGET_OUT_LINUX=${TARGET_OUT_LINUX}"
+    echo "TARGET_OUT=${TARGET_OUT}"
+    echo "TIMEZONE=${TIMEZONE}"
+    echo "LOCAL_OS=${LOCAL_OS}"
+    echo "TARGET_OS=${TARGET_OS}"
+    echo "LOCAL_ARCH=${LOCAL_ARCH}"
+    echo "TARGET_ARCH=${TARGET_ARCH}"
+    echo "BUILD_WITH_CONTAINER=0"
 fi

@@ -25,7 +25,7 @@ lint.golint: $(tools/golangci-lint)
 lint: lint.yamllint
 lint-deps: $(tools/yamllint)
 lint.yamllint: $(tools/yamllint)
-	$(tools/yamllint) --config-file=tools/linter/yamllint/.yamllint $$(git ls-files :*.yml :*.yaml | xargs -L1 dirname | sort -u) 
+	$(tools/yamllint) --config-file=tools/linter/yamllint/.yamllint $$(git ls-files :*.yml :*.yaml | xargs -L1 dirname | sort -u)
 
 CODESPELL_FLAGS ?= $(if $(GITHUB_ACTION),--disable-colors)
 .PHONY: lint.codespell
@@ -56,3 +56,32 @@ lint: lint.shellcheck
 lint-deps: $(tools/shellcheck)
 lint.shellcheck: $(tools/shellcheck)
 	$(tools/shellcheck) tools/hack/*.sh
+
+# build-tools:/work# make DEBUG=0 -e -f Makefile.core.mk -n --dry-run lint
+# make[1]: Entering directory '/work'
+# cd tools/src/golangci-lint && GOOS= GOARCH= go build -o /work/tools/bin/golangci-lint $(sed -En 's,^import "(.*)".*,\1,p' pin.go)
+# tools/bin/golangci-lint run  --config=tools/linter/golangci-lint/.golangci.yml
+# mkdir -p tools/bin/yamllint.d
+# python3 -m venv tools/bin/yamllint.d/venv
+# tools/bin/yamllint.d/venv/bin/pip3 install -r tools/src/yamllint/requirements.txt || (rm -rf tools/bin/yamllint.d/venv; exit 1)
+# ln -sf yamllint.d/venv/bin/yamllint tools/bin/yamllint
+# tools/bin/yamllint --config-file=tools/linter/yamllint/.yamllint $(git ls-files :*.yml :*.yaml | xargs -L1 dirname | sort -u)
+# mkdir -p tools/bin/codespell.d
+# python3 -m venv tools/bin/codespell.d/venv
+# tools/bin/codespell.d/venv/bin/pip3 install -r tools/src/codespell/requirements.txt || (rm -rf tools/bin/codespell.d/venv; exit 1)
+# ln -sf codespell.d/venv/bin/codespell tools/bin/codespell
+# PS4=; set -e; { \
+#   if test -n "$GITHUB_ACTION"; then \
+#     printf '::add-matcher::/root/huzhi/higress/tools/linter/codespell/matcher.json\n'; \
+#     trap "printf '::remove-matcher owner=codespell-matcher-default::\n::remove-matcher owner=codespell-matcher-specified::\n'" EXIT; \
+#   fi; \
+#   (set -x; tools/bin/codespell  --skip .git,.idea,*.png,*.woff,*.woff2,*.eot,*.ttf,*.jpg,*.ico,*.svg,./docs/html/*,go.mod,go.sum,bin, --ignore-words tools/linter/codespell/.codespell.ignorewords --check-filenames --check-hidden -q2); \
+# }
+# mkdir -p tools/bin
+# curl -sfL https://github.com/koalaman/shellcheck/releases/download/v0.8.0/shellcheck-v0.8.0.linux.x86_64.tar.xz -o tools/bin/shellcheck-v0.8.0.linux.x86_64.tar.xz
+# mkdir -p tools/bin
+# tar -C tools/bin -Jxmf tools/bin/shellcheck-v0.8.0.linux.x86_64.tar.xz --strip-components=1 shellcheck-v0.8.0/shellcheck
+# tools/bin/shellcheck tools/hack/*.sh
+# rm tools/bin/codespell.d/venv tools/bin/yamllint.d/venv
+# make[1]: Leaving directory '/work'
+# build-tools:/work#

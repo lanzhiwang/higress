@@ -14,9 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set -x
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname -- "$0")" &> /dev/null && pwd)"
+SCRIPT_DIR="$(cd "$(dirname -- "$0")" &>/dev/null && pwd)"
 source "${SCRIPT_DIR}/setup-istio-env.sh"
 
 if ! command -v patch >/dev/null 2>&1; then
@@ -26,9 +27,9 @@ fi
 
 cd ${ROOT}/external/proxy
 
-if patch_output=$(patch -d . -s --dry-run -p1 < ${SCRIPT_DIR}/build-envoy.patch 2>&1); then
-    patch -d . -s -p1 < ${SCRIPT_DIR}/build-envoy.patch
-elif reverse_output=$(patch -d . -s -R --dry-run -p1 < ${SCRIPT_DIR}/build-envoy.patch 2>&1); then
+if patch_output=$(patch -d . -s --dry-run -p1 <${SCRIPT_DIR}/build-envoy.patch 2>&1); then
+    patch -d . -s -p1 <${SCRIPT_DIR}/build-envoy.patch
+elif reverse_output=$(patch -d . -s -R --dry-run -p1 <${SCRIPT_DIR}/build-envoy.patch 2>&1); then
     echo "build-envoy.patch was already patched"
 else
     echo "ERROR: failed to apply build-envoy.patch" >&2

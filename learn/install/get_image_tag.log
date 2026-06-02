@@ -1,0 +1,123 @@
+$ ./learn/install/get_image_tag.sh
++ REGISTRY=higress-registry.cn-hangzhou.cr.aliyuncs.com
++ REPO=higress/all-in-one
+++ curl -sI https://higress-registry.cn-hangzhou.cr.aliyuncs.com/v2/
+++ grep -i www-authenticate
+' WWW_AUTH='www-authenticate: Bearer realm="https://dockerauth.cn-hangzhou.aliyuncs.com/auth",service="registry.aliyuncs.com:cn-hangzhou:china:cri-r0xfyoxudmtseqq7"
+'+ echo 'www-authenticate: Bearer realm="https://dockerauth.cn-hangzhou.aliyuncs.com/auth",service="registry.aliyuncs.com:cn-hangzhou:china:cri-r0xfyoxudmtseqq7"
+++ grep -oE 'realm="[^"]+"'
+++ cut '-d"' -f2
++ REALM=https://dockerauth.cn-hangzhou.aliyuncs.com/auth
+'+ echo 'www-authenticate: Bearer realm="https://dockerauth.cn-hangzhou.aliyuncs.com/auth",service="registry.aliyuncs.com:cn-hangzhou:china:cri-r0xfyoxudmtseqq7"
+++ grep -oE 'service="[^"]+"'
+++ cut '-d"' -f2
++ SERVICE=registry.aliyuncs.com:cn-hangzhou:china:cri-r0xfyoxudmtseqq7
+++ curl -s 'https://dockerauth.cn-hangzhou.aliyuncs.com/auth?service=registry.aliyuncs.com:cn-hangzhou:china:cri-r0xfyoxudmtseqq7&scope=repository:higress/all-in-one:pull'
+++ jq -r .token
++ TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IklISk86SUNZUDpFRVYzOldHQ1g6Nlg0VzpTUEdEOkZHQ0Y6VlFGUTpGT1hFOkNHQkQ6S0pGUDpDQUY0In0.eyJpc3MiOiJkb2NrZXJhdXRoLmFsaXl1bmNzLmNvbSIsImF1ZCI6InJlZ2lzdHJ5LmFsaXl1bmNzLmNvbTpjbi1oYW5nemhvdTpjaGluYTpjcmktcjB4ZnlveHVkbXRzZXFxNyIsInN1YiI6IiIsImlhdCI6MTc4MjI3MjExNywianRpIjoieGxGR0FzSUJsNWNjX0d0d1hvN1dkZyIsIm5iZiI6MTc4MjI3MTgxNywiZXhwIjoxNzgyMjcyNzE3LCJhY2Nlc3MiOlt7Im5hbWUiOiJoaWdyZXNzL2FsbC1pbi1vbmUiLCJ0eXBlIjoicmVwb3NpdG9yeSIsImFjdGlvbnMiOlsicHVsbCJdfV19.ep_qz0r5xNyT4J8CKfJJZn5FNN26dq0mtZvaBVE94Wn8fE7t-igF81HZ0Su1LIs01ssyFSVosK79uZuH_h6MjhEi6vGoUrFGUXyAMAgXIfyo_VdM9I7JAwuvQ1FIiFV1KUl23iQrqDde1pYjBzPpFyrK-wtexCN0tb_A9a46A0UL863_FsnCyP01c9BYlv3Krh7xpvSZ9KscFttEZqQQM2b_tArJUEjWUE7lUC8Xf9NI75nhNBs790IpT0Zvdp4HzSrgb4-cP2iwtfqzRJG-Te-gaDs4min_9zHDd0UB53GYMkvn5Sh6iu2iXMaiFOVttQayLJ9-o8H2dhZn5_6NvA
++ curl -s -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IklISk86SUNZUDpFRVYzOldHQ1g6Nlg0VzpTUEdEOkZHQ0Y6VlFGUTpGT1hFOkNHQkQ6S0pGUDpDQUY0In0.eyJpc3MiOiJkb2NrZXJhdXRoLmFsaXl1bmNzLmNvbSIsImF1ZCI6InJlZ2lzdHJ5LmFsaXl1bmNzLmNvbTpjbi1oYW5nemhvdTpjaGluYTpjcmktcjB4ZnlveHVkbXRzZXFxNyIsInN1YiI6IiIsImlhdCI6MTc4MjI3MjExNywianRpIjoieGxGR0FzSUJsNWNjX0d0d1hvN1dkZyIsIm5iZiI6MTc4MjI3MTgxNywiZXhwIjoxNzgyMjcyNzE3LCJhY2Nlc3MiOlt7Im5hbWUiOiJoaWdyZXNzL2FsbC1pbi1vbmUiLCJ0eXBlIjoicmVwb3NpdG9yeSIsImFjdGlvbnMiOlsicHVsbCJdfV19.ep_qz0r5xNyT4J8CKfJJZn5FNN26dq0mtZvaBVE94Wn8fE7t-igF81HZ0Su1LIs01ssyFSVosK79uZuH_h6MjhEi6vGoUrFGUXyAMAgXIfyo_VdM9I7JAwuvQ1FIiFV1KUl23iQrqDde1pYjBzPpFyrK-wtexCN0tb_A9a46A0UL863_FsnCyP01c9BYlv3Krh7xpvSZ9KscFttEZqQQM2b_tArJUEjWUE7lUC8Xf9NI75nhNBs790IpT0Zvdp4HzSrgb4-cP2iwtfqzRJG-Te-gaDs4min_9zHDd0UB53GYMkvn5Sh6iu2iXMaiFOVttQayLJ9-o8H2dhZn5_6NvA' https://higress-registry.cn-hangzhou.cr.aliyuncs.com/v2/higress/all-in-one/tags/list
++ jq -r '.tags[]'
+1.3.5
+1.3.6-rc.1
+1.3.6-rc.2
+1.3.6-test
+1.3.6-test2
+1.3.6
+1.4.0-rc.1
+1.4.0
+1.4.1-2
+1.4.1-test
+1.4.1
+1.4.2
+2.0.0
+2.0.1
+2.0.2
+2.0.3
+2.0.4
+2.0.6
+2.0.7
+2.1.0
+2.1.1
+2.1.10
+2.1.11
+2.1.2
+2.1.3
+2.1.4
+2.1.5
+2.1.6
+2.1.7
+2.1.8
+2.1.9
+2.2.0-o11y
+2.2.0
+2.2.1-o11y
+2.2.1
+2.2.2-o11y
+2.2.2-rc.1-o11y
+2.2.2-rc.1
+2.2.2-rc.2-o11y
+2.2.2-rc.2
+2.2.2
+20241029
+20241218
+20241219-2
+20241219
+20241225
+20241227
+20250102
+latest-o11y
+latest
+sha-05d80ef
+sha-0c7bef2
+sha-1066915
+sha-15ec208
+sha-25bb17d
+sha-276b732
+sha-292c975
+sha-295ea3c
+sha-2bcac50
+sha-2fac025
+sha-315dd1c
+sha-33fae63-o11y
+sha-33fae63
+sha-3cb15c3
+sha-4066dea
+sha-487f6a2
+sha-4ad5fc8
+sha-4e37c5a
+sha-5d222ac
+sha-5f1e899
+sha-68846f5-o11y
+sha-68846f5
+sha-70f8e5c
+sha-730f060
+sha-73bab41
+sha-74c589c-o11y
+sha-74c589c
+sha-7b89b57
+sha-7ece76c
+sha-8161bc8
+sha-846be7f-o11y
+sha-846be7f
+sha-9c23986
+sha-9cfd03a
+sha-9dedde8
+sha-9faa2f2
+sha-a3dc0b4
+sha-a67f011
+sha-a742768-o11y
+sha-a742768
+sha-a77773c
+sha-ae282b4
+sha-b320509
+sha-b365c06
+sha-cba23a9
+sha-cd9f72d
+sha-d2c8a69
+sha-d32debd
+sha-d606b1c
+sha-e7162db
+sha-f5202b5
+test-0210
+test
+$

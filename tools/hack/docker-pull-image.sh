@@ -14,6 +14,7 @@
 
 #!/usr/bin/env bash
 
+set -x
 set -o errexit
 set -o nounset
 set -o pipefail
