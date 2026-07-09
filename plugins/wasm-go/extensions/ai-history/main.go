@@ -32,13 +32,37 @@ const (
 
 func main() {}
 
+// init 函数是 Go 语言的包初始化函数, 在 Go 插件模块被网关加载并启动时自动运行.
+// 注意: 在 Go 原生支持 Wasm 编译(Go 1.24+)的规范中, 插件的注册逻辑要求统一放置在 init() 中.
 func init() {
+	// wrapper.SetCtx 是 Higress SDK 提供的核心注册函数.
+	// 它的作用是向 Envoy 宿主环境声明一个名为 "ai-history" 的插件,
+	// 并绑定一系列流式处理(Streaming)和生命周期管理的回调函数.
 	wrapper.SetCtx(
+		// 1. 插件的唯一标识名称. 网关配置此插件时通过该名称进行关联.
 		"ai-history",
+		// 2. 注册配置解析器
+		// [作用]: 将网关控制台下发的 YAML/JSON 配置反序列化为 Go 结构体.
+		// [执行时机]:
+		//    - 插件首次加载/初始化时.
+		//    - 每次在控制台热更新(修改)该插件配置时.
 		wrapper.ParseConfigBy(parseConfig),
+		// 3. 注册请求头处理回调
+		// [作用]: 拦截并处理客户端发送的请求头. 在 ai-history 插件中, 通常用于提取用户身份标识(如 Authorization、API Key 或自定义 Header), 用以作为后续 Redis 中历史对话的 key 标识.
+		// [执行时机]: 请求阶段. 当 Higress 网关接收到客户端完整的 HTTP Request Headers 之后触发, 此时请求体(Body)通常尚未到达或尚未被读取.
 		wrapper.ProcessRequestHeadersBy(onHttpRequestHeaders),
+		// 4. 注册请求体处理回调
+		// [作用]: 拦截并解析 HTTP 请求体. 在 ai-history 中, 它负责解析用户发送的 Chat JSON 请求, 提取最新的 Prompt(即 user 的当前提问), 并在此阶段准备拼接 Redis 中查询到的历史上下文.
+		// [执行时机]: 请求阶段. 在请求头处理完成之后, 当网关读取到 HTTP Request Body 的数据时触发(根据网关配置, 可以是分片流式触发或等待 Body 接收完整后一次性触发).
 		wrapper.ProcessRequestBodyBy(onHttpRequestBody),
+		// 5. 注册响应头处理回调
+		// [作用]: 拦截并处理上游 AI 服务的响应头. 常用于判断 AI 服务是否返回 200 OK, 并检查 Content-Type 是否为流式(如 text/event-stream), 从而决定后续是否启用 SSE 流式解析.
+		// [执行时机]: 响应阶段. 当上游大模型服务产生响应, 且其 Response Headers 返回到 Higress 网关时触发. 此时响应体(Body)尚未被网关转发给客户端.
 		wrapper.ProcessResponseHeadersBy(onHttpResponseHeaders),
+		// 6. 注册流式响应体处理回调
+		// [作用]: 实时拦截并解析上游返回的流式响应分片.
+		//        在 ai-history 插件中, 这是最核心的一步: 大模型(如通义千问、ChatGPT 等)通常以 SSE 格式分片输出回答, 该回调会提取每一次分片中的文字, 在内存中拼接成完整的大模型回复, 并在流结束时将"用户的问题 + 模型的回答"异步写入 Redis 缓存.
+		// [执行时机]: 响应阶段. 当上游 AI 服务以 Streaming(流式)方式回传 HTTP Response Body 块时, 每到达一个数据分片(Chunk)就会触发一次该函数, 直至流传输结束.
 		wrapper.ProcessStreamingResponseBodyBy(onHttpStreamResponseBody),
 	)
 }
@@ -124,69 +148,142 @@ type ChatHistory struct {
 	Content string `json:"content"`
 }
 
+// parseConfig 是插件的配置解析与初始化回调函数.
+// [入参]:
+//   - json: 通过 gjson 解析后的原始 JSON 配置对象, 代表用户在 Higress 控制台配置该插件时填写的 JSON 参数.
+//   - c: 一个指向自定义结构体 PluginConfig 的指针, 解析出来的配置会保存在该结构体中, 供请求处理阶段读取.
+//   - log: Higress 提供的日志打印工具.
+//
+// [返回值]: 如果配置不合法或 Redis 初始化失败, 则返回 error, 此时插件将拒绝加载该配置.
 func parseConfig(json gjson.Result, c *PluginConfig, log log.Log) error {
+	// 1. 获取并校验 Redis 的服务名称 (通常对应 K8s 中的 Service 域名或 Higress 的 DNS Egress 域名)
 	c.RedisInfo.ServiceName = json.Get("redis.serviceName").String()
 	if c.RedisInfo.ServiceName == "" {
 		return errors.New("redis service name must not be empty")
 	}
+	// 2. 获取并处理 Redis 服务的端口号
 	c.RedisInfo.ServicePort = int(json.Get("redis.servicePort").Int())
 	if c.RedisInfo.ServicePort == 0 {
+		// 如果未配置端口号, 根据服务类型自动填充默认端口:
+		// 如果服务名以 ".static" 结尾(Higress 内置的静态 IP 服务定义),
+		// 则在 Wasm 环境中, 网关与其通信的逻辑端口默认为 80(再由网关在转发时转换为实际外部 Redis 端口).
 		if strings.HasSuffix(c.RedisInfo.ServiceName, ".static") {
 			// use default logic port which is 80 for static service
 			c.RedisInfo.ServicePort = 80
 		} else {
+			// 如果是普通的 K8s 内部服务, 使用 Redis 的标准默认端口 6379.
 			c.RedisInfo.ServicePort = 6379
 		}
 	}
+	// 3. 读取 Redis 的鉴权信息、连接超时及选择的数据库索引
 	c.RedisInfo.Username = json.Get("redis.username").String()
 	c.RedisInfo.Password = json.Get("redis.password").String()
 	c.RedisInfo.Timeout = int(json.Get("redis.timeout").Int())
 	if c.RedisInfo.Timeout == 0 {
+		// 默认连接超时时间为 1000 毫秒
 		c.RedisInfo.Timeout = 1000
 	}
 	c.RedisInfo.Database = int(json.Get("redis.database").Int())
+
+	// 4. 硬编码定义从 LLM (大语言模型) 请求和响应中提取对话内容的 gjson 路径.
+	// 这里默认适配的是 OpenAI 兼容接口标准:
+	// - QuestionFrom.RequestBody: "messages.@reverse.0.content"
+	//   利用 gjson 的 @reverse 语法, 将整个 messages 数组翻转并取第 0 个元素(即最后一条消息, 代表用户的最新提问).
 	c.QuestionFrom.RequestBody = "messages.@reverse.0.content"
+	// - AnswerValueFrom.ResponseBody: 针对非流式响应, 提取回答内容的 JSON 路径(OpenAI 格式: choices[0].message.content).
 	c.AnswerValueFrom.ResponseBody = "choices.0.message.content"
+	// - AnswerStreamValueFrom.ResponseBody: 针对流式(SSE)响应分片, 提取当前文字块的 JSON 路径(OpenAI 格式: choices[0].delta.content).
 	c.AnswerStreamValueFrom.ResponseBody = "choices.0.delta.content"
 
+	// 5. 获取或设置缓存 Key 的前缀, 用于区分 Redis 中的其他 Key(默认为配置中指定值或预设常量)
 	c.CacheKeyPrefix = json.Get("cacheKeyPrefix").String()
 	if c.CacheKeyPrefix == "" {
 		c.CacheKeyPrefix = DefaultCacheKeyPrefix
 	}
+	// 6. 获取或设置识别用户身份的 HTTP 请求头. 通过该 Header 的值(如 JWT、Token等)作为用户隔离的 Key(默认为 Authorization).
 	c.IdentityHeader = json.Get("identityHeader").String()
 	if c.IdentityHeader == "" {
 		c.IdentityHeader = "Authorization"
 	}
+	// 7. 设置多轮对话回填的最大历史轮数, 默认为 3 轮(即最近 3 次问答).
 	c.FillHistoryCnt = int(json.Get("fillHistoryCnt").Int())
 	if c.FillHistoryCnt == 0 {
 		c.FillHistoryCnt = 3
 	}
+	// 8. 获取缓存生存周期(Time To Live, 单位通常为秒), 0 可能表示依赖默认或不自动过期.
 	c.CacheTTL = int(json.Get("cacheTTL").Int())
+	// 9. 基于 Higress Wasm Go SDK 初始化 Redis 客户端.
+	// 这里的 NewRedisClusterClient 会向 Envoy 宿主环境声明该 Redis 对应的网关 Cluster.
 	c.redisClient = wrapper.NewRedisClusterClient(wrapper.FQDNCluster{
 		FQDN: c.RedisInfo.ServiceName,
 		Port: int64(c.RedisInfo.ServicePort),
 	})
+	// 10. 初始化 Redis 客户端连接, 传递鉴权参数和超时时间.
+	// 如果此时连接或配置校验失败, 将直接向上层抛出错误.
 	return c.redisClient.Init(c.RedisInfo.Username, c.RedisInfo.Password, int64(c.RedisInfo.Timeout), wrapper.WithDataBase(c.RedisInfo.Database))
 }
 
+// onHttpRequestHeaders 是请求头处理阶段的回调函数.
+// [入参]:
+//   - ctx: 当前 HTTP 请求的上下文对象, 可用于在不同生命周期阶段传递数据或控制网关行为.
+//   - config: 已经在 parseConfig 阶段解析好的插件全局配置.
+//   - log: 日志打印工具.
+//
+// [返回值]: types.Action, 告知网关如何处理当前请求(是继续、暂停还是直接中断).
 func onHttpRequestHeaders(ctx wrapper.HttpContext, config PluginConfig, log log.Log) types.Action {
+	// 1. 禁用重定向路由重计算 (Re-route)
+	// [作用]: 告知 Envoy 网关在当前请求被修改(如重写 Path 或 Headers)后, 无需重新评估和匹配路由规则,
+	//        以此节省 CPU 资源并防止路由冲突, 从而优化网关性能.
 	ctx.DisableReroute()
+
+	// 2. 检查 Content-Type, 确保是 JSON 请求
+	// [作用]: AI 对话服务(符合 OpenAI 标准)交互格式必须是 JSON. 如果是其他类型(如 GET、文件上传或表单请求),
+	//        该插件无法识别和回填历史, 应当直接跳过处理.
 	contentType, _ := proxywasm.GetHttpRequestHeader("content-type")
 	if !strings.Contains(contentType, "application/json") {
 		log.Warnf("content is not json, can't process:%s", contentType)
+		// 显式告知网关"不要去读取和缓存请求体", 防止不必要的内存分配, 提升整体吞吐量.
 		ctx.DontReadRequestBody()
+		// 返回 ActionContinue, 让请求继续往后传递, 不执行当前插件后续的 Body 修改逻辑.
 		return types.ActionContinue
 	}
+
+	// 3. 获取用户身份标识 (Identity Key)
+	// [作用]: 从配置指定的 Header(默认是 Authorization)中提取用户的 Token 或 API Key.
 	// get identity key
 	identityKey, _ := proxywasm.GetHttpRequestHeader(config.IdentityHeader)
 	if identityKey == "" {
 		log.Warnf("identity key is empty")
+		// 如果未提供身份 Header, 无法对对话历史进行用户隔离, 因此直接放行(不记录也不回填历史).
 		return types.ActionContinue
 	}
+
+	// 4. 清理并暂存身份标识
+	// 去除字符串中多余的空格(例如剔除 Bearer 后面的空格等, 将其格式化为紧凑的 Key, 用于后续作为 Redis Key 的一部分).
 	identityKey = strings.ReplaceAll(identityKey, " ", "")
+
+	// 将处理好的 identityKey 存入 ctx 的上下文中.
+	// Wasm 插件是生命周期驱动的, 这样后续在 `onHttpRequestBody`(请求体处理)和响应处理阶段, 就能直接取出这个 Key.
 	ctx.SetContext(IdentityKey, identityKey)
+
+	// 5. 移除 Accept-Encoding
+	// [作用]: 强制移除客户端发来的压缩声明. 如果客户端声称支持 gzip/br, 上游 AI 大模型也可能会返回压缩后的响应体.
+	//        由于该插件后续需要在 `onHttpStreamResponseBody` 中"明文解析"大模型返回的 SSE(流式响应)数据并记录历史,
+	//        因此移除该 Header 可以强迫上游服务返回明文数据, 避免网关层消耗资源去解压.
 	_ = proxywasm.RemoveHttpRequestHeader("Accept-Encoding")
+
+	// 6. 移除 Content-Length
+	// [作用]: 移除原始请求体长度. 在随后的 `onHttpRequestBody` 阶段, 该插件会向 Redis 查询历史消息,
+	//        并把多轮历史对话重写(追加插入)到原请求中.
+	//        由于重写后的 Body 长度已经改变, 原本的 Content-Length 必然失效, 必须将其移除.
+	//        后续网关发送请求给上游大模型时, 会自动重新计算并填充, 或使用 chunked 编码.
 	_ = proxywasm.RemoveHttpRequestHeader("Content-Length")
+
+	// 7. 返回暂停状态并继续等待数据
+	// [作用]: 告诉 Envoy 暂停把当前的 Request Headers 发送给上游, 同时也不要传递给下一个 Filter.
+	//        但是, 网关并不停止从连接中读取数据, 而是继续触发 Body 的处理流程.
+	//        这使我们可以在"请求体处理阶段 (`onHttpRequestBody`)"通过 Redis 异步加载完对话历史并成功修改 Body 后,
+	//        再将头和修改后的体一起发给下一个 Filter/上游大模型.
 	// The request has a body and requires delaying the header transmission until a cache miss occurs,
 	// at which point the header should be sent.
 	return types.HeaderStopIteration
@@ -196,31 +293,66 @@ func TrimQuote(source string) string {
 	return strings.Trim(source, `"`)
 }
 
+// onHttpRequestBody 是请求体处理阶段的回调函数.
+// [入参]:
+//   - ctx: 包含请求元数据的上下文.
+//   - config: 插件的全局配置.
+//   - body: 完整的请求体原始字节流(在 Header 阶段之后, 网关已完整缓存了该 JSON 报文).
+//   - log: 日志工具.
+//
+// [返回值]: types.Action(指示网关是暂停、继续还是终止请求).
 func onHttpRequestBody(ctx wrapper.HttpContext, config PluginConfig, body []byte, log log.Log) types.Action {
+	// 1. 解析请求体 JSON
 	bodyJson := gjson.ParseBytes(body)
+	// 2. 检测是否为流式响应请求
+	// 如果用户请求参数中含有 `"stream": true`, 说明大模型将采用 SSE 流式返回.
+	// 将该状态存入上下文, 以便在后续的"响应体处理阶段"决定是否按流式解析 SSE.
 	if bodyJson.Get("stream").Bool() {
 		ctx.SetContext(StreamContextKey, struct{}{})
 	}
+
+	// 3. 提取用户身份标识(从 Header 阶段存入的上下文中取出)
 	identityKey := ctx.GetStringContext(IdentityKey, "")
+
+	// 4. 解析并提取用户的最新提问 (Question)
+	// 利用在 parseConfig 阶段定义好的 JSON Path(如 messages.@reverse.0.content)提取最后一个用户的提问
 	question := TrimQuote(bodyJson.Get(config.QuestionFrom.RequestBody).String())
 	if question == "" {
 		log.Debug("parse question from request body failed")
+		// 提取失败则不干预, 直接让原始请求继续传递
 		return types.ActionContinue
 	}
+
+	// 暂存当前用户的问题到上下文, 后续在收到大模型回答时, 需要和此问题成对写入 Redis
 	ctx.SetContext(QuestionContextKey, question)
+
+	// 5. 异步向 Redis 查询该用户的历史对话
+	// [注意]: Wasm 虚拟机在 Envoy 中是单线程或基于事件驱动执行的, 网络 I/O 必须是异步的.
+	// 这里的 Get 方法会发起异步调用, 并立即返回. 我们传入一个回调函数(func(response resp.Value))来处理 Redis 返回的结果.
 	err := config.redisClient.Get(config.CacheKeyPrefix+identityKey, func(response resp.Value) {
+		// --- 以下代码为 Redis 响应到达后的回调逻辑(异步执行) ---
+
+		// 5.1. Redis 查询异常处理
 		if err := response.Error(); err != nil {
 			log.Errorf("redis get  failed, err:%v", err)
+			// 恢复之前被暂停的 HTTP 请求(即使没有历史记录, 也要保证用户请求能发给 AI)
 			_ = proxywasm.ResumeHttpRequest()
 			return
 		}
+
+		// 5.2. 缓存未命中(说明该用户是第一次或者会话已过期)
 		if response.IsNull() {
 			log.Debugf("cache miss, identityKey:%s", identityKey)
+			// 直接恢复请求(不拼接历史, 直接将原请求发送给 AI)
 			_ = proxywasm.ResumeHttpRequest()
 			return
 		}
+
+		// 5.3. 缓存命中, 解析历史对话
 		chatHistories := response.String()
+		// 暂存原始历史 JSON, 后续更新缓存时需要追加它
 		ctx.SetContext(ChatHistories, chatHistories)
+
 		var chat []ChatHistory
 		err := json.Unmarshal([]byte(chatHistories), &chat)
 		if err != nil {
@@ -228,12 +360,16 @@ func onHttpRequestBody(ctx wrapper.HttpContext, config PluginConfig, body []byte
 			_ = proxywasm.ResumeHttpRequest()
 			return
 		}
+
 		path := ctx.Path()
+		// 5.4. 分支 A: 检测是否为"查询历史记录"的特殊接口请求
 		if isQueryHistory(path) {
+			// 从 URL 参数 cnt 中提取需要返回的历史轮数(未传则返回全部)
 			cnt := getIntQueryParameter("cnt", path, len(chat)/2) * 2
 			if cnt > len(chat) {
 				cnt = len(chat)
 			}
+			// 截取最后 cnt 条消息
 			chat = chat[len(chat)-cnt:]
 			res, err := json.Marshal(chat)
 			if err != nil {
@@ -241,10 +377,16 @@ func onHttpRequestBody(ctx wrapper.HttpContext, config PluginConfig, body []byte
 				_ = proxywasm.ResumeHttpRequest()
 				return
 			}
+			// 拦截此请求, 不发往后端, 直接向客户端返回 200 OK 以及 JSON 格式的历史对话数据
 			_ = proxywasm.SendHttpResponseWithDetail(200, "OK", [][2]string{{"content-type", "application/json; charset=utf-8"}}, res, -1)
 			return
 		}
+
+		// 5.5. 分支 B: 常规 AI 聊天请求, 执行历史上下文回填逻辑
+		// 确定要回填的历史消息数上限(一条对话包含一问一答, 故轮数乘以 2)
 		fillHistoryCnt := getIntQueryParameter("fill_history_cnt", path, config.FillHistoryCnt) * 2
+
+		// 提取原请求中的当前 messages 列表
 		currJson := bodyJson.Get("messages").String()
 		var currMessage []ChatHistory
 		err = json.Unmarshal([]byte(currJson), &currMessage)
@@ -253,7 +395,11 @@ func onHttpRequestBody(ctx wrapper.HttpContext, config PluginConfig, body []byte
 			_ = proxywasm.ResumeHttpRequest()
 			return
 		}
+
+		// 5.6. 核心逻辑: 将 Redis 的历史对话合并到当前请求消息数组中(同时限制最大轮数)
 		finalChat := fillHistory(chat, currMessage, fillHistoryCnt)
+
+		// 5.7. 重构并替换原始请求体
 		var parameter map[string]any
 		err = json.Unmarshal(body, &parameter)
 		if err != nil {
@@ -261,6 +407,8 @@ func onHttpRequestBody(ctx wrapper.HttpContext, config PluginConfig, body []byte
 			_ = proxywasm.ResumeHttpRequest()
 			return
 		}
+
+		// 用融合了历史记录的新 finalChat 数组替换原请求中的 "messages" 字段
 		parameter["messages"] = finalChat
 		parameterJson, err := json.Marshal(parameter)
 		if err != nil {
@@ -268,31 +416,65 @@ func onHttpRequestBody(ctx wrapper.HttpContext, config PluginConfig, body []byte
 			_ = proxywasm.ResumeHttpRequest()
 			return
 		}
+
 		log.Infof("start to replace request body, parameter:%s", string(parameterJson))
+		// 调用 Proxy-Wasm 底层 API, 用新构造的 JSON 覆盖网关中当前的请求体
 		_ = proxywasm.ReplaceHttpRequestBody(parameterJson)
+
+		// 5.8. 关键步骤: 重写完毕, 通知网关恢复向后传输 HTTP 请求
 		_ = proxywasm.ResumeHttpRequest()
 	})
+
+	// 6. Redis 客户端发起请求失败的处理
 	if err != nil {
 		log.Error("redis access failed")
+		// 客户端连接发起阶段报错, 直接让原请求继续, 避免服务被拖垮
 		return types.ActionContinue
 	}
+
+	// 7. 返回 Pause 暂停指令
+	// [核心设计]: 因为去 Redis 获取数据是异步网络 I/O. 当前 Go 协程无法同步等待 Redis 返回.
+	// 通过返回 ActionPause, 我们指示 Envoy: "先别把请求发送给大模型, 帮我把请求暂停住. 等我异步拿到 Redis 结果并完成 Body 重写后, 我会在回调函数里主动调用 ResumeHttpRequest 来唤醒你."
 	return types.ActionPause
 }
 
+// fillHistory 用于合并历史对话与当前消息.
+// [入参]:
+//   - chat: 从 Redis 中读取出来的该用户历史对话切片(ChatHistory 结构体数组, 包含过往所有的 user 和 assistant 对话).
+//   - currMessage: 客户端本次请求里携带的消息切片(在标准 OpenAI 接口中, 通常是 messages 字段对应的内容).
+//   - fillHistoryCnt: 需要回填的最大消息条数. 例如配置的轮数是 3 轮, 则最大条数为 6 条(3 问 + 3 答).
+//
+// [返回值]: 合并和裁剪后的最新完整消息切片, 将被替换到请求体中.
 func fillHistory(chat []ChatHistory, currMessage []ChatHistory, fillHistoryCnt int) []ChatHistory {
+	// 1. 统计当前客户端请求体中 "user" 角色(即用户提问)的数量.
 	userInputCnt := 0
 	for i := 0; i < len(currMessage); i++ {
 		if currMessage[i].Role == "user" {
 			userInputCnt++
 		}
 	}
+
+	// 2. 防御性设计: 判断客户端是否已经自行管理并携带了历史上下文.
+	// 如果 currMessage 里的 "user" 消息多于 1 条, 意味着客户端本身已经把多轮历史对话包装在请求体里发过来了.
+	// 在这种情况下, 如果插件强行把 Redis 里的历史再拼接上去, 会导致上下文出现"双重重复".
+	// [处理]: 直接返回客户端原本的消息体 currMessage, 不做任何 Redis 历史回填.
 	if userInputCnt > 1 {
 		return currMessage
 	}
+
+	// 3. 边界值处理: 如果需要填充的数量超过了 Redis 中实际存储的历史总数,
+	// 则将填充长度限制为 Redis 历史的最大实际长度, 防止切片截取时发生越界(Index out of range).
 	if fillHistoryCnt > len(chat) {
 		fillHistoryCnt = len(chat)
 	}
+
+	// 4. 执行拼接.
+	// - chat[len(chat)-fillHistoryCnt:]: 从 Redis 历史数组中, 截取最后几条消息(例如只取最近的 3 问 3 答, 排在前面的更旧历史被丢弃).
+	// - append(..., currMessage...): 将截取出的历史与当前客户端发送的新提问(currMessage)进行前后拼接.
+	//   拼接顺序是: [旧对话1, 旧对话2, ..., 本次新问题].
 	finalChat := append(chat[len(chat)-fillHistoryCnt:], currMessage...)
+
+	// 5. 返回拼接完成后的消息数组.
 	return finalChat
 }
 
@@ -300,26 +482,44 @@ func isQueryHistory(path string) bool {
 	return strings.Contains(path, "ai-history/query")
 }
 
+// getIntQueryParameter 用于从 HTTP 请求路径中安全地提取并解析整型的 Query 参数.
+// [入参]:
+//   - name: 要查找的 Query 参数名称(例如 "cnt" 或 "fill_history_cnt").
+//   - path: 完整的 HTTP 请求路径(例如 "/v1/chat/completions?fill_history_cnt=5").
+//   - defaultValue: 兜底默认值. 如果在路径中未找到该参数, 或参数格式非法, 将直接返回此默认值.
+//
+// [返回值]: 解析成功的整型数值或指定的默认值.
 func getIntQueryParameter(name string, path string, defaultValue int) int {
+	// 1. 利用 Go 标准库中的 net/url 解析完整的请求 URI.
+	// ParseRequestURI 会解析路径和后面的 Query 字符串(如 ?key=val).
 	// 解析 URL
 	parsedURL, err := url.ParseRequestURI(path)
 	if err != nil {
+		// 注意: 在 Wasm 环境中, fmt.Println 的输出通常会定向到 Envoy 容器的标准输出,
+		// 相比于使用 SDK 的 log.Log, 这种写法较为底层, 但同样能起到记录错误的作用.
 		fmt.Println("Error parsing URL:", err)
 		return defaultValue
 	}
 
+	// 2. 解析并获取 Query 参数键值对映射表(url.Values 实际上是 map[string][]string)
 	// 获取查询参数
 	values := parsedURL.Query()
 
+	// 3. 根据指定的名称获取参数值(Get 方法默认获取同名参数列表中的第一个值)
 	// 获取特定的查询参数 "defaultValue"
 	queryStr := values.Get(name)
+	// 4. 如果客户端请求中未携带该查询参数, 直接安全地返回配置中的默认值
 	if queryStr == "" {
 		return defaultValue
 	}
+	// 5. 将字符串类型的数值(如 "5")转换为整型(int)
 	num, err := strconv.Atoi(queryStr)
 	if err != nil {
+		// 如果转换失败(例如用户故意输入了非数字格式 ?fill_history_cnt=abc),
+		// 则放弃转换, 并安全地返回默认值, 防止插件因类型强转或错误数据导致 panic.
 		return defaultValue
 	}
+	// 6. 返回解析成功的整数
 	return num
 }
 
@@ -359,27 +559,63 @@ func processSSEMessage(ctx wrapper.HttpContext, config PluginConfig, sseMessage 
 	return content
 }
 
+// onHttpResponseHeaders 是响应头处理阶段的回调函数.
+// [入参]:
+//   - ctx: 当前请求的上下文对象, 用于在响应阶段继续流转变量.
+//   - config: 插件全局配置.
+//   - log: 日志工具.
+//
+// [返回值]: types.Action(指示网关继续、暂停或中断响应流).
 func onHttpResponseHeaders(ctx wrapper.HttpContext, config PluginConfig, log log.Log) types.Action {
+	// 1. 获取上游 AI 服务返回的 Content-Type 响应头
 	contentType, _ := proxywasm.GetHttpResponseHeader("content-type")
+
+	// 2. 检查 Content-Type 中是否包含 "text/event-stream"
+	// "text/event-stream" 是标准的 Server-Sent Events (SSE) 协议内容类型, 通常是大模型流式输出(吐字效果)时的标配.
 	if strings.Contains(contentType, "text/event-stream") {
+		// 如果上游返回的确是流式响应, 则在上下文中记录一个 Stream 标记(StreamContextKey).
+		// 这样后续的"流式响应体处理函数" `onHttpStreamResponseBody` 就能据此采用 SSE 协议去剥离和解析每个分片.
 		ctx.SetContext(StreamContextKey, struct{}{})
 	}
+
+	// 3. 返回 ActionContinue, 允许网关继续处理并将响应头发送给客户端.
+	// 这里不需要暂停或截断响应头, 因此直接向下传递.
 	return types.ActionContinue
 }
+
+// onHttpStreamResponseBody 处理响应体分片(Chunk)的核心回调.
+// [入参]:
+//   - ctx: 包含请求元数据的上下文, 用于跨分片累加临时数据.
+//   - config: 插件全局配置.
+//   - chunk: 当前网络包收到的响应体字节片段(可能是几百字节到几 KB).
+//   - isLastChunk: 标志位. 如果为 true, 说明当前数据片段已经是本次 HTTP 响应的最后一个包了.
+//   - log: 日志工具.
+//
+// [返回值]: 必须返回处理后或原始的字节片段, 网关会将其转发给客户端.
 func onHttpStreamResponseBody(ctx wrapper.HttpContext, config PluginConfig, chunk []byte, isLastChunk bool, log log.Log) []byte {
+	// 1. 安全过滤 A: 如果是 Tool Calls(大模型工具/函数调用), 由于属于系统指令, 不作缓存, 直接原样返回
 	if ctx.GetContext(ToolCallsContextKey) != nil {
 		// we should not cache tool call result
 		return chunk
 	}
+
+	// 2. 安全过滤 B: 如果在请求阶段没有成功提取到用户的 Question(提问), 无法建立问答对, 直接放行
 	questionI := ctx.GetContext(QuestionContextKey)
 	if questionI == nil {
 		return chunk
 	}
+
+	// 3. 安全过滤 C: 如果是查询历史记录的接口路由, 直接放行不记录
 	if isQueryHistory(ctx.Path()) {
 		return chunk
 	}
+
+	// ==========================================
+	// [阶段一]: 处理非最后一个数据包(!isLastChunk)
+	// ==========================================
 	if !isLastChunk {
 		stream := ctx.GetContext(StreamContextKey)
+		// 情况 1.1: 常规"非流式"响应(一次性返回完整 JSON, 但受 TCP 分包影响, 当前还不是最后一个包)
 		if stream == nil {
 			tempContentI := ctx.GetContext(AnswerContentContextKey)
 			if tempContentI == nil {

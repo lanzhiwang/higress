@@ -1,0 +1,56 @@
+name: ai-zdtc-token
+category: custom
+title:
+  zh-CN: AI Token 审计记录
+  en-US: AI Token Audit Logger
+description:
+  zh-CN: 在大模型流式或非流式响应结束时, 获取用户身份与 Token 消耗, 并异步存储至 Redis.
+  en-US: Extract token usage and user info at stream response end and save asynchronously to Redis.
+iconUrl: https://img.alicdn.com/imgextra/i1/O1CN01Oun8Xg1f3v9gZ7D2I_!!6000000003953-25-tps-120-120.png
+version: 1.0.0
+phase: UNSPECIFIED_PHASE
+priority: 95
+configSchema:
+  openAPIV3Schema:
+    type: object
+    required:
+      - redis
+    properties:
+      redis:
+        type: object
+        title: Redis 客户端配置
+        required:
+          - service_name
+        properties:
+          service_name:
+            type: string
+            title: Redis 服务名称
+            description: >
+              必填. 完整的 FQDN 名称或外部静态服务名(在控制台注册).
+              如果是 K8s 内部服务, 可填写如 redis-service.default.svc.cluster.local.
+              如果是控制台注册的静态服务, 请带上后缀(如 redis-local.static).
+          service_port:
+            type: integer
+            title: Redis 服务端口
+            default: 6379
+            description: >
+              选填. 如果是控制台注册的静态服务(.static), 根据 Envoy 的 Cluster 规则, 请务必在此配置为 80!
+              如果是常规 K8s 内部集群 Service, 可正常配置为 6379.
+          username:
+            type: string
+            title: 账号
+            description: 选填. Redis 的认证账号(若无则置空).
+          password:
+            type: string
+            title: 密码
+            description: 选填. Redis 的认证密码(若无则置空).
+          timeout:
+            type: integer
+            title: 超时时间 (ms)
+            default: 1000
+            description: 选填. Redis 客户端读写超时时间(单位毫秒), 默认 1000.
+          database:
+            type: integer
+            title: 数据库索引
+            default: 0
+            description: 选填. 要操作的 Redis 数据库索引值, 默认 0.
