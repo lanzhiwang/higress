@@ -261,6 +261,9 @@ func onHttpStreamResponseBody(ctx wrapper.HttpContext, config PluginConfig, chun
 		}
 		if v := ctx.GetContext(headerAuthorization); v != nil {
 			authorization, _ = v.(string)
+			// authorization: Bearer t07uhpqbo5zoj4z7cfarhuf0
+			authorization = strings.TrimPrefix(authorization, "Bearer ")
+			authorization = strings.TrimSpace(authorization)
 		}
 		if v := ctx.GetContext(headerMseConsumer); v != nil {
 			mseConsumer, _ = v.(string)
@@ -344,6 +347,8 @@ func onHttpStreamResponseBody(ctx wrapper.HttpContext, config PluginConfig, chun
 		} else {
 			jsonStr := string(jsonBytes)
 			log.Infof("[ai-zdtc-token onHttpStreamResponseBody] 异步向 Redis 写入. Key: %s, Value: %s", redisKey, jsonStr)
+			// Key: ai-zdtc-token|1-96323044|0ed4cf5c-8baf-43e4-9138-9bc863eca9d6|
+			// Value: {"uuid":"4d8094c1-431c-46bf-afe4-54a8dada16f4","request_id":"0ed4cf5c-8baf-43e4-9138-9bc863eca9d6","llm_model":"capital","llm_model_final":"Vendor3/DeepSeek-V4-Flash","authorization":"pg589f6in04e5xqy6srrphk6","mse_consumer":"1-96323044","response_id":"","start_time_milli":1785477049103,"end_time_milli":1785477051608,"duration_ms":2505,"input_token":5,"output_token":111,"total_token":116,"model":"Vendor3/DeepSeek-V4-Flash"}
 
 			err = config.redisClient.Set(redisKey, jsonStr, func(response resp.Value) {
 				if response.Error() != nil {

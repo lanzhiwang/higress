@@ -498,8 +498,8 @@ registry-dx.wair.ac.cn
 zsy/FIO0eOcrhC8=
 
 docker tag \
-higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/ai-zdtc-token:20260731-112833-e6b3b314 \
-registry-dx.wair.ac.cn/taichu-studio/higress-plugin:ai-zdtc-token-20260731-112833-e6b3b314
+higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/ai-zdtc-token:20260731-141703-6fe2fe5f \
+registry-dx.wair.ac.cn/taichu-studio/higress-plugin:ai-zdtc-token-20260731-141703-6fe2fe5f
 
 kubectl create secret docker-registry registry-dx-wair-ac-cn \
 --docker-server=registry-dx.wair.ac.cn \
