@@ -22,7 +22,7 @@ const (
 	headerXRequestID          = "x-request-id"
 	headerXHigressLLMModel    = "x-higress-llm-model"
 	headerXHigressLLMModelFin = "x-higress-llm-model-final"
-	headerXHiOriginalAuth     = "x-hi-original-auth"
+	headerAuthorization       = "authorization"
 	headerMseConsumer         = "x-mse-consumer"
 
 	headerXResponseID = "x-response-id"
@@ -36,7 +36,7 @@ type TokenAuditLog struct {
 	RequestID      string `json:"request_id"`
 	LLMModel       string `json:"llm_model"`
 	LLMModelFinal  string `json:"llm_model_final"`
-	OriginalAuth   string `json:"original_auth"`
+	Authorization  string `json:"authorization"`
 	MseConsumer    string `json:"mse_consumer"`
 	ResponseID     string `json:"response_id"`
 	StartTimeMilli int64  `json:"start_time_milli"`
@@ -62,6 +62,7 @@ func init() {
 }
 
 type PluginConfig struct {
+	Debug       bool      `yaml:"debug" json:"debug"`
 	RedisInfo   RedisInfo `yaml:"redis" json:"redis"`
 	redisClient wrapper.RedisClient
 }
@@ -79,6 +80,15 @@ type RedisInfo struct {
 func parseConfig(json gjson.Result, config *PluginConfig, log log.Log) error {
 	log.Infof("[ai-zdtc-token parseConfig] === [ParseConfig] 阶段开始 ===")
 	log.Infof("[ai-zdtc-token parseConfig] 收到原始 JSON 配置: %s", json.Raw)
+	// {"debug":true,"redis":{"service_name":"redis.dns","service_port":6379,"timeout":2000}}
+
+	debugResult := json.Get("debug")
+	if debugResult.Exists() {
+		config.Debug = debugResult.Bool()
+	} else {
+		config.Debug = true
+	}
+	log.Infof("[ai-zdtc-token parseConfig] 解析后的 Debug: %t", config.Debug)
 
 	config.RedisInfo.ServiceName = json.Get("redis.service_name").String()
 	config.RedisInfo.ServicePort = int(json.Get("redis.service_port").Int())
@@ -127,12 +137,16 @@ func onHttpRequestHeaders(ctx wrapper.HttpContext, config PluginConfig, log log.
 	// 在请求头处理阶段生成一个 UUID 并写入 Context
 	reqUUID := uuid.New().String()
 	ctx.SetContext(ctxKeyRequestUUID, reqUUID)
-	log.Infof("[ai-zdtc-token onHttpRequestHeaders] 生成请求唯一 UUID: %s 并写入 Context", reqUUID)
+	if config.Debug {
+		log.Infof("[ai-zdtc-token onHttpRequestHeaders] 生成请求唯一 UUID: %s 并写入 Context", reqUUID)
+	}
 
 	// 将当前请求开始的时间戳(毫秒级)保存到上下文 ctx 中
 	nowMilli := time.Now().UnixMilli()
 	ctx.SetContext(ctxKeyRequestStartTime, nowMilli)
-	log.Infof("[ai-zdtc-token onHttpRequestHeaders]   [Context写入成功] -> Key: %s, Value: %d (毫秒级时间戳)", ctxKeyRequestStartTime, nowMilli)
+	if config.Debug {
+		log.Infof("[ai-zdtc-token onHttpRequestHeaders]   [Context写入成功] -> Key: %s, Value: %d (毫秒级时间戳)", ctxKeyRequestStartTime, nowMilli)
+	}
 
 	path, _ := proxywasm.GetHttpRequestHeader(":path")
 	method, _ := proxywasm.GetHttpRequestHeader(":method")
@@ -146,12 +160,14 @@ func onHttpRequestHeaders(ctx wrapper.HttpContext, config PluginConfig, log log.
 		for _, h := range headers {
 			key := h[0]
 			val := h[1]
-			log.Infof("[ai-zdtc-token onHttpRequestHeaders]   Header -> %s: %s", key, val)
+			if config.Debug {
+				log.Infof("[ai-zdtc-token onHttpRequestHeaders]   Header -> %s: %s", key, val)
+			}
 
 			lowerKey := strings.ToLower(key)
 
 			switch lowerKey {
-			case headerXHigressLLMModel, headerXHigressLLMModelFin, headerXHiOriginalAuth, headerMseConsumer:
+			case headerXHigressLLMModel, headerXHigressLLMModelFin, headerAuthorization, headerMseConsumer:
 				ctx.SetContext(lowerKey, val)
 				log.Infof("[ai-zdtc-token onHttpRequestHeaders]   [Context写入成功] -> Key: %s, Value: %s", lowerKey, val)
 			case "x-request-id":
@@ -169,10 +185,12 @@ func onHttpRequestBody(ctx wrapper.HttpContext, config PluginConfig, body []byte
 	log.Infof("[ai-zdtc-token onHttpRequestBody] === [OnHttpRequestBody] 阶段开始 ===")
 	log.Infof("[ai-zdtc-token onHttpRequestBody] 请求体大小: %d 字节", len(body))
 
-	if len(body) > 0 {
-		log.Infof("[ai-zdtc-token onHttpRequestBody] 请求体内容: %s", string(body))
-	} else {
-		log.Infof("[ai-zdtc-token onHttpRequestBody] 请求体为空")
+	if config.Debug {
+		if len(body) > 0 {
+			log.Infof("[ai-zdtc-token onHttpRequestBody] 请求体内容: %s", string(body))
+		} else {
+			log.Infof("[ai-zdtc-token onHttpRequestBody] 请求体为空")
+		}
 	}
 
 	log.Infof("[ai-zdtc-token onHttpRequestBody] === [OnHttpRequestBody] 阶段结束 ===")
@@ -190,8 +208,9 @@ func onHttpResponseHeaders(ctx wrapper.HttpContext, config PluginConfig, log log
 		for _, h := range headers {
 			key := h[0]
 			val := h[1]
-			log.Infof("[ai-zdtc-token onHttpResponseHeaders]   Header -> %s: %s", key, val)
-
+			if config.Debug {
+				log.Infof("[ai-zdtc-token onHttpResponseHeaders]   Header -> %s: %s", key, val)
+			}
 			lowerKey := strings.ToLower(key)
 
 			switch lowerKey {
@@ -210,8 +229,10 @@ func onHttpStreamResponseBody(ctx wrapper.HttpContext, config PluginConfig, chun
 	log.Infof("[ai-zdtc-token onHttpStreamResponseBody] === [OnHttpStreamResponseBody] 阶段触发 ===")
 	log.Infof("[ai-zdtc-token onHttpStreamResponseBody] 当前数据块大小: %d 字节, 是否为最后一个数据块: %t", len(chunk), isLastChunk)
 
-	if len(chunk) > 0 {
-		log.Infof("[ai-zdtc-token onHttpStreamResponseBody] 数据块内容: %s", string(chunk))
+	if config.Debug {
+		if len(chunk) > 0 {
+			log.Infof("[ai-zdtc-token onHttpStreamResponseBody] 数据块内容: %s", string(chunk))
+		}
 	}
 	if usage := tokenusage.GetTokenUsage(ctx, chunk); usage.TotalToken > 0 {
 		ctx.SetContext(tokenusage.CtxKeyInputToken, usage.InputToken)
@@ -223,7 +244,7 @@ func onHttpStreamResponseBody(ctx wrapper.HttpContext, config PluginConfig, chun
 	if isLastChunk {
 		log.Infof("[ai-zdtc-token onHttpStreamResponseBody] 收到最后一个数据块, 尝试解析 Token 消耗数据")
 
-		var requestUUID, requestID, llmModel, llmModelFinal, originalAuth, mseConsumer, responseID string
+		var requestUUID, requestID, llmModel, llmModelFinal, authorization, mseConsumer, responseID string
 		var startTimeMilli int64
 
 		if v := ctx.GetContext(ctxKeyRequestUUID); v != nil {
@@ -238,8 +259,8 @@ func onHttpStreamResponseBody(ctx wrapper.HttpContext, config PluginConfig, chun
 		if v := ctx.GetContext(headerXHigressLLMModelFin); v != nil {
 			llmModelFinal, _ = v.(string)
 		}
-		if v := ctx.GetContext(headerXHiOriginalAuth); v != nil {
-			originalAuth, _ = v.(string)
+		if v := ctx.GetContext(headerAuthorization); v != nil {
+			authorization, _ = v.(string)
 		}
 		if v := ctx.GetContext(headerMseConsumer); v != nil {
 			mseConsumer, _ = v.(string)
@@ -251,15 +272,17 @@ func onHttpStreamResponseBody(ctx wrapper.HttpContext, config PluginConfig, chun
 			startTimeMilli, _ = v.(int64)
 		}
 
-		log.Infof("[ai-zdtc-token onHttpStreamResponseBody] 读取到暂存的 Context 字段值:")
-		log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - UUID: %s", requestUUID)
-		log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - %s: %s", headerXRequestID, requestID)
-		log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - %s: %s", headerXHigressLLMModel, llmModel)
-		log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - %s: %s", headerXHigressLLMModelFin, llmModelFinal)
-		log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - %s: %s", headerXHiOriginalAuth, originalAuth)
-		log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - %s: %s", headerMseConsumer, mseConsumer)
-		log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - %s: %s", headerXResponseID, responseID)
-		log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - %s: %d (毫秒级时间戳)", ctxKeyRequestStartTime, startTimeMilli)
+		if config.Debug {
+			log.Infof("[ai-zdtc-token onHttpStreamResponseBody] 读取到暂存的 Context 字段值:")
+			log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - UUID: %s", requestUUID)
+			log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - %s: %s", headerXRequestID, requestID)
+			log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - %s: %s", headerXHigressLLMModel, llmModel)
+			log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - %s: %s", headerXHigressLLMModelFin, llmModelFinal)
+			log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - %s: %s", headerAuthorization, authorization)
+			log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - %s: %s", headerMseConsumer, mseConsumer)
+			log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - %s: %s", headerXResponseID, responseID)
+			log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - %s: %d (毫秒级时间戳)", ctxKeyRequestStartTime, startTimeMilli)
+		}
 
 		var inputToken, outputToken, totalToken int64
 		var modelStr string
@@ -277,10 +300,12 @@ func onHttpStreamResponseBody(ctx wrapper.HttpContext, config PluginConfig, chun
 			modelStr, _ = v.(string)
 		}
 
-		log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - 模型名称 (Model): %s", modelStr)
-		log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - 输入 Token 数量 (InputToken): %d", inputToken)
-		log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - 输出 Token 数量 (OutputToken): %d", outputToken)
-		log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - 总共 Token 数量 (TotalToken): %d", totalToken)
+		if config.Debug {
+			log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - 模型名称 (Model): %s", modelStr)
+			log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - 输入 Token 数量 (InputToken): %d", inputToken)
+			log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - 输出 Token 数量 (OutputToken): %d", outputToken)
+			log.Infof("[ai-zdtc-token onHttpStreamResponseBody]   - 总共 Token 数量 (TotalToken): %d", totalToken)
+		}
 
 		// 如果 input_token 或者 output_token 为零, 就不写入 Redis
 		if inputToken == 0 || outputToken == 0 {
@@ -301,7 +326,7 @@ func onHttpStreamResponseBody(ctx wrapper.HttpContext, config PluginConfig, chun
 			RequestID:      requestID,
 			LLMModel:       llmModel,
 			LLMModelFinal:  llmModelFinal,
-			OriginalAuth:   originalAuth,
+			Authorization:  authorization,
 			MseConsumer:    mseConsumer,
 			ResponseID:     responseID,
 			StartTimeMilli: startTimeMilli,

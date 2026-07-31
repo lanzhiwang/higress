@@ -492,15 +492,19 @@ spec:
 * 更稳妥的方案: 直接使用阿里云容器镜像服务(ACR)个人版. 在阿里云上创建一个公开(Public)的命名空间和镜像仓库(也是免费的), 推送至: `registry.cn-hangzhou.aliyuncs.com/您的命名空间/ai-zdtc-token:20260708-133037-35df208a`.
 * 这样在 `WasmPlugin` 中配置 `oci://registry.cn-hangzhou.aliyuncs.com/...`, 不仅能省去配置 PullSecret 的麻烦, 在国内网络拉取时也会非常稳定.
 
-```
-docker tag \
-higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/ai-zdtc-token:20260715-160747-48259f8b \
-tck-xinan-registry.cn-chengdu.cr.aliyuncs.com/taichu-studio/higress-plugin:ai-zdtc-token-20260715-160747-48259f8b
+```bash
+电信测试环境:
+registry-dx.wair.ac.cn
+zsy/FIO0eOcrhC8=
 
-kubectl create secret docker-registry aliyun-registry-key \
---docker-server=tck-xinan-registry.cn-chengdu.cr.aliyuncs.com \
---docker-username=dt_9425972860 \
---docker-password=yNuenkiBDU1R6aG \
+docker tag \
+higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/ai-zdtc-token:20260731-112833-e6b3b314 \
+registry-dx.wair.ac.cn/taichu-studio/higress-plugin:ai-zdtc-token-20260731-112833-e6b3b314
+
+kubectl create secret docker-registry registry-dx-wair-ac-cn \
+--docker-server=registry-dx.wair.ac.cn \
+--docker-username=zsy \
+--docker-password=FIO0eOcrhC8= \
 -n higress-system
 
 curl -sv http://172.16.10.98:8080/v1/chat/completions \
