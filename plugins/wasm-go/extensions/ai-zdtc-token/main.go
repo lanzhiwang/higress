@@ -3,10 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
-	"github.com/google/uuid" // 引入 google uuid 库
+	"github.com/google/uuid"
 	"github.com/higress-group/proxy-wasm-go-sdk/proxywasm"
 	"github.com/higress-group/proxy-wasm-go-sdk/proxywasm/types"
 	"github.com/higress-group/wasm-go/pkg/log"
@@ -19,17 +21,42 @@ import (
 const (
 	pluginName = "ai-zdtc-token"
 
-	headerXRequestID          = "x-request-id"
+	ctxKeyRequestUUID      = "request_uuid"
+	ctxKeyRequestStartTime = "request_start_time"
+
 	headerXHigressLLMModel    = "x-higress-llm-model"
 	headerXHigressLLMModelFin = "x-higress-llm-model-final"
 	headerAuthorization       = "authorization"
 	headerMseConsumer         = "x-mse-consumer"
+	headerXRequestID          = "x-request-id"
 
 	headerXResponseID = "x-response-id"
-
-	ctxKeyRequestStartTime = "request_start_time"
-	ctxKeyRequestUUID      = "request_uuid"
 )
+
+type PluginConfig struct {
+	Debug       bool      `yaml:"debug" json:"debug"`
+	RedisInfo   RedisInfo `yaml:"redis" json:"redis"`
+	redisClient wrapper.RedisClient
+	PayInfo     PayInfo `yaml:"pay" json:"pay"`
+	payClient   wrapper.HttpClient
+}
+
+type RedisInfo struct {
+	ServiceName string `required:"true" yaml:"service_name" json:"service_name"`
+	ServicePort int    `required:"false" yaml:"service_port" json:"service_port"`
+	Username    string `required:"false" yaml:"username" json:"username"`
+	Password    string `required:"false" yaml:"password" json:"password"`
+	Timeout     int    `required:"false" yaml:"timeout" json:"timeout"`
+	Database    int    `required:"false" yaml:"database" json:"database"`
+}
+
+type PayInfo struct {
+	ServiceName     string `required:"true" yaml:"service_name" json:"service_name"`
+	ServicePort     int    `required:"false" yaml:"service_port" json:"service_port"`
+	Host            string `required:"false" yaml:"host" json:"host"`
+	Timeout         int    `required:"false" yaml:"timeout" json:"timeout"`
+	BalanceCacheTTL int    `required:"false" yaml:"balance_cache_ttl" json:"balance_cache_ttl"` // 余额数据在 Redis 中的缓存过期时间(秒)
+}
 
 type TokenAuditLog struct {
 	UUID           string `json:"uuid"`
@@ -48,6 +75,11 @@ type TokenAuditLog struct {
 	Model          string `json:"model"`
 }
 
+var (
+	insufficientBalanceResponseHeaders = [][2]string{{"content-type", "application/json; charset=utf-8"}}
+	insufficientBalanceResponseBody    = []byte(`{"message": "账户余额不足", "error": {"message": "账户余额不足"}}`)
+)
+
 func main() {}
 
 func init() {
@@ -61,26 +93,10 @@ func init() {
 	)
 }
 
-type PluginConfig struct {
-	Debug       bool      `yaml:"debug" json:"debug"`
-	RedisInfo   RedisInfo `yaml:"redis" json:"redis"`
-	redisClient wrapper.RedisClient
-}
-
-type RedisInfo struct {
-	ServiceName string `required:"true" yaml:"service_name" json:"service_name"`
-	ServicePort int    `required:"false" yaml:"service_port" json:"service_port"`
-	Username    string `required:"false" yaml:"username" json:"username"`
-	Password    string `required:"false" yaml:"password" json:"password"`
-	Timeout     int    `required:"false" yaml:"timeout" json:"timeout"`
-	Database    int    `required:"false" yaml:"database" json:"database"`
-}
-
 // 1. 解析配置阶段
 func parseConfig(json gjson.Result, config *PluginConfig, log log.Log) error {
 	log.Infof("[ai-zdtc-token parseConfig] === [ParseConfig] 阶段开始 ===")
 	log.Infof("[ai-zdtc-token parseConfig] 收到原始 JSON 配置: %s", json.Raw)
-	// {"debug":true,"redis":{"service_name":"redis.dns","service_port":6379,"timeout":2000}}
 
 	debugResult := json.Get("debug")
 	if debugResult.Exists() {
@@ -90,6 +106,7 @@ func parseConfig(json gjson.Result, config *PluginConfig, log log.Log) error {
 	}
 	log.Infof("[ai-zdtc-token parseConfig] 解析后的 Debug: %t", config.Debug)
 
+	// 解析 redis 服务配置
 	config.RedisInfo.ServiceName = json.Get("redis.service_name").String()
 	config.RedisInfo.ServicePort = int(json.Get("redis.service_port").Int())
 	if config.RedisInfo.ServicePort == 0 {
@@ -127,6 +144,56 @@ func parseConfig(json gjson.Result, config *PluginConfig, log log.Log) error {
 	}
 
 	log.Infof("[ai-zdtc-token parseConfig] Redis 客户端成功注册且完成初始化")
+
+	// 解析 pay 服务配置
+	payResult := json.Get("pay")
+	if payResult.Exists() {
+		if payResult.IsObject() {
+			config.PayInfo.ServiceName = payResult.Get("service_name").String()
+			config.PayInfo.ServicePort = int(payResult.Get("service_port").Int())
+			config.PayInfo.Host = payResult.Get("host").String()
+			config.PayInfo.Timeout = int(payResult.Get("timeout").Int())
+			config.PayInfo.BalanceCacheTTL = int(payResult.Get("balance_cache_ttl").Int())
+		} else if payResult.Type == gjson.String {
+			payStr := payResult.String()
+			if parts := strings.Split(payStr, ":"); len(parts) == 2 {
+				config.PayInfo.ServiceName = parts[0]
+				port, _ := strconv.Atoi(parts[1])
+				config.PayInfo.ServicePort = port
+			} else {
+				config.PayInfo.ServiceName = payStr
+			}
+		}
+	}
+
+	if config.PayInfo.ServicePort == 0 {
+		config.PayInfo.ServicePort = 80
+	}
+	if config.PayInfo.Timeout == 0 {
+		config.PayInfo.Timeout = 2000 // 默认超时 2000ms
+	}
+	// 如果配置中未指定 balance_cache_ttl 或指定值小于等于 0, 则默认缓存 120 秒 (2分钟)
+	if config.PayInfo.BalanceCacheTTL <= 0 {
+		config.PayInfo.BalanceCacheTTL = 120
+	}
+
+	if config.PayInfo.ServiceName != "" {
+		config.payClient = wrapper.NewClusterClient(wrapper.FQDNCluster{
+			FQDN: config.PayInfo.ServiceName,
+			Port: int64(config.PayInfo.ServicePort),
+			Host: config.PayInfo.Host,
+		})
+		log.Infof("[ai-zdtc-token parseConfig] Pay 服务客户端成功初始化 -> 服务名: %s, 端口: %d, Host: %s, 超时: %dms, 余额缓存TTL: %ds",
+			config.PayInfo.ServiceName,
+			config.PayInfo.ServicePort,
+			config.PayInfo.Host,
+			config.PayInfo.Timeout,
+			config.PayInfo.BalanceCacheTTL,
+		)
+	} else {
+		log.Warnf("[ai-zdtc-token parseConfig] 警告: 未配置 pay 服务, 余额校验功能将无法正常调用远程接口")
+	}
+
 	log.Infof("[ai-zdtc-token parseConfig] === [ParseConfig] 阶段结束 ===")
 	return nil
 }
@@ -152,9 +219,13 @@ func onHttpRequestHeaders(ctx wrapper.HttpContext, config PluginConfig, log log.
 	method, _ := proxywasm.GetHttpRequestHeader(":method")
 	log.Infof("[ai-zdtc-token onHttpRequestHeaders] 当前请求 - 方法: %s, 路径: %s", method, path)
 
+	var mseConsumerVal string
+	var authHeaderVal string
+
 	headers, err := proxywasm.GetHttpRequestHeaders()
 	if err != nil {
 		log.Errorf("[ai-zdtc-token onHttpRequestHeaders] 无法获取请求头: %#v", err)
+		return types.ActionContinue
 	} else {
 		log.Infof("[ai-zdtc-token onHttpRequestHeaders] 请求头总数: %d", len(headers))
 		for _, h := range headers {
@@ -170,11 +241,87 @@ func onHttpRequestHeaders(ctx wrapper.HttpContext, config PluginConfig, log log.
 			case headerXHigressLLMModel, headerXHigressLLMModelFin, headerAuthorization, headerMseConsumer:
 				ctx.SetContext(lowerKey, val)
 				log.Infof("[ai-zdtc-token onHttpRequestHeaders]   [Context写入成功] -> Key: %s, Value: %s", lowerKey, val)
+				if lowerKey == headerMseConsumer {
+					mseConsumerVal = val
+				}
+				if lowerKey == headerAuthorization {
+					authHeaderVal = val
+				}
 			case "x-request-id":
 				ctx.SetContext(headerXRequestID, val)
 				log.Infof("[ai-zdtc-token onHttpRequestHeaders]   [Context写入成功] -> Key: %s, Value: %s", headerXRequestID, val)
 			}
 		}
+	}
+
+	// 如果 authorization 的值以 Bearer sp 开头, 那么就直接放行, 跳过后面的所有逻辑
+	if authHeaderVal != "" {
+		trimmedAuth := strings.TrimSpace(authHeaderVal)
+		if strings.HasPrefix(trimmedAuth, "Bearer sp") {
+			log.Infof("[ai-zdtc-token onHttpRequestHeaders] 校验到 authorization 以 'Bearer sp' 开头 (%s), 直接放行", trimmedAuth)
+			log.Infof("[ai-zdtc-token onHttpRequestHeaders] === [OnHttpRequestHeaders] 阶段结束 ===")
+			return types.ActionContinue
+		}
+	}
+
+	// 从头信息中解析 mseConsumer 并进行余额校验
+	if mseConsumerVal != "" {
+		tenantID, _, ok := parseMseConsumer(mseConsumerVal)
+		if ok && tenantID != "" {
+			if config.payClient == nil {
+				log.Warnf("[ai-zdtc-token onHttpRequestHeaders] 已解析出 tenantID: %s, 但 payClient 未初始化, 跳过余额校验", tenantID)
+			} else {
+				redisKey := fmt.Sprintf("%s:balance:%s", tenantID, pluginName)
+
+				// 1. 优先查 Redis 缓存
+				err := config.redisClient.Get(redisKey, func(response resp.Value) {
+					if response.Error() == nil && !response.IsNull() {
+						cachedData := response.String()
+						log.Infof("[ai-zdtc-token onHttpRequestHeaders] Redis 命中租户 %s 余额缓存数据", tenantID)
+
+						// 同时解析可用余额(cash_balance)与测试金(free_balance)
+						cashBalance, freeBalance, parseErr := parseBalances(cachedData)
+						if parseErr == nil {
+							log.Infof("[ai-zdtc-token onHttpRequestHeaders] [Redis Hit] 租户 %s 资金明细 -> 账户可用余额(cash_balance): %.4f, 测试金(free_balance): %.4f",
+								tenantID, cashBalance, freeBalance)
+
+							// 资金校验规则: 只有当 cash_balance <= 0 并且 free_balance <= 0 时, 才判定为资金不足并拦截请求
+							if cashBalance <= 0 && freeBalance <= 0 {
+								log.Warnf("[ai-zdtc-token onHttpRequestHeaders] [Redis Hit] 租户 %s 账户可用余额 (%.4f) 与测试金 (%.4f) 均 <= 0, 资金不足, 拦截请求",
+									tenantID, cashBalance, freeBalance)
+								sendInsufficientBalanceResponse()
+								// SendHttpResponse 触发 Envoy 拦截后, 必须 return 退出当前异步闭包, 否则程序会继续向下执行 ResumeHttpRequest 等逻辑导致状态冲突.
+								return
+							}
+
+							log.Infof("[ai-zdtc-token onHttpRequestHeaders] [Redis Hit] 租户 %s 账户资金校验通过 (cash_balance: %.4f, free_balance: %.4f), 允许放行",
+								tenantID, cashBalance, freeBalance)
+							proxywasm.ResumeHttpRequest()
+							// ResumeHttpRequest 已恢复 Envoy 过滤器链继续处理请求, 必须 return 退出闭包, 否则会向下执行 callPayService 重复请求远程接口.
+							return
+						}
+						log.Errorf("[ai-zdtc-token onHttpRequestHeaders] 解析 Redis 缓存余额数据失败: %#v, 准备请求 Pay 服务", parseErr)
+					}
+
+					// 2. Redis 未命中或解析失败, 请求远程 Pay HTTP 服务
+					callPayService(config, tenantID, redisKey, log)
+				})
+
+				if err != nil {
+					log.Errorf("[ai-zdtc-token onHttpRequestHeaders] 调用 Redis Get 异常: %#v, 直接请求 Pay 服务", err)
+					callPayService(config, tenantID, redisKey, log)
+					// 请求 Pay 服务, 这里是不是应该直接 return
+					// 不需要也不应该在这里 return. callPayService 内部是异步 HTTP 调用, 发起异步请求后, 主函数仍需继续运行到末尾返回 ActionPause, 通知 Envoy 暂停请求并等待回调.
+				}
+
+				log.Infof("[ai-zdtc-token onHttpRequestHeaders] === [OnHttpRequestHeaders] 阶段暂停(等待异步余额校验) ===")
+				return types.ActionPause
+			}
+		} else {
+			log.Warnf("[ai-zdtc-token onHttpRequestHeaders] 警告: x-mse-consumer 格式不正确 mseConsumerVal: %s", mseConsumerVal)
+		}
+	} else {
+		log.Warnf("[ai-zdtc-token onHttpRequestHeaders] 警告: 未正常从头信息中获取到 x-mse-consumer mseConsumerVal: %s", mseConsumerVal)
 	}
 
 	log.Infof("[ai-zdtc-token onHttpRequestHeaders] === [OnHttpRequestHeaders] 阶段结束 ===")
@@ -203,6 +350,8 @@ func onHttpResponseHeaders(ctx wrapper.HttpContext, config PluginConfig, log log
 	headers, err := proxywasm.GetHttpResponseHeaders()
 	if err != nil {
 		log.Errorf("[ai-zdtc-token onHttpResponseHeaders] 无法获取响应头: %#v", err)
+		// 获取响应头失败时跳过分析, 返回 ActionContinue 允许响应正常返回给客户端.
+		return types.ActionContinue
 	} else {
 		log.Infof("[ai-zdtc-token onHttpResponseHeaders] 响应头总数: %d", len(headers))
 		for _, h := range headers {
@@ -325,7 +474,7 @@ func onHttpStreamResponseBody(ctx wrapper.HttpContext, config PluginConfig, chun
 			durationMs = endTimeMilli - startTimeMilli
 		}
 		auditLog := TokenAuditLog{
-			UUID:           requestUUID, // 写入生成的唯一 UUID
+			UUID:           requestUUID,
 			RequestID:      requestID,
 			LLMModel:       llmModel,
 			LLMModelFinal:  llmModelFinal,
@@ -347,8 +496,6 @@ func onHttpStreamResponseBody(ctx wrapper.HttpContext, config PluginConfig, chun
 		} else {
 			jsonStr := string(jsonBytes)
 			log.Infof("[ai-zdtc-token onHttpStreamResponseBody] 异步向 Redis 写入. Key: %s, Value: %s", redisKey, jsonStr)
-			// Key: ai-zdtc-token|1-96323044|0ed4cf5c-8baf-43e4-9138-9bc863eca9d6|
-			// Value: {"uuid":"4d8094c1-431c-46bf-afe4-54a8dada16f4","request_id":"0ed4cf5c-8baf-43e4-9138-9bc863eca9d6","llm_model":"capital","llm_model_final":"Vendor3/DeepSeek-V4-Flash","authorization":"pg589f6in04e5xqy6srrphk6","mse_consumer":"1-96323044","response_id":"","start_time_milli":1785477049103,"end_time_milli":1785477051608,"duration_ms":2505,"input_token":5,"output_token":111,"total_token":116,"model":"Vendor3/DeepSeek-V4-Flash"}
 
 			err = config.redisClient.Set(redisKey, jsonStr, func(response resp.Value) {
 				if response.Error() != nil {
@@ -365,4 +512,132 @@ func onHttpStreamResponseBody(ctx wrapper.HttpContext, config PluginConfig, chun
 
 	log.Infof("[ai-zdtc-token onHttpStreamResponseBody] === [OnHttpStreamResponseBody] 阶段结束 ===")
 	return chunk
+}
+
+// 解析 mseConsumer 的规则函数
+func parseMseConsumer(mseConsumer string) (tenantID, userID string, ok bool) {
+	// 严格规则1: 必须且仅包含一个 "-"
+	if strings.Count(mseConsumer, "-") != 1 {
+		return "", "", false
+	}
+
+	parts := strings.Split(mseConsumer, "-")
+	// 严格规则2: 切分后必须是 2 段, 且两段内容均不能为空
+	if len(parts) != 2 || parts[0] == "" || parts[1] == "" {
+		return "", "", false
+	}
+
+	// 顺序: 前段是租户 ID, 后段是用户 ID
+	return parts[0], parts[1], true
+}
+
+// 异步请求 Pay 服务的帮助方法
+func callPayService(config PluginConfig, tenantID string, redisKey string, log log.Log) {
+	path := "/v0/financial_center/get_user_balance_basic_info"
+
+	var bodyStr string
+	if tenantIDInt, err := strconv.ParseInt(tenantID, 10, 64); err == nil {
+		bodyStr = fmt.Sprintf(`{"user_id": %d}`, tenantIDInt)
+	} else {
+		bodyStr = fmt.Sprintf(`{"user_id": "%s"}`, tenantID)
+	}
+
+	headers := [][2]string{
+		{"Content-Type", "application/json"},
+	}
+
+	err := config.payClient.Post(path, headers, []byte(bodyStr), func(statusCode int, responseHeaders http.Header, responseBody []byte) {
+		log.Infof("[ai-zdtc-token callPayService] 查询余额接口返回状态码: %d, body: %s", statusCode, string(responseBody))
+
+		if statusCode != http.StatusOK {
+			log.Errorf("[ai-zdtc-token callPayService] 查询余额接口返回非 200 状态码: %d, body: %s, 降级放行请求", statusCode, string(responseBody))
+			proxywasm.ResumeHttpRequest()
+			// 接口返回非 200 触发降级放行, 必须 return 退出回调闭包, 防止代码向下继续解析数据.
+			return
+		}
+
+		dataResult := gjson.GetBytes(responseBody, "data")
+		if !dataResult.Exists() {
+			log.Errorf("[ai-zdtc-token callPayService] 查询余额接口响应缺少 data 字段, body: %s, 降级放行请求", string(responseBody))
+			proxywasm.ResumeHttpRequest()
+			// 缺少 data 字段无法进行后续余额校验, 降级放行后必须 return 终止执行.
+			return
+		}
+
+		dataRaw := dataResult.Raw
+		log.Infof("[ai-zdtc-token callPayService] 查询余额接口返回 dataRaw: %s", dataRaw)
+
+		// 从远程响应的 data 中解析账户可用余额(cash_balance)与测试金(free_balance)
+		cashBalance, freeBalance, err := parseBalances(dataRaw)
+		if err != nil {
+			log.Errorf("[ai-zdtc-token callPayService] 解析余额字段 (cash_balance/free_balance) 失败: %#v, body: %s, 降级放行请求", err, string(responseBody))
+			proxywasm.ResumeHttpRequest()
+			// 余额字段解析异常进入降级逻辑, ResumeHttpRequest 恢复网关流后必须 return, 避免误入下方的拦截逻辑.
+			return
+		}
+
+		log.Infof("[ai-zdtc-token callPayService] 查询 Pay 接口成功, 租户 %s 资金明细 -> 账户可用余额(cash_balance): %.4f, 测试金(free_balance): %.4f",
+			tenantID, cashBalance, freeBalance)
+
+		// 1. 将 data 的所有信息写入 Redis
+		cacheTTL := config.PayInfo.BalanceCacheTTL
+		log.Infof("[ai-zdtc-token callPayService] 将租户 %s 的余额 data 写入 Redis (TTL %ds), Key: %s, Value: %s", tenantID, cacheTTL, redisKey, dataRaw)
+		err = config.redisClient.Set(redisKey, dataRaw, func(respVal resp.Value) {
+			if respVal.Error() != nil {
+				log.Errorf("[ai-zdtc-token callPayService] Redis 写入失败: %#v", respVal.Error())
+			} else {
+				_ = config.redisClient.Expire(redisKey, int(cacheTTL), nil)
+			}
+		})
+		if err != nil {
+			log.Errorf("[ai-zdtc-token callPayService] 调用 Redis Set 接口异常: %#v", err)
+		}
+
+		// 2. 资金拦截判定: 只有当 cash_balance <= 0 且 free_balance <= 0 时, 才拦截该请求
+		if cashBalance <= 0 && freeBalance <= 0 {
+			log.Warnf("[ai-zdtc-token callPayService] 租户 %s 账户可用余额 (%.4f) 和测试金 (%.4f) 均 <= 0, 资金不足, 拦截请求",
+				tenantID, cashBalance, freeBalance)
+			sendInsufficientBalanceResponse()
+			// sendInsufficientBalanceResponse 发送 403 拦截并终止下游请求后, 必须 return 退出回调, 防止再调用下方的 ResumeHttpRequest.
+			return
+		}
+
+		log.Infof("[ai-zdtc-token callPayService] 租户 %s 资金充裕 (cash_balance: %.4f, free_balance: %.4f), 余额校验通过",
+			tenantID, cashBalance, freeBalance)
+		proxywasm.ResumeHttpRequest()
+	}, uint32(config.PayInfo.Timeout))
+
+	if err != nil {
+		log.Errorf("[ai-zdtc-token callPayService] 异步调用 Pay 服务接口失败: %#v, 降级放行请求", err)
+		proxywasm.ResumeHttpRequest()
+	}
+}
+
+// 从 data 的 JSON 字符串中解析 cash_balance (账户可用余额) 和 free_balance (测试金) 为 float64
+func parseBalances(dataJson string) (cashBalance float64, freeBalance float64, err error) {
+	// 1. 解析 cash_balance (账户可用余额)
+	cashStr := gjson.Get(dataJson, "cash_balance").String()
+	if cashStr == "" {
+		return 0, 0, fmt.Errorf("cash_balance 字段为空或不存在")
+	}
+	cashVal, err := strconv.ParseFloat(cashStr, 64)
+	if err != nil {
+		return 0, 0, fmt.Errorf("解析 cash_balance (%s) 为 float64 失败: %w", cashStr, err)
+	}
+
+	// 2. 解析 free_balance (测试金 = 免费账户收入 - 免费账户支出)
+	freeStr := gjson.Get(dataJson, "free_balance").String()
+	if freeStr == "" {
+		return 0, 0, fmt.Errorf("free_balance 字段为空或不存在")
+	}
+	freeVal, err := strconv.ParseFloat(freeStr, 64)
+	if err != nil {
+		return 0, 0, fmt.Errorf("解析 free_balance (%s) 为 float64 失败: %w", freeStr, err)
+	}
+
+	return cashVal, freeVal, nil
+}
+
+func sendInsufficientBalanceResponse() {
+	proxywasm.SendHttpResponse(http.StatusForbidden, insufficientBalanceResponseHeaders, insufficientBalanceResponseBody, -1)
 }
