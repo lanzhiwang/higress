@@ -476,8 +476,8 @@ registry-dx.wair.ac.cn
 zsy/FIO0eOcrhC8=
 
 docker tag \
-higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/ai-zdtc-token:20260806-113154-9e577662 \
-registry-dx.wair.ac.cn/taichu-studio/higress-plugin:ai-zdtc-token-20260806-113154-9e577662
+higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/ai-zdtc-token:20260810-180023-0772377e \
+registry-dx.wair.ac.cn/taichu-studio/higress-plugin:ai-zdtc-token-20260810-180023-0772377e
 
 kubectl create secret docker-registry registry-dx-wair-ac-cn \
 --docker-server=registry-dx.wair.ac.cn \
@@ -2962,11 +2962,101 @@ redisKey := fmt.Sprintf("db10:{%s}-|%s|%s|%s", pluginName, mseConsumer, requestI
 
 ### 总结建议
 
-| 场景 | 推荐做法 |
-| :--- | :--- |
+| 场景                                  | 推荐做法                                                          |
+| :------------------------------------ | :---------------------------------------------------------------- |
 | 使用 Redis 集群 / 云厂商 Redis 集群版 | 方案一: 放弃 `database` 配置, 统一在 Key 上加前缀(如 `db10:xxxx`) |
-| 使用 Redis 单机/主从, 且硬性要求切库  | 方案二: 改为使用单机 Redis Client 代理, 开启 `SELECT db` |
+| 使用 Redis 单机/主从, 且硬性要求切库  | 方案二: 改为使用单机 Redis Client 代理, 开启 `SELECT db`          |
 
 对于大模型 API 网关(Higress)插件开发, 最稳定且扩展性最好的方式是方案一, 未来即便 Redis 架构由单机升级到分布式集群, 插件代码也无需再次修改.
+
+---------------------------------------------------------------------------------------------
+
+Q: 假设你是一位精通 golang 的高级开发人员, 同时也十分精通 higress 插件的开发, 我实现了一个插件, 代码如下:
+```go
+```
+当我初始化 redis 之后, 想 ping 一下 redis, 确保是真正配置成功 redis, 如果成功, 继续后面的逻辑, 如果失败, 在日志里面显示失败
+请完成上述逻辑, 输出完整代码, 不要删除或者修改原来的注释和日志
+
+在 Higress WASM 插件体系下, 需要先了解 Envoy WASM 的执行机制与 `higress-group/wasm-go` SDK 的实现原理:
+
+### 核心机制解析
+
+1. `parseConfig` 是同步过程, 但网络 IO 是异步回调:
+   `parseConfig` 在网关加载/热更新插件配置时被同步执行. `config.redisClient.Init(...)` 实际上只是在 WASM 虚拟机内部注册并记录了 Redis 的配置信息(如 FQDN、端口、超时、Auth 等), 此时并不会与 Redis 建立长连接或同步阻塞握手.
+2. Proxy-WASM 无法在 `parseConfig` 中阻塞等待:
+   在 Envoy WASM 的生命周期中, `OnPluginStart` / `OnPluginConfigure` 阶段发起网络 Dispatch(HTTP/Redis)都是异步非阻塞的. 因此, 无法在 `parseConfig` 里通过 `await` 或同步 `time.Sleep` 拿到 Ping 的返回结果再去 `return err` 拒绝加载插件.
+3. 如何实现"Ping / 探活"校验:
+   `higress-group/wasm-go` 的 `wrapper.RedisClient` 封装了 Envoy Redis 协议. 即使 SDK 没有显式暴露 `Ping()` 方法, 最通用且可靠的 Ping/探活方式就是向 Redis 发送一次轻量的 `Get` 指令(例如查询 `__higress_ping_test__`).
+   * 如果账号/密码错误(如 `WRONGPASS`)、连不上 Redis, 回调函数里的 `response.Error()` 就会捕获到明确的错误.
+   * 如果网络连通且认证/切库(Database)成功, `response.Error()` 为 `nil`(即使 Key 不存在, 仅返回 `IsNull() == true`).
+
+---
+
+### 代码修改方案
+
+在 `parseConfig` 函数中, 完成 `Init` 后追加异步探活逻辑:
+
+```go
+// 1. 解析配置阶段
+func parseConfig(json gjson.Result, config *PluginConfig, log log.Log) error {
+	// ... 上面解析 config.RedisInfo 的逻辑保持不变 ...
+
+	config.redisClient = wrapper.NewRedisClusterClient(wrapper.FQDNCluster{
+		FQDN: config.RedisInfo.ServiceName,
+		Port: int64(config.RedisInfo.ServicePort),
+	})
+
+	err := config.redisClient.Init(
+		config.RedisInfo.Username,
+		config.RedisInfo.Password,
+		int64(config.RedisInfo.Timeout),
+		wrapper.WithDataBase(config.RedisInfo.Database),
+	)
+	if err != nil {
+		log.Errorf("[ai-zdtc-token parseConfig] Redis 客户端初始化配置失败: %#v", err)
+		return err
+	}
+
+	log.Infof("[ai-zdtc-token parseConfig] Redis 客户端成功注册, 准备发起异步 Ping/探活校验...")
+
+	// [新增]发起 Redis 连通性及 Authentication/DB 选择的探活校验
+	pingKey := fmt.Sprintf("%s:__ping_test__", pluginName)
+	err = config.redisClient.Get(pingKey, func(response resp.Value) {
+		if response.Error() != nil {
+			log.Errorf("[ai-zdtc-token parseConfig] ❌ Redis Ping/探活失败! 请检查服务名(%s)、端口(%d)、密码或数据库(%d)配置. 错误信息: %v",
+				config.RedisInfo.ServiceName, config.RedisInfo.ServicePort, config.RedisInfo.Database, response.Error())
+		} else {
+			log.Infof("[ai-zdtc-token parseConfig] 💡 Redis 连通性及认证探活成功! (服务: %s:%d, DB: %d 响应正常)",
+				config.RedisInfo.ServiceName, config.RedisInfo.ServicePort, config.RedisInfo.Database)
+		}
+	})
+
+	if err != nil {
+		log.Errorf("[ai-zdtc-token parseConfig] ❌ 发起 Redis 探活请求异常 (网关可能找不到 Redis 路由集群): %#v", err)
+	}
+
+	// ... 下面解析 pay 服务的逻辑保持不变 ...
+
+	log.Infof("[ai-zdtc-token parseConfig] === [ParseConfig] 阶段结束 ===")
+	return nil
+}
+```
+
+---
+
+### 高级开发人员优化建议
+
+1. 观察网关启动/热更新日志:
+   插件配置生效后, 在 Higress 网关的日志中搜索 `[ai-zdtc-token parseConfig] 💡 Redis 连通性及认证探活成功!`, 以此验证 Redis 的配置(服务名 FQDN、密码、Database)是否真实可用.
+2. 容错降级设计:
+   已有代码在 `onHttpRequestHeaders` 和 `callPayService` 中处理了 `response.Error() != nil` 以及调用 Redis 异常时的逻辑(降级请求 Pay 服务), 这符合生产级要求.
+3. 避免重复 `Init` 导致的连接冲突:
+   Higress 在修改配置时会重新触发 `parseConfig`, `NewRedisClusterClient` + `Init` 会根据最新的配置更新连接上下文. 在 `parseConfig` 中做轻量 Get 探活不仅安全, 而且不会对 Redis 带来额外性能开销.
+
+---------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------

@@ -147,6 +147,22 @@ func parseConfig(json gjson.Result, config *PluginConfig, log log.Log) error {
 		return err
 	}
 
+	// 发起 Redis 连通性及 Authentication/DB 选择的探活校验
+	pingKey := fmt.Sprintf("%s:__ping_test__", pluginName)
+	err = config.redisClient.Get(pingKey, func(response resp.Value) {
+		if response.Error() != nil {
+			log.Errorf("[ai-zdtc-token parseConfig] Redis Ping/探活失败! 请检查服务名(%s)、端口(%d)、密码或数据库(%d)配置. 错误信息: %v",
+				config.RedisInfo.ServiceName, config.RedisInfo.ServicePort, config.RedisInfo.Database, response.Error())
+		} else {
+			log.Infof("[ai-zdtc-token parseConfig] Redis 连通性及认证探活成功! (服务: %s:%d, DB: %d 响应正常)",
+				config.RedisInfo.ServiceName, config.RedisInfo.ServicePort, config.RedisInfo.Database)
+		}
+	})
+
+	if err != nil {
+		log.Errorf("[ai-zdtc-token parseConfig] 发起 Redis 探活请求异常 (网关可能找不到 Redis 路由集群): %#v", err)
+	}
+
 	log.Infof("[ai-zdtc-token parseConfig] Redis 客户端成功注册且完成初始化")
 
 	// 解析 pay 服务配置
