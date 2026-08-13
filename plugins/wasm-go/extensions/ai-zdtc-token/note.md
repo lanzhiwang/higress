@@ -476,8 +476,8 @@ registry-dx.wair.ac.cn
 zsy/FIO0eOcrhC8=
 
 docker tag \
-higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/ai-zdtc-token:20260810-180023-0772377e \
-registry-dx.wair.ac.cn/taichu-studio/higress-plugin:ai-zdtc-token-20260810-180023-0772377e
+higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/ai-zdtc-token:20260813-154954-45b466d8 \
+registry-dx.wair.ac.cn/taichu-studio/higress-plugin:ai-zdtc-token-20260813-154954-45b466d8
 
 kubectl create secret docker-registry registry-dx-wair-ac-cn \
 --docker-server=registry-dx.wair.ac.cn \
@@ -2173,9 +2173,9 @@ func onHttpStreamResponseBody(ctx wrapper.HttpContext, config PluginConfig, chun
 
 ### 原理解析
 
-* 为什么 Envoy 会继续触发回调？
+* 为什么 Envoy 会继续触发回调?
   Envoy C++ 层面的 `Http::StreamFilter` 是基于链式调用的, 在请求阶段挂载了该 Filter 后, 后续的 Body/Response 阶段默认都会挨个回调 Filter 对应的方法.
-* 为什么使用 Context 标记是最佳做法？
+* 为什么使用 Context 标记是最佳做法?
   Proxy-Wasm 规范中并没有"动态在请求中途注销自身 Filter"的 ABI 指令. 因此在 `onHttpRequestHeaders` 阶段向请求级别打上上下文标记(`ctx.SetContext`), 并在后续阶段进行拦截早退, 是执行效率最高、对性能影响最小的标配做法.
 
 
@@ -3052,6 +3052,320 @@ func parseConfig(json gjson.Result, config *PluginConfig, log log.Log) error {
    已有代码在 `onHttpRequestHeaders` 和 `callPayService` 中处理了 `response.Error() != nil` 以及调用 Redis 异常时的逻辑(降级请求 Pay 服务), 这符合生产级要求.
 3. 避免重复 `Init` 导致的连接冲突:
    Higress 在修改配置时会重新触发 `parseConfig`, `NewRedisClusterClient` + `Init` 会根据最新的配置更新连接上下文. 在 `parseConfig` 中做轻量 Get 探活不仅安全, 而且不会对 Redis 带来额外性能开销.
+
+---------------------------------------------------------------------------------------------
+
+Q: 上述探活操作是有问题的, 因为是异步执行, redis get 操作的回调可能永远执行不到
+
+你的判断完全正确且非常敏锐! 在 Envoy / Higress WASM 的底层架构中, 在 `parseConfig` 阶段直接发起 Redis/HTTP 异步调用的回调函数确实大概率永远不会被执行.
+
+以下是关于这一问题的底层机制分析以及最严谨的架构解决方案:
+
+---
+
+### 一、为什么 `parseConfig` 里的异步回调不会执行?
+
+1. Root Context 与 Stream Context 的隔离:
+   * `parseConfig` 运行在 WASM 的 Root Context(根上下文, 插件初始化/配置更新阶段).
+   * 真正的请求处理函数(如 `onHttpRequestHeaders`)运行在 Stream Context(请求流上下文), 每个 HTTP 请求对应一个独立的 `context_id`.
+2. Envoy 事件循环的路由机制:
+   * 当 WASM 在 `parseConfig` 结束后返回 `nil`, Envoy 会认为插件配置加载完成, Root Context 的函数调用栈立即退出.
+   * Envoy 的 Redis C++ 异步客户端在收到响应后, 寻找绑定的 WASM 实例与 `context_id`. 因为 Root Context 没有挂载活跃的事件流, 且已经退出执行栈, Envoy Proxy-WASM 主体不会将这个异步事件回调路由给 WASM 虚拟机, 回调闭包直接被丢弃.
+3. WASM 规范限制:
+   * WASM 虚拟机本身是单线程同步执行模型, 不支持 Go 原生的 goroutine 或后台异步监听线程. 所有异步回调必须依赖 Envoy 的事件循环来主动"唤醒". 在没有请求到达时, 根上下文无法被再次唤醒.
+
+---
+
+### 二、生产级的正确解法
+
+既然 `parseConfig` 无法阻塞, 也无法收到异步回调, 高级开发人员在 Higress 中通常采用以下两种符合 WASM 规范的设计模式:
+
+#### 方案 1: 首次请求延迟探活 (Lazy Probe / First-Request Check)
+将探活逻辑延迟到首个 HTTP 请求到达时(此时有了真实的 `HttpContext`), 执行一次 `sync.Once` 或原子状态判断. 此时发起 Redis 请求, Envoy 能够完整跟踪 `context_id` 并保证回调被正常触发.
+
+##### 代码实现示例:
+
+可以在 `PluginConfig` 中增加一个状态标志(注意: 由于 Envoy 可能开多个 VM 线程, 建议结合 `sync.Once` 或简单的布尔值):
+
+```go
+type PluginConfig struct {
+	// ... 原有字段保持不变 ...
+	redisClient wrapper.RedisClient
+	redisTested bool // 标记 Redis 是否已完成首次请求探活
+}
+
+func onHttpRequestHeaders(ctx wrapper.HttpContext, config PluginConfig, log log.Log) types.Action {
+	log.Infof("[ai-zdtc-token onHttpRequestHeaders] === [OnHttpRequestHeaders] 阶段开始 ===")
+
+	// ... 前置参数解析逻辑 ...
+
+	// 从头信息中解析 mseConsumer 并进行余额校验
+	if mseConsumerVal != "" {
+		tenantID, _, ok := parseMseConsumer(mseConsumerVal)
+		if ok && tenantID != "" {
+			if config.payClient == nil {
+				log.Warnf("[ai-zdtc-token onHttpRequestHeaders] 已解析出 tenantID: %s, 但 payClient 未初始化, 跳过余额校验", tenantID)
+			} else {
+				redisKey := fmt.Sprintf("%s:balance:%s", tenantID, pluginName)
+
+				// [首次请求探活日志提示]如果这是插件加载后的首次调用, 打日志标识探活开启
+				if !config.redisTested {
+					log.Infof("[ai-zdtc-token onHttpRequestHeaders] 收到首个请求, 首次触发 Redis 连通性与鉴权校验...")
+				}
+
+				// 1. 优先查 Redis 缓存 (此调用本身即兼具了"探活"与"业务查询"的双重作用)
+				err := config.redisClient.Get(redisKey, func(response resp.Value) {
+					if response.Error() != nil {
+						// 探活/连接/认证失败捕获
+						log.Errorf("[ai-zdtc-token onHttpRequestHeaders] ❌ Redis 交互异常 (可能是网络不通、密码错误或DB不正确): %v", response.Error())
+					} else {
+						if !config.redisTested {
+							log.Infof("[ai-zdtc-token onHttpRequestHeaders] 💡 Redis 连通性及认证成功! 服务恢复正常. ")
+							config.redisTested = true
+						}
+					}
+
+					if response.Error() == nil && !response.IsNull() {
+						cachedData := response.String()
+						// ... 解析缓存并进行资金校验逻辑 ...
+					}
+
+					// Redis 未命中、解析失败或连接异常, 降级请求 Pay 服务
+					callPayService(config, tenantID, redisKey, log)
+				})
+
+				if err != nil {
+					log.Errorf("[ai-zdtc-token onHttpRequestHeaders] 调用 Redis Get 异常: %#v, 直接请求 Pay 服务", err)
+					callPayService(config, tenantID, redisKey, log)
+				}
+
+				return types.ActionPause
+			}
+		}
+	}
+    // ...
+}
+```
+
+---
+
+#### 方案 2: 将"业务查询"与"故障自愈"结合(最佳实践)
+
+在 Higress 插件开发中, 最稳健的做法是不做专门的 Ping 探活, 而是依靠"请求级实时容错机制"(你的代码里其实已经实现了这部分核心逻辑).
+
+1. `parseConfig` 职责纯粹化:
+   `parseConfig` 只负责校验 YAML/JSON 参数合法性(如 `service_name` 是否为空, 端口是否合法), 并调用 `Init` 注册客户端上下文. 绝对不要在 `parseConfig` 里发起任何网络请求.
+
+2. 请求处理阶段的完整闭环:
+   在 `onHttpRequestHeaders` 中调用 `redisClient.Get(...)` 时:
+   * 如果 Redis 连通且配置正确: 正常走 Redis 缓存或写入逻辑.
+   * 如果 Redis 挂掉/密码配错: `response.Error()` 不为 `nil`, 打印 Error 日志, 自动降级调用远程 Pay 服务或放行. 网关绝不会被阻塞或崩塌.
+
+---
+
+### 总结
+
+* `parseConfig`: 只做静态配置解析、结构体填充、客户端实例注册(`Init`), 不做任何网络 IO 操作.
+* 探活与校验: 交由 HTTP 请求触发时的 `HttpContext` 异步生命周期完成, 依靠完整的降级机制(FallBack to Pay Service)实现高可用.
+
+---------------------------------------------------------------------------------------------
+
+Q: 如果 Envoy 可能开多个 VM 线程, 如何使用 `sync.Once` 确保探活只执行一次
+
+在 Envoy 架构中, 要解决"多 VM/多 Worker 线程"下的探活控制, 需要同时理解 Envoy 的线程隔离模型 和 Go 语言的指针值传递坑.
+
+以下是实现"首次请求探活且仅执行一次"的完整设计方案与踩坑指南:
+
+---
+
+### 一、核心原理解析: Envoy WASM 的 VM 线程模型
+
+1. 内存空间物理隔离:
+   Envoy 采用 Thread-Per-Core(单线程事件循环)模型. 默认情况下, 每个 Worker 线程都运行着一个完全独立的 WASM VM 虚拟机实例.
+   * Worker 线程 1 的 WASM VM 有自己独立的堆内存、全局变量和 `PluginConfig`；
+   * Worker 线程 2 的 WASM VM 同样有自己独立的堆内存.
+2. "探活一次"的真实定义:
+   在 Envoy 中, "仅探活一次"的正确表现是: 每个 WASM VM 实例(即每个 Worker 线程)在其接收到首个请求时, 各自执行且仅执行 1 次探活.
+   这不仅符合 Proxy-WASM 的内存隔离规范, 也能确保网关的每个工作线程都确认了与 Redis 的连通性.
+
+---
+
+### 二、致命避坑点: Go 语言 `PluginConfig` 值传递
+
+在 `higress-group/wasm-go` 中, 处理函数(如 `onHttpRequestHeaders`)的签名如下:
+```go
+func onHttpRequestHeaders(ctx wrapper.HttpContext, config PluginConfig, log log.Log) types.Action
+```
+注意: 这里的 `config` 是按值传递(Value Copy)的!
+
+❌ 错误写法(直接在 `PluginConfig` 里放 `sync.Once` 值):
+```go
+type PluginConfig struct {
+    probeOnce sync.Once // 错误! 每次请求函数被调用时, config 都会被复制一份, sync.Once 被拷贝后 state 重置, 导致每次请求都会执行!
+}
+```
+
+✅ 正确写法(在 `PluginConfig` 中存 `*sync.Once` 指针):
+在 `parseConfig` 中使用 `new(sync.Once)` 初始化指针, 这样即使 `PluginConfig` 被按值复制, 所有副本里的指针都指向同一块内存地址, `sync.Once` 才能真正生效!
+
+---
+
+### 三、完整代码实现
+
+#### 1. 修改 `PluginConfig` 结构体及 `parseConfig`
+
+```go
+type PluginConfig struct {
+	Debug       bool      `yaml:"debug" json:"debug"`
+	RedisInfo   RedisInfo `yaml:"redis" json:"redis"`
+	redisClient wrapper.RedisClient
+	PayInfo     PayInfo `yaml:"pay" json:"pay"`
+	payClient   wrapper.HttpClient
+
+	// 使用指针类型! 确保在 onHttpRequestHeaders 的值传递下依然指向同一个 sync.Once 实例
+	probeOnce *sync.Once
+}
+
+func parseConfig(json gjson.Result, config *PluginConfig, log log.Log) error {
+	// ... 原有 Redis / Pay 配置解析逻辑 ...
+
+	// 初始化 probeOnce 指针
+	config.probeOnce = new(sync.Once)
+
+	log.Infof("[ai-zdtc-token parseConfig] === [ParseConfig] 阶段结束 ===")
+	return nil
+}
+```
+
+#### 2. 在 `onHttpRequestHeaders` 或专门的方法中调用探活
+
+```go
+// 辅助函数: 执行 Redis 探活(仅在首个请求时被 sync.Once 触发)
+func probeRedisIfNeeded(config PluginConfig, log log.Log) {
+	if config.probeOnce == nil || config.redisClient == nil {
+		return
+	}
+
+	config.probeOnce.Do(func() {
+		pingKey := fmt.Sprintf("%s:__ping_test__", pluginName)
+		log.Infof("[ai-zdtc-token] 🚀 触发当前 WASM VM 线程的首次 Redis 连通性探活 (Key: %s)...", pingKey)
+
+		// 发起异步探活(在 HttpContext 阶段发起, Envoy 能够正常路由并触发回调)
+		err := config.redisClient.Get(pingKey, func(response resp.Value) {
+			if response.Error() != nil {
+				log.Errorf("[ai-zdtc-token] ❌ Redis 探活校验失败! 错误信息: %v", response.Error())
+			} else {
+				log.Infof("[ai-zdtc-token] 💡 Redis 探活成功! 连通性与鉴权正常. ")
+			}
+		})
+
+		if err != nil {
+			log.Errorf("[ai-zdtc-token] ❌ 发起 Redis 探活异步调用失败: %#v", err)
+		}
+	})
+}
+
+func onHttpRequestHeaders(ctx wrapper.HttpContext, config PluginConfig, log log.Log) types.Action {
+	log.Infof("[ai-zdtc-token onHttpRequestHeaders] === [OnHttpRequestHeaders] 阶段开始 ===")
+
+	// 在处理业务逻辑前, 安全触发一次探活(仅当前 Worker 线程首次请求会真实执行)
+	probeRedisIfNeeded(config, log)
+
+	// ... 后续原有业务逻辑 (如 parseMseConsumer, 校验余额等) ...
+	return types.ActionContinue
+}
+```
+
+---
+
+### 四、方案效果验证与行为预期
+
+1. 网关刚启动/配置更新时:
+   日志中只有 `parseConfig` 完成的信息, 不会看到任何 Redis 探活日志(符合 Envoy WASM 规范).
+2. 首批请求到达网关时:
+   * 如果网关配置了 4 个 CPU Worker 线程, 当请求分别路由到这 4 个线程时, 你会看到日志中打出 4 次 `🚀 触发当前 WASM VM 线程的首次 Redis 连通性探活`.
+   * 随后该线程收到的第 2、第 3... 第 N 个请求, `config.probeOnce.Do` 会直接跳过, 零性能损耗.
+3. 高并发请求下:
+   Go 语言的 `sync.Once` 底层使用 `atomic` 加锁保证线程安全, 绝对不会出现并发重复触发探活的问题.
+
+---------------------------------------------------------------------------------------------
+
+Q: 根据上述实现，我发现日志里面多次打印探活的信息，如下
+```
+[2026-08-10 11:19:12.354][94][info][wasm] [external/envoy/source/extensions/common/wasm/context.cc:1513] wasm log higress-system.ai-zdtc-token-1.0.0: [ai-zdtc-token] [nil] [79005dad-07c6-4a93-a17b-2459f3ca6d9e] [ai-zdtc-token onHttpRequestHeaders] === [OnHttpRequestHeaders] 阶段开始 ===
+[2026-08-10 11:19:12.354][94][info][wasm] [external/envoy/source/extensions/common/wasm/context.cc:1513] wasm log higress-system.ai-zdtc-token-1.0.0: [ai-zdtc-token] [nil] [79005dad-07c6-4a93-a17b-2459f3ca6d9e] [ai-zdtc-token probeRedisIfNeeded] 触发当前 WASM VM 线程的首次 Redis 连通性探活 (Key: ai-zdtc-token:__ping_test__)...
+[2026-08-10 11:19:12.378][94][info][wasm] [external/envoy/source/extensions/common/wasm/context.cc:1513] wasm log higress-system.ai-zdtc-token-1.0.0: [ai-zdtc-token] [nil] [79005dad-07c6-4a93-a17b-2459f3ca6d9e] [ai-zdtc-token probeRedisIfNeeded] Redis 探活成功! 连通性与鉴权正常.
+
+
+[2026-08-10 11:19:16.851][95][info][wasm] [external/envoy/source/extensions/common/wasm/context.cc:1513] wasm log higress-system.ai-zdtc-token-1.0.0: [ai-zdtc-token] [nil] [1c306af6-f84b-4390-815a-83b64fcae75e] [ai-zdtc-token onHttpRequestHeaders] === [OnHttpRequestHeaders] 阶段开始 ===
+[2026-08-10 11:19:16.851][95][info][wasm] [external/envoy/source/extensions/common/wasm/context.cc:1513] wasm log higress-system.ai-zdtc-token-1.0.0: [ai-zdtc-token] [nil] [1c306af6-f84b-4390-815a-83b64fcae75e] [ai-zdtc-token probeRedisIfNeeded] 触发当前 WASM VM 线程的首次 Redis 连通性探活 (Key: ai-zdtc-token:__ping_test__)...
+[2026-08-10 11:19:16.863][95][info][wasm] [external/envoy/source/extensions/common/wasm/context.cc:1513] wasm log higress-system.ai-zdtc-token-1.0.0: [ai-zdtc-token] [nil] [1c306af6-f84b-4390-815a-83b64fcae75e] [ai-zdtc-token probeRedisIfNeeded] Redis 探活成功! 连通性与鉴权正常.
+```
+请问为什么会出现两次 触发当前 WASM VM 线程的首次 Redis 连通性探活 (Key: ai-zdtc-token:__ping_test__)...，是因为客户端发送了两次请求还是因为 Envoy 可能开2个 VM 线程
+
+从你提供的日志数据来看，**答案是：两者皆是！**
+
+日志中的细节完美证实了我们上一轮讨论的 **Envoy 多 Worker 线程隔离机制**。我们可以从日志中提取出非常明确的三处证据：
+
+---
+
+### 一、 日志证据拆解
+
+#### 1. 证据一：线程 ID 不同 (`[94]` vs `[95]`)
+看日志每行开头的中括号：
+* 第一次探活：`[2026-08-10 11:19:12.354][94]...`
+* 第二次探活：`[2026-08-10 11:19:16.851][95]...`
+
+在中括号中的 **`[94]`** 和 **`[95]`** 是 Envoy 的 **Worker 线程 ID**。这直接证实了：** Envoy 至少开启了 2 个（或更多）Worker 线程，每个 Worker 线程运行着一个独立的 WASM VM 虚拟机。**
+
+#### 2. 证据二：请求 UUID 不同
+看日志中的请求唯一标识：
+* 第一次请求：`79005dad-07c6-4a93-a17b-2459f3ca6d9e`
+* 第二次请求：`1c306af6-f84b-4390-815a-83b64fcae75e`
+
+这两个完全不同的 UUID 证明：**客户端确实发起了两次不同的 HTTP 请求。**
+
+#### 3. 证据三：时间戳间隔 4.5 秒
+* 第一次请求时间：`11:19:12.354`
+* 第二次请求时间：`11:19:16.851`
+
+两次请求相隔约 4.5 秒，是两次独立的业务请求。
+
+---
+
+### 二、 实际发生的过程分析
+
+1. **第 1 次请求 (`11:19:12`)**：
+   * 客户端发送请求 1， Envoy 的负载均衡器将请求分发到了 **Worker 线程 `[94]`**。
+   * 线程 `[94]` 上的 WASM VM 实例第一次收到请求，其内存中的 `probeOnce` 未触发过，于是执行了探活。探活成功后 `probeOnce` 状态设为完成。
+
+2. **第 2 次请求 (`11:19:16`)**：
+   * 客户端在 4.5 秒后发送请求 2，Envoy 将请求分发到了 **Worker 线程 `[95]`**。
+   * 线程 `[95]` 上的 WASM VM 实例内存与线程 `[94]` **完全物理隔离**，线程 `[95]` 上的 `probeOnce` 依然是初始状态。
+   * 线程 `[95]` 触发探活，探活成功后 `probeOnce` 状态设为完成。
+
+---
+
+### 三、 接下来会发生什么？（验证预期）
+
+这完全符合 Proxy-WASM 规范的预期！后续的请求行为如下：
+
+* **如果第 3 次请求再次路由到 Worker 线程 `[94]`**：因为线程 `[94]` 的 `probeOnce` 已经执行过，**探活将被跳过，日志中不会再出现探活信息**。
+* **如果第 4 次请求再次路由到 Worker 线程 `[95]`**：因为线程 `[95]` 的 `probeOnce` 也已经执行过，**同样直接跳过，不会打探活日志**。
+* **如果 Envoy 配置了 N 个 Worker 线程**：在网关刚启动时，前几次请求如果分发到了不同的 Worker 线程，**最多只会打 N 次探活日志**（每个线程对应 1 次）。当所有 Worker 线程都处理过至少一次请求后，**探活日志将彻底消失，不再触发**。
+
+你的代码实现是完全正确且符合生产级 Envoy 插件规范的！
+
+
+
+
+---------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------
 

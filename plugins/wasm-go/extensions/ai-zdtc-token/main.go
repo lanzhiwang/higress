@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/google/uuid"
@@ -28,8 +29,9 @@ const (
 	headerXHigressLLMModelFin = "x-higress-llm-model-final"
 	headerAuthorization       = "authorization"
 	headerXHiOriginalAuth     = "x-hi-original-auth"
-	headerMseConsumer         = "x-mse-consumer"
-	headerXRequestID          = "x-request-id"
+	// headerMseConsumer         = "x-mse-consumer"
+	headerMseConsumer = "x-mse-cuser"
+	headerXRequestID  = "x-request-id"
 
 	headerXResponseID = "x-response-id"
 
@@ -42,6 +44,7 @@ type PluginConfig struct {
 	redisClient wrapper.RedisClient
 	PayInfo     PayInfo `yaml:"pay" json:"pay"`
 	payClient   wrapper.HttpClient
+	probeOnce   *sync.Once
 }
 
 type RedisInfo struct {
@@ -147,22 +150,6 @@ func parseConfig(json gjson.Result, config *PluginConfig, log log.Log) error {
 		return err
 	}
 
-	// 发起 Redis 连通性及 Authentication/DB 选择的探活校验
-	pingKey := fmt.Sprintf("%s:__ping_test__", pluginName)
-	err = config.redisClient.Get(pingKey, func(response resp.Value) {
-		if response.Error() != nil {
-			log.Errorf("[ai-zdtc-token parseConfig] Redis Ping/探活失败! 请检查服务名(%s)、端口(%d)、密码或数据库(%d)配置. 错误信息: %v",
-				config.RedisInfo.ServiceName, config.RedisInfo.ServicePort, config.RedisInfo.Database, response.Error())
-		} else {
-			log.Infof("[ai-zdtc-token parseConfig] Redis 连通性及认证探活成功! (服务: %s:%d, DB: %d 响应正常)",
-				config.RedisInfo.ServiceName, config.RedisInfo.ServicePort, config.RedisInfo.Database)
-		}
-	})
-
-	if err != nil {
-		log.Errorf("[ai-zdtc-token parseConfig] 发起 Redis 探活请求异常 (网关可能找不到 Redis 路由集群): %#v", err)
-	}
-
 	log.Infof("[ai-zdtc-token parseConfig] Redis 客户端成功注册且完成初始化")
 
 	// 解析 pay 服务配置
@@ -214,12 +201,18 @@ func parseConfig(json gjson.Result, config *PluginConfig, log log.Log) error {
 		log.Warnf("[ai-zdtc-token parseConfig] 警告: 未配置 pay 服务, 余额校验功能将无法正常调用远程接口")
 	}
 
+	// 初始化 probeOnce 指针
+	config.probeOnce = new(sync.Once)
+
 	log.Infof("[ai-zdtc-token parseConfig] === [ParseConfig] 阶段结束 ===")
 	return nil
 }
 
 func onHttpRequestHeaders(ctx wrapper.HttpContext, config PluginConfig, log log.Log) types.Action {
 	log.Infof("[ai-zdtc-token onHttpRequestHeaders] === [OnHttpRequestHeaders] 阶段开始 ===")
+
+	// 在处理业务逻辑前, 安全触发一次探活(仅当前 Worker 线程首次请求会真实执行)
+	probeRedisIfNeeded(config, log)
 
 	// 在请求头处理阶段生成一个 UUID 并写入 Context
 	reqUUID := uuid.New().String()
@@ -686,4 +679,29 @@ func parseBalances(dataJson string) (cashBalance float64, freeBalance float64, e
 
 func sendInsufficientBalanceResponse() {
 	proxywasm.SendHttpResponse(http.StatusForbidden, insufficientBalanceResponseHeaders, insufficientBalanceResponseBody, -1)
+}
+
+// 辅助函数: 执行 Redis 探活(仅在首个请求时被 sync.Once 触发)
+func probeRedisIfNeeded(config PluginConfig, log log.Log) {
+	if config.probeOnce == nil || config.redisClient == nil {
+		return
+	}
+
+	config.probeOnce.Do(func() {
+		pingKey := fmt.Sprintf("%s:__ping_test__", pluginName)
+		log.Infof("[ai-zdtc-token probeRedisIfNeeded] 触发当前 WASM VM 线程的首次 Redis 连通性探活 (Key: %s)...", pingKey)
+
+		// 发起异步探活
+		err := config.redisClient.Get(pingKey, func(response resp.Value) {
+			if response.Error() != nil {
+				log.Errorf("[ai-zdtc-token probeRedisIfNeeded] Redis 探活校验失败! 错误信息: %v", response.Error())
+			} else {
+				log.Infof("[ai-zdtc-token probeRedisIfNeeded] Redis 探活成功! 连通性与鉴权正常.")
+			}
+		})
+
+		if err != nil {
+			log.Errorf("[ai-zdtc-token probeRedisIfNeeded] 发起 Redis 探活异步调用失败: %#v", err)
+		}
+	})
 }
