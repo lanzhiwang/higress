@@ -18,10 +18,22 @@ docker run -ti --rm --name golang_1_24_1 \
 
 kubectl -n default run --rm=true -t -i --restart=Never \
 --image-pull-policy=IfNotPresent \
---image=redis \
+--image=redis:6.2.12 \
 redis-client --command bash
 
-redis-cli -h redis.infra.svc.cluster.local -p 6379
+redis-cli -h redis-master.infra.svc.cluster.local -p 6379 -a admin
+
+```
+
+```yaml
+        - proxy
+        - router
+        - --domain
+        - $(POD_NAMESPACE).svc.cluster.local
+        - --proxyLogLevel=warning
+        - --proxyComponentLogLevel=misc:error
+        - --proxyLogLevel=info
+        - --proxyComponentLogLevel=misc:info
 ```
 
 ---------------------------------------------------------------------------------------------
@@ -476,8 +488,8 @@ registry-dx.wair.ac.cn
 zsy/FIO0eOcrhC8=
 
 docker tag \
-higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/ai-zdtc-token:20260813-154954-45b466d8 \
-registry-dx.wair.ac.cn/taichu-studio/higress-plugin:ai-zdtc-token-20260813-154954-45b466d8
+higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/ai-zdtc-token:20260827-172558-18d9dcf9 \
+registry-dx.wair.ac.cn/taichu-studio/higress-plugin:ai-zdtc-token-20260827-172558-18d9dcf9
 
 kubectl create secret docker-registry registry-dx-wair-ac-cn \
 --docker-server=registry-dx.wair.ac.cn \
@@ -1394,7 +1406,7 @@ proxywasm.ResumeHttpRequest()
 
 2. 请求暂停与恢复的配对 (ActionPause / StopAllIterationAndWatermark):
    - 官方 Go 1.24 原生编译方案中, 在 Header 阶段调用外部异步服务(HTTP / Redis)暂停请求时, 建议在 `onHttpRequestHeaders` 尾部返回 `types.HeaderStopAllIterationAndWatermark`(旧 TinyGo ABI 中为 `types.ActionPause`). 你代码中的逻辑是正确的.
-   - 注意任何分支下如果不拦截, 必须保证有且仅有一次 `proxywasm.ResumeHttpRequest()` 调用；如果拦截, 必须调用 `sendInsufficientBalanceResponse()` 并及时 `return`, 这一点你当前的代码处理得很好.
+   - 注意任何分支下如果不拦截, 必须保证有且仅有一次 `proxywasm.ResumeHttpRequest()` 调用; 如果拦截, 必须调用 `sendInsufficientBalanceResponse()` 并及时 `return`, 这一点你当前的代码处理得很好.
 
 改用 `SetEx` 后重新编译部署, 再次在 Redis 中使用 `ttl 450287008:balance:ai-zdtc-token` 查看, 就能看到正常的倒计时秒数(例如 `120` 或 `30`)了.
 
@@ -3182,7 +3194,7 @@ Q: 如果 Envoy 可能开多个 VM 线程, 如何使用 `sync.Once` 确保探活
 
 1. 内存空间物理隔离:
    Envoy 采用 Thread-Per-Core(单线程事件循环)模型. 默认情况下, 每个 Worker 线程都运行着一个完全独立的 WASM VM 虚拟机实例.
-   * Worker 线程 1 的 WASM VM 有自己独立的堆内存、全局变量和 `PluginConfig`；
+   * Worker 线程 1 的 WASM VM 有自己独立的堆内存、全局变量和 `PluginConfig`;
    * Worker 线程 2 的 WASM VM 同样有自己独立的堆内存.
 2. "探活一次"的真实定义:
    在 Envoy 中, "仅探活一次"的正确表现是: 每个 WASM VM 实例(即每个 Worker 线程)在其接收到首个请求时, 各自执行且仅执行 1 次探活.
@@ -3290,7 +3302,7 @@ func onHttpRequestHeaders(ctx wrapper.HttpContext, config PluginConfig, log log.
 
 ---------------------------------------------------------------------------------------------
 
-Q: 根据上述实现，我发现日志里面多次打印探活的信息，如下
+Q: 根据上述实现, 我发现日志里面多次打印探活的信息, 如下
 ```
 [2026-08-10 11:19:12.354][94][info][wasm] [external/envoy/source/extensions/common/wasm/context.cc:1513] wasm log higress-system.ai-zdtc-token-1.0.0: [ai-zdtc-token] [nil] [79005dad-07c6-4a93-a17b-2459f3ca6d9e] [ai-zdtc-token onHttpRequestHeaders] === [OnHttpRequestHeaders] 阶段开始 ===
 [2026-08-10 11:19:12.354][94][info][wasm] [external/envoy/source/extensions/common/wasm/context.cc:1513] wasm log higress-system.ai-zdtc-token-1.0.0: [ai-zdtc-token] [nil] [79005dad-07c6-4a93-a17b-2459f3ca6d9e] [ai-zdtc-token probeRedisIfNeeded] 触发当前 WASM VM 线程的首次 Redis 连通性探活 (Key: ai-zdtc-token:__ping_test__)...
@@ -3301,76 +3313,500 @@ Q: 根据上述实现，我发现日志里面多次打印探活的信息，如�
 [2026-08-10 11:19:16.851][95][info][wasm] [external/envoy/source/extensions/common/wasm/context.cc:1513] wasm log higress-system.ai-zdtc-token-1.0.0: [ai-zdtc-token] [nil] [1c306af6-f84b-4390-815a-83b64fcae75e] [ai-zdtc-token probeRedisIfNeeded] 触发当前 WASM VM 线程的首次 Redis 连通性探活 (Key: ai-zdtc-token:__ping_test__)...
 [2026-08-10 11:19:16.863][95][info][wasm] [external/envoy/source/extensions/common/wasm/context.cc:1513] wasm log higress-system.ai-zdtc-token-1.0.0: [ai-zdtc-token] [nil] [1c306af6-f84b-4390-815a-83b64fcae75e] [ai-zdtc-token probeRedisIfNeeded] Redis 探活成功! 连通性与鉴权正常.
 ```
-请问为什么会出现两次 触发当前 WASM VM 线程的首次 Redis 连通性探活 (Key: ai-zdtc-token:__ping_test__)...，是因为客户端发送了两次请求还是因为 Envoy 可能开2个 VM 线程
+请问为什么会出现两次 触发当前 WASM VM 线程的首次 Redis 连通性探活 (Key: ai-zdtc-token:__ping_test__)..., 是因为客户端发送了两次请求还是因为 Envoy 可能开2个 VM 线程
 
-从你提供的日志数据来看，**答案是：两者皆是！**
+从你提供的日志数据来看, 答案是: 两者皆是！
 
-日志中的细节完美证实了我们上一轮讨论的 **Envoy 多 Worker 线程隔离机制**。我们可以从日志中提取出非常明确的三处证据：
+日志中的细节完美证实了我们上一轮讨论的 Envoy 多 Worker 线程隔离机制. 我们可以从日志中提取出非常明确的三处证据:
 
 ---
 
 ### 一、 日志证据拆解
 
-#### 1. 证据一：线程 ID 不同 (`[94]` vs `[95]`)
-看日志每行开头的中括号：
-* 第一次探活：`[2026-08-10 11:19:12.354][94]...`
-* 第二次探活：`[2026-08-10 11:19:16.851][95]...`
+#### 1. 证据一: 线程 ID 不同 (`[94]` vs `[95]`)
+看日志每行开头的中括号:
+* 第一次探活: `[2026-08-10 11:19:12.354][94]...`
+* 第二次探活: `[2026-08-10 11:19:16.851][95]...`
 
-在中括号中的 **`[94]`** 和 **`[95]`** 是 Envoy 的 **Worker 线程 ID**。这直接证实了：** Envoy 至少开启了 2 个（或更多）Worker 线程，每个 Worker 线程运行着一个独立的 WASM VM 虚拟机。**
+在中括号中的 `[94]` 和 `[95]` 是 Envoy 的 Worker 线程 ID. 这直接证实了:  Envoy 至少开启了 2 个(或更多)Worker 线程, 每个 Worker 线程运行着一个独立的 WASM VM 虚拟机.
 
-#### 2. 证据二：请求 UUID 不同
-看日志中的请求唯一标识：
-* 第一次请求：`79005dad-07c6-4a93-a17b-2459f3ca6d9e`
-* 第二次请求：`1c306af6-f84b-4390-815a-83b64fcae75e`
+#### 2. 证据二: 请求 UUID 不同
+看日志中的请求唯一标识:
+* 第一次请求: `79005dad-07c6-4a93-a17b-2459f3ca6d9e`
+* 第二次请求: `1c306af6-f84b-4390-815a-83b64fcae75e`
 
-这两个完全不同的 UUID 证明：**客户端确实发起了两次不同的 HTTP 请求。**
+这两个完全不同的 UUID 证明: 客户端确实发起了两次不同的 HTTP 请求.
 
-#### 3. 证据三：时间戳间隔 4.5 秒
-* 第一次请求时间：`11:19:12.354`
-* 第二次请求时间：`11:19:16.851`
+#### 3. 证据三: 时间戳间隔 4.5 秒
+* 第一次请求时间: `11:19:12.354`
+* 第二次请求时间: `11:19:16.851`
 
-两次请求相隔约 4.5 秒，是两次独立的业务请求。
+两次请求相隔约 4.5 秒, 是两次独立的业务请求.
 
 ---
 
 ### 二、 实际发生的过程分析
 
-1. **第 1 次请求 (`11:19:12`)**：
-   * 客户端发送请求 1， Envoy 的负载均衡器将请求分发到了 **Worker 线程 `[94]`**。
-   * 线程 `[94]` 上的 WASM VM 实例第一次收到请求，其内存中的 `probeOnce` 未触发过，于是执行了探活。探活成功后 `probeOnce` 状态设为完成。
+1. 第 1 次请求 (`11:19:12`):
+   * 客户端发送请求 1,  Envoy 的负载均衡器将请求分发到了 Worker 线程 `[94]`.
+   * 线程 `[94]` 上的 WASM VM 实例第一次收到请求, 其内存中的 `probeOnce` 未触发过, 于是执行了探活. 探活成功后 `probeOnce` 状态设为完成.
 
-2. **第 2 次请求 (`11:19:16`)**：
-   * 客户端在 4.5 秒后发送请求 2，Envoy 将请求分发到了 **Worker 线程 `[95]`**。
-   * 线程 `[95]` 上的 WASM VM 实例内存与线程 `[94]` **完全物理隔离**，线程 `[95]` 上的 `probeOnce` 依然是初始状态。
-   * 线程 `[95]` 触发探活，探活成功后 `probeOnce` 状态设为完成。
+2. 第 2 次请求 (`11:19:16`):
+   * 客户端在 4.5 秒后发送请求 2, Envoy 将请求分发到了 Worker 线程 `[95]`.
+   * 线程 `[95]` 上的 WASM VM 实例内存与线程 `[94]` 完全物理隔离, 线程 `[95]` 上的 `probeOnce` 依然是初始状态.
+   * 线程 `[95]` 触发探活, 探活成功后 `probeOnce` 状态设为完成.
 
 ---
 
-### 三、 接下来会发生什么？（验证预期）
+### 三、 接下来会发生什么? (验证预期)
 
-这完全符合 Proxy-WASM 规范的预期！后续的请求行为如下：
+这完全符合 Proxy-WASM 规范的预期！后续的请求行为如下:
 
-* **如果第 3 次请求再次路由到 Worker 线程 `[94]`**：因为线程 `[94]` 的 `probeOnce` 已经执行过，**探活将被跳过，日志中不会再出现探活信息**。
-* **如果第 4 次请求再次路由到 Worker 线程 `[95]`**：因为线程 `[95]` 的 `probeOnce` 也已经执行过，**同样直接跳过，不会打探活日志**。
-* **如果 Envoy 配置了 N 个 Worker 线程**：在网关刚启动时，前几次请求如果分发到了不同的 Worker 线程，**最多只会打 N 次探活日志**（每个线程对应 1 次）。当所有 Worker 线程都处理过至少一次请求后，**探活日志将彻底消失，不再触发**。
+* 如果第 3 次请求再次路由到 Worker 线程 `[94]`: 因为线程 `[94]` 的 `probeOnce` 已经执行过, 探活将被跳过, 日志中不会再出现探活信息.
+* 如果第 4 次请求再次路由到 Worker 线程 `[95]`: 因为线程 `[95]` 的 `probeOnce` 也已经执行过, 同样直接跳过, 不会打探活日志.
+* 如果 Envoy 配置了 N 个 Worker 线程: 在网关刚启动时, 前几次请求如果分发到了不同的 Worker 线程, 最多只会打 N 次探活日志(每个线程对应 1 次). 当所有 Worker 线程都处理过至少一次请求后, 探活日志将彻底消失, 不再触发.
 
 你的代码实现是完全正确且符合生产级 Envoy 插件规范的！
 
+---------------------------------------------------------------------------------------------
+
+Q: 假设你是一位精通 golang 的高级开发人员, 同时也十分精通 higress 插件的开发, 我实现了如下插件, 代码如下:
+```go
+```
+现在我想在这个插件里面添加两个功能, 一是获取上游服务返回的缓存 token 的信息, 二是记录一些异常情况, 比如客户端参数错误, 上游响应超时等.
+其中获取上游服务返回的缓存 token 的信息的基本信息如下:
+```
+```
+获取的就是 cached_tokens 信息.
+请完成上述两个需求, 并且在代码中添加注释和日志说明为什么要这么写, 不要删除原有的注释和日志输出, 请输出完整的代码
+
+针对你的需求, 我们在原有代码的基础上做出了以下增强与改进:
+
+### 核心改动点说明
+1. 获取上游缓存 Token(`cached_tokens`):
+   - 在 `TokenAuditLog` 结构体中新增 `CachedToken` 字段.
+   - 在 `onHttpStreamResponseBody` 阶段, 通过自定义解析函数 `extractCachedTokens` 从返回的数据块(兼容普通 JSON 及 SSE `data: {...}` 流式数据)中提取 `usage.prompt_tokens_details.cached_tokens`, 并暂存至 Context, 最终在请求结束时持久化至 Redis.
+2. 记录异常情况(客户端参数错误 4xx、上游超时 504、上游业务报错等):
+   - 状态码捕获: 在 `onHttpResponseHeaders` 阶段提取 HTTP 响应头 `:status`(如 `400` 参数错误、`401` 鉴权失败、`504` 上游网关超时等), 并存入 Context.
+   - 错误信息解析: 在 `onHttpStreamResponseBody` 阶段通过 `extractErrorMessage` 提取 Body 中的异常报错(如 `{"error": {"message": "无效的令牌..."}}`).
+   - 审计日志写入规则优化: 原代码中若 `inputToken == 0 || outputToken == 0` 会直接跳过 Redis 写入; 现调整为即使 Token 为 0, 若检测到异常状态码($\ge 400$)或错误信息, 依然会将异常记录写入 Redis, 确保异常调用、参数错误与超时情况能被完整监控与审计溯源.
+
+---
+
+### 完整插件源码
+
+```go
+
+```
 
 
+---------------------------------------------------------------------------------------------
+
+在上述代码有有如下几个问题:
+1、omitempty 这个 tag 的含义是什么, 为什么要加这个
+2、在正常情况下, 上游服务返回 200, 这时的错误信息应该是空字符串, 而现在并没有写到redis
+3、优化写入判定逻辑应该不要, 无论什么情况都应该记录这次请求信息
+请输出完整的代码
+
+下面为你详细解答提出的 3 个问题, 并给出修改后的完整代码.
+
+---
+
+### 问题解答与原理说明
+
+#### 1. `omitempty` 这个 tag 的含义是什么? 为什么要加? 以及为什么在此处建议去掉?
+
+- 含义: `omitempty`(omit if empty)是 Go 语言标准库 `encoding/json` 的序列化标签选项. 它的作用是: 当结构体中该字段的值为其类型的"零值"(如 `int` 的 `0`、`string` 的 `""`、`bool` 的 `false`、`nil` 指针等)时, 在执行 `json.Marshal` 序列化为 JSON 字符串时直接忽略并省略该字段, 不会输出到 JSON 结果中.
+- 为什么要加(初始设计意图): 最初加 `omitempty` 的目的是为了在请求正常、无报错时生成更短小精简的 JSON(不输出 `"error_message": ""` 和 `"status_code": 0`).
+- 为什么在你的场景下要去掉: 在日志审计、计费系统以及数据分析(如下游接入 ClickHouse、Elasticsearch、Kafka 或数仓平台)中, 固定的 JSON Schema(字段结构对齐)至关重要. 如果去掉了 `omitempty`:
+  - 无论成功(`status_code: 200`, `error_message: ""`)还是失败(`status_code: 400`, `error_message: "参数错误"`), 生成的 JSON 都会始终包含这两个字段, 便于下游统一解析, 避免因字段缺失导致解析报错或需要编写复杂的 `null` 兼容逻辑.
+
+#### 2 & 3. 关于正常 200 时未写入与彻底取消判定逻辑
+
+- 原因分析: 之前代码中保留了过滤判断 `if !hasValidToken && !hasException { return chunk }`. 在某些情况下(例如上游部分返回数据块未被完整统计到 token, 或者在特定场景下), 只要 Token 统计为 0 且无报错就会被直接 `return` 拦截跳过, 导致即使是 200 正常的请求也未能写入 Redis.
+
+- 解决方案: 按照你的需求, 彻底删除了所有 `token == 0` 或其他条件跳过写入的过滤判定逻辑. 只要请求到达最后一个数据块(`isLastChunk == true`), 无论状态码是多少、无论是否有 token、无论错误信息是否为空, 都会无条件 100% 构造审计日志并写入 Redis. 对于正常 200 请求, `status_code` 记录为 `200`, `error_message` 记录为 `""`(空字符串).
+
+---
+
+### 修改后的完整代码
+
+```go
+```
+
+
+---------------------------------------------------------------------------------------------
+
+如果上游服务只返回部分数据, 中途因为某些原因没有继续返回后续数据, 也就是客户端没有拿到完整的数据, 这种情况会发生吗? 如果发生, 这个插件是如何检查到这种情况, 是如何处理的呢, 请根据代码详细说明一下
+
+在生产环境的大模型(LLM)流式输出(SSE / Stream)场景中, 你提到的"上游返回了部分数据, 中途因某种原因中断"是非常常见且经典的边缘情况(Stream Interruption / Stream Abort).
+
+下面为你详细剖析: 这种情况是否会发生、导致的原因、现有代码是如何检测与处理的, 以及在 Redis 中会产生怎样的结果.
+
+---
+
+### 一、这种情况会发生吗? 为什么?
+
+答案是: 一定会发生, 且在生产环境中发生概率不低.
+
+常见原因主要有以下几种:
+
+1. 客户端主动取消/断开(Client Abort):
+   - 用户在 Web/App 端点击了"停止生成"按钮;
+   - 用户直接关闭了浏览器标签页;
+   - 客户端程序设置了较短的 Client Timeout, 在流式接收过程中主动触发了连接 Abort(发送 TCP RST 或 HTTP/2 `RST_STREAM`).
+
+2. 上游服务崩溃或推理异常(Upstream Crash / Exception):
+   - 大模型推理服务(如 vLLM、Ollama、TGI 等)在生成中途遭遇显存溢出(OOM)、显卡故障或 Worker 进程崩溃;
+   - 上游触发了单次生成的安全审计拦截或未捕获的内部异常, 导致直接关闭了 TCP 连接.
+
+3. 网关层与网络层超时(Gateway Idle Timeout):
+   - 上游在大模型思考/生成某个 Token 之间耗时过长, 触发了 Higress/Envoy 的 `stream_idle_timeout`(流空闲超时)而强行切断流.
+
+---
+
+### 二、现有插件是如何检查到并处理的?
+
+根据我们当前编写的代码, 整个处理流程与检查机制如下:
+
+#### 1. 状态码层面(Header 阶段)
+
+* 在大模型流式响应开始时, 上游首先返回了 HTTP 响应头 `HTTP/1.1 200 OK` 与 `Transfer-Encoding: chunked`.
+* 插件的 `onHttpResponseHeaders` 阶段会正常执行, 提取到 `:status = 200` 并存入 Context(`ctxKeyResponseStatus`).
+* 因此, 即便后续数据流中途截断, 握手阶段记录的状态码依然为 `200`.
+
+#### 2. Token 与 异常提取层面(Streaming Body 阶段)
+
+在 OpenAI/vLLM 的标准流式协议中:
+
+* 中间的数据块仅包含文本片段: `data: {"choices":[{"delta":{"content":"..."}}]}`.
+* 只有在流的最后一个或倒数第二个数据块(即紧邻 `data: [DONE]` 之前), 上游才会发送带有 `usage: {"prompt_tokens":..., "completion_tokens":...}` 的数据块.
+* 由于流中途断开:
+  * 后续带有 `usage` 和 `cached_tokens` 的数据块根本没有到达网关;
+  * `tokenusage.GetTokenUsage(ctx, chunk)` 和 `extractCachedTokens(chunk)` 在整个过程中均解析不到 Token 数据;
+  * 因此 Context 中的 `InputToken`、`OutputToken`、`TotalToken`、`CachedToken` 依然保持初始的 `0`.
+
+---
+
+### 三、根据代码, 中断发生时插件的具体处理结果
+
+流式中断在底层根据断开方式的不同, 在当前插件中分为两种执行结果:
+
+#### 结果 A: 上游关闭连接触发了正常的 EOF(`isLastChunk == true` 被触发)
+
+如果上游是在吐完部分数据后直接关闭了 TCP 连接, Envoy 会将本次关闭识别为流的终点, 并回调插件的 `onHttpStreamResponseBody(..., isLastChunk = true)`:
+
+1. 代码执行逻辑:
+   - 进入 `if isLastChunk` 分支;
+   - 提取暂存变量:
+     - `InputToken = 0, OutputToken = 0, TotalToken = 0, CachedToken = 0`;
+     - `StatusCode = 200`(来自前期握手);
+     - `ErrorMessage = ""`(因 body 中只收到了部分正常文本, 无 `{"error": ...}` JSON);
+     - `DurationMs = 中断时刻 - 请求开始时刻`(准确记录了本次中断前持续的时长).
+
+2. Redis 写入结果:
+   - 因为我们移除了写入拦截判定, 插件依然会向 Redis 成功写入一条审计日志:
+   ```json
+   {
+     "uuid": "...",
+     "request_id": "...",
+     "status_code": 200,
+     "error_message": "",
+     "duration_ms": 3215,
+     "input_token": 0,
+     "output_token": 0,
+     "total_token": 0,
+     "cached_token": 0
+   }
+   ```
+   业务含义: 在 Redis 日志中, 表现为"一次耗时 3.2 秒、状态码为 200, 但 Token 消耗全为 0 的异常中断请求".
+
+---
+
+#### 结果 B: 客户端主动 RST / 连接异常重置(`isLastChunk` 未被触发)
+
+如果客户端直接取消请求(如浏览器点击停止或断网), Envoy 会直接收到 TCP RST 或 HTTP/2 `RST_STREAM` 帧. 此时 Envoy 会立即终止流并销毁 Stream Context, 不会再向下游调用 `onHttpStreamResponseBody(isLastChunk = true)`.
+
+1. 代码执行逻辑:
+   - `if isLastChunk` 代码块不会被执行.
+2. Redis 写入结果:
+   - 当前插件在流被硬性 Reset 时, 不会向 Redis 写入这条记录.
+
+---
+
+### 四、进阶扩展建议(如何更精准识别"中途截断")
+
+如果你希望在日志中明确标识出"这是一次中途截断的请求", 可以在代码中做以下针对性增强:
+
+1. 检测流结束标志 `[DONE]`:
+   - 标准 OpenAI SSE 流正常结束时一定会发送 `data: [DONE]`.
+   - 可以在 Context 中记录 `ctx.SetContext("has_seen_done", true)`.
+   - 在 `if isLastChunk` 时, 如果 `statusCode == 200` 但 `has_seen_done == false` 且 `totalToken == 0`, 则在代码中主动标记:
+     ```go
+     if !hasSeenDone && totalToken == 0 {
+         errorMessage = "流式传输异常中断(未收到完整的[DONE]与Usage统计信息)"
+     }
+     ```
+2. 启用 Token 文本估算兜底:
+   - 如果用户中途取消, 但上游实际已经推理了一半, 大模型服务商通常仍会计费. 如果需要防白嫖, 可通过 `tokenusage` 库对中间收到的文本块进行字符/分词估算并累加, 即使中途截断也能记录已生成的 Token 大致数量.
+
+---------------------------------------------------------------------------------------------
+
+以下是插件的完整代码
+```go
+```
+
+我希望在日志中明确标识出"这是一次中途截断的请求", 可以在代码中做以下针对性增强:
+
+1. 检测流结束标志 `[DONE]`:
+   - 标准 OpenAI SSE 流正常结束时一定会发送 `data: [DONE]`.
+   - 可以在 Context 中记录 `ctx.SetContext("has_seen_done", true)`.
+   - 在 `if isLastChunk` 时, 如果 `statusCode == 200` 但 `has_seen_done == false` 且 `totalToken == 0`, 则在代码中主动标记:
+     ```go
+     if !hasSeenDone && totalToken == 0 {
+         errorMessage = "流式传输异常中断(未收到完整的[DONE]与Usage统计信息)"
+     }
+     ```
+请输出完整的代码实现该功能, 并且添加详细的注释和日志, 也请兼容非流式请求, 说明如果是非流式请求是如何处理的
+
+为了精准识别"流式请求中途截断(Stream Interruption)"并同时完美兼容非流式请求(Non-Streaming Request), 我们在插件中实现了一套严密的流模式识别与完整性校验机制.
+
+---
+
+### 一、核心设计思路与实现机制
+
+#### 1. 流式请求截断检测机制(Streaming Request)
+
+* 流模式标识: 在请求阶段(解析 Body 中的 `"stream": true`)或响应阶段(响应头 `Content-Type: text/event-stream` 或数据块包含 `data:` 前缀)自动标记 `is_stream = true`.
+
+* `[DONE]` 标志检测: 在 `onHttpStreamResponseBody` 数据块处理过程中, 通过 `checkHasDoneMarker(chunk)` 实时检测是否包含 SSE 结束标志 `data: [DONE]`. 一旦收到即标记 `has_seen_done = true`.
+
+* 中断判定逻辑:
+  在 `isLastChunk == true`(流终止)时, 如果满足以下三个条件:
+  1. `statusCode == 200`(握手成功)；
+  2. `is_stream == true`(属于流式请求)；
+  3. `!hasSeenDone && totalToken == 0`(未收到结束标志 `[DONE]` 且上游根本未吐出最后的 `usage` 统计).
+
+  系统会自动将 `errorMessage` 标记为:
+
+  `"流式传输异常中断(未收到完整的[DONE]与Usage统计信息)"`.
+
+#### 2. 非流式请求兼容处理机制(Non-Streaming Request)
+
+* 为什么非流式不会被误判?
+  * 非流式请求的响应是标准的单次 JSON 报文(`Content-Type: application/json`), 上游永远不会发送 `data: [DONE]`.
+  * 机制保障:
+    1. 插件在请求体与响应头中未检测到流式标识, 因此 `is_stream` 为 `false`；
+    2. 非流式响应在单次/多次返回完整 JSON 时, `tokenusage` 库已直接从 JSON 的 `usage` 结构中提取出 `totalToken > 0`；
+    3. 在 `isLastChunk` 判定阶段, 由于 `is_stream == false`, 完全不会进入 `!hasSeenDone` 的流式截断检查分支, `errorMessage` 保持为空字符串 `""`, 正常记账.
+
+---
+
+### 二、修改后的完整插件源码
+
+```go
+
+```
+
+---------------------------------------------------------------------------------------------
+
+插件是否会漏掉请求
 
 ---------------------------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------
+Q: 假设你是一位精通 golang 的高级开发人员, 同时也十分精通 higress 插件的开发, 我实现了如下插件, 代码如下:
+```go
+```
+请为该插件添加如下功能,
+1、从请求头里面获取 `x-mse-consumer: 1-87894137` 信息, 然后通过规则拼接 redis key: key-auth:consumer:${1-87894137}, 使用这个 key 从 redis 里面获取对应的 hash 数据, 从 hash 数据中解析出 tenant_from 字段, 将这个字段记录到 Context, 在最后的响应中将这个值写入 TokenAuditLog, 然后写入 redis
+2、从请求头里面获取 `x-envoy-decorator-operation: llm-provider-1.internal.dns:443/*` 信息, 从 `llm-provider-1.internal.dns:443/*` 提取 `1`, 这个 1 表示供应商 id, 将这个字段记录到 Context, 在最后的响应中将这个值写入 TokenAuditLog, 然后写入 redis
+上述过程如果有任何异常, 最终写入 redis 的值为空, 不能省略.
+
+请输出完整的代码, 不要删除已有的注释和日志, 添加新功能时也请输出详细的注释和日志, 记录异常情况.
+
+这里是为您补充完整功能的完整 Go 插件代码.
+
+### 核心实现说明:
+
+1. 获取 `tenant_from`(功能 1):
+   - 在 `onHttpRequestHeaders` 阶段提取请求头 `x-mse-consumer: 1-87894137`.
+   - 构造 Redis Key: `key-auth:consumer:1-87894137`, 通过 `config.redisClient.HGet(key, "tenant_from", ...)` 异步读取 Hash 数据.
+   - 完善异步回调机制: 与原有的余额校验(`x-mse-cuser` / `Pay` 服务)形成串联异步流水线, 无论查询成功、字段不存在还是异常报错, 均保证 `tenant_from` 正常写入 Context(失败时置为 `""`), 并确保网关生命周期 `proxywasm.ResumeHttpRequest()` 正确唤醒.
+2. 提取供应商 ID `provider_id`(功能 2):
+   - 编写了高性能、零内存分配的 `extractProviderID` 辅助解析函数.
+   - 从 `x-envoy-decorator-operation`(例如 `llm-provider-1.internal.dns:443/*`)中精准提取出供应商 ID `1` 并存入 Context. 若格式异常或未找到, 兜底记录为 `""`.
+3. 结构体与 Redis 审计对齐:
+   - 在 `TokenAuditLog` 结构体中新增 `TenantFrom`(`json:"tenant_from"`)与 `ProviderID`(`json:"provider_id"`)字段, 严格禁止使用 `omitempty`, 确保即使为空值也始终在 JSON 中保留字段键.
+4. 日志与注释全量保留:
+   - 完整保留所有原有日志、注释及流式截断兜底逻辑, 并为新功能补充了详细的中文注释和运行日志.
+
+---
+
+### 完整代码:
+
+```go
+```
 
 ---------------------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------
+在上述代码中, `onHttpRequestHeaders` 函数中的处理逻辑有点复杂, 请详细说明 onHttpRequestHeaders 的处理流程, 特别是与 redis 的异步操作, 网关状态变化过程等
+
+在 Higress / Envoy 的 WASM 插件架构中, `onHttpRequestHeaders` 是请求进入网关后的第一个核心拦截点. 因为涉及多次外部网络 I/O(Redis 查询、远程 Pay HTTP 调用), WASM 必须采用非阻塞的事件驱动模型(异步回调)来保证网关的高吞吐.
+
+下面为您深度拆解 `onHttpRequestHeaders` 的完整执行流程、与 Redis/Pay 的异步交互细节以及 Envoy 网关的内部状态迁移机制.
+
+---
+
+### 一、整体流程架构全景
+
+整个请求头处理阶段可以划分为四个清晰的步骤:
+
+```
+客户端发起请求
+     │
+     ▼
+[ 1. 基础元数据初始化 ] (生成 UUID、记录 StartTime、线程探活)
+     │
+     ▼
+[ 2. 请求头解析与快路径判定 ] (解析各个 Header, 若为 "Bearer sp" 直接 Continue 放行)
+     │
+     ▼
+[ 3. 供应商 ID 同步提取 ] (从 x-envoy-decorator-operation 快速截取 ProviderID)
+     │
+     ▼
+[ 4. 异步链路流水线 (Waterfall) ] ─── 触发 ActionPause (网关暂停当前请求流)
+     ├── Step 4.1: Redis HGet (查询 key-auth:consumer:${id} 获取 tenant_from)
+     └── Step 4.2: 余额校验链路
+              ├── 查 Redis 余额缓存 (tenantID:balance:pluginName)
+              └── (未命中) 异步调用 Pay HTTP 接口 -> 写 Redis 缓存
+     │
+     ├── 余额充足 / 异常降级 ──► proxywasm.ResumeHttpRequest() (网关恢复请求, 继续向上游转发)
+     └── 余额不足 (<=0)     ──► proxywasm.SendHttpResponse(403) (网关直接拦截并响应客户端)
+```
+
+---
+
+### 二、网关状态机变化过程 (Gateway Lifecycle States)
+
+在 Envoy proxy-wasm 体系中, 请求流的生命周期状态切换非常严格:
+
+```
+                    ┌────────────────────────┐
+                    │      State: ACTIVE     │
+                    │ (正在执行过滤器链)     │
+                    └───────────┬────────────┘
+                                │
+                   满足异步条件 │ 插件返回 types.ActionPause
+                                ▼
+                    ┌────────────────────────┐
+                    │      State: PAUSED     │
+                    │ (网关挂起当前请求流)   │
+                    │ (不读 Body, 不转发上游)│
+                    └─────┬────────────┬─────┘
+                          │            │
+ 余额校验通过/异常降级   │            │ 余额不足 (<=0)
+ proxywasm.Resume...()    │            │ proxywasm.SendHttpResponse(403)
+                          ▼            ▼
+        ┌──────────────────────┐  ┌──────────────────────┐
+        │    State: RESUMED    │  │  State: TERMINATED   │
+        │ (恢复流, 进入 Body/  │  │ (立即向客户端返回 403│
+        │  转发 Upstream 阶段) │  │  终止下游与上游流)   │
+        └──────────────────────┘  └──────────────────────┘
+```
+
+1. `types.ActionContinue` (继续执行):
+   - 意味着当前阶段为纯同步逻辑, 网关不会发生停顿, 直接流转到下一个 Filter 或 `onHttpRequestBody`.
+2. `types.ActionPause` (挂起暂停):
+   - 当插件需要发起异步 Redis 或异步 HTTP 请求时, 必须向网关返回 `ActionPause`.
+   - 网关会保持当前 HTTP 句柄, 暂停当前请求流, 既不会继续读取 Body, 也不会向后端大模型建立连接.
+3. `proxywasm.ResumeHttpRequest()` (恢复执行):
+   - 异步回调完成且校验通过时调用, 通知 Envoy 恢复过滤器链的运转.
+4. `proxywasm.SendHttpResponse()` (本地拦截):
+   - 资金不足时调用, 直接由网关构造 HTTP 403 响应返回客户端, 彻底截断请求.
+
+---
+
+### 三、详细步骤与 Redis 异步调用解析
+
+#### 阶段 1: 初始化与元数据准备(同步)
+- 首次请求探活 (`probeRedisIfNeeded`): 通过 `sync.Once`, 在每个 WASM VM 工作线程接收到第一个请求时, 异步向 Redis 发起一个 `PING` 探活 Key, 确认与 Redis Cluster/Proxy 的连通性与权限.
+- Context 链路追踪上下文初始化:
+  - 生成全新的请求唯一 `UUID` 存入 Context.
+  - 获取 `time.Now().UnixMilli()` 记录请求开始毫秒时间戳, 供最终计算全链路耗时.
+
+#### 阶段 2: 请求头解析与快路径判断(同步)
+- 遍历所有请求头, 提取并归一化(Lowercase)暂存:
+  - `x-mse-consumer`: 存储到 `mseApiConsumerVal`(用于查询用户来源 `tenant_from`).
+  - `x-mse-cuser`: 存储到 `mseConsumerVal`(用于租户可用余额校验).
+  - `x-envoy-decorator-operation`: 存储到 `decoratorOpVal`.
+  - `x-hi-original-auth`: 存储到 `authHeaderVal`.
+- 特权放行白名单(Fast-Path):
+  - 若 `x-hi-original-auth` 以 `Bearer sp` 开头, 直接标记 `ctxKeySkipPlugin = true` 并返回 `types.ActionContinue`. 此时跳过所有后续 Redis 与余额校验, 以极低延迟直通.
+
+#### 阶段 3: 供应商 ID 快速提取(同步)
+- 调用 `extractProviderID`, 纯字符串切片解析 `x-envoy-decorator-operation`(例如 `llm-provider-1.internal.dns:443/*` -> `"1"`).
+- 将 `provider_id` 写入 Context；若无该头或解析失败, Context 中记录为空字符串 `""`.
+
+---
+
+#### 阶段 4: 异步流水线机制(核心: Redis 串联与状态控制)
+
+由于 WASM 单线程事件循环的特性, 同时并发发起多个独立异步调用若处理不当容易引发生命周期竞态. 代码中采用了串联流水线(Callback Chaining / Waterfall)的方式, 确保整个异步链有且仅有一次触发 `ResumeHttpRequest` 或 `SendHttpResponse`.
+
+##### 详细调用流程分步拆解:
+
+```
+[checkTenantFromAndBalance 入口]
+       │
+       ├─► 存在 x-mse-consumer ?
+       │         │
+       │        YES ──► 发起 Redis.HGet("key-auth:consumer:${val}", "tenant_from")
+       │         │       (函数返回 types.ActionPause, 网关挂起)
+       │         │
+       │         │  ┌─── [异步 HGet 回调触发] ───┐
+       │         └──► 解析 tenant_from 写入 Context
+       │             调用 proceedWithBalanceCheckInAsync(...)
+       │             └───────────────────────────┐
+       │                                         │
+       │  ┌──────────────────────────────────────┘
+       ▼  ▼
+[进入余额校验子阶段]
+       │
+       ├─► 存在 x-mse-cuser ?
+       │         │
+       │        YES ──► 发起 Redis.Get("${tenantID}:balance:pluginName")
+       │         │
+       │         │  ┌─── [异步 Redis Get 回调触发] ───┐
+       │         │  ├── 缓存命中 ──► 解析余额 (cash_balance, free_balance)
+       │         │  │                 ├── 资金 <= 0 : sendInsufficientBalanceResponse(403) [拦截退出]
+       │         │  │                 └── 资金 > 0  : proxywasm.ResumeHttpRequest() [放行恢复]
+       │         │  │
+       │         │  └── 缓存未命中/异常 ──► 调用 callPayService(...)
+       │         │                           │
+       │         │                           ▼
+       │         │                  [异步 HTTP Post Pay 回调触发]
+       │         │                  ├── 状态非200/解析失败: 降级放行 ResumeHttpRequest()
+       │         │                  ├── 异步写入 Redis SetEx 缓存
+       │         │                  ├── 资金 <= 0 : sendInsufficientBalanceResponse(403) [拦截退出]
+       │         │                  └── 资金 > 0  : proxywasm.ResumeHttpRequest() [放行恢复]
+       │         │
+       │         NO (无需校验余额) ──► proxywasm.ResumeHttpRequest() [放行恢复]
+```
+
+##### 关键异常与降级保护机制:
+1. Redis HGet 异常/超时:
+   - 发生错误或字段为 null 时, `tenant_from` 自动置为 `""`, 日志记录 Error/Warn, 流程不中断, 继续向下执行余额校验.
+2. 余额缓存未命中:
+   - 自动回源异步请求 `Pay` 服务的 `/v0/financial_center/get_user_balance_basic_info` 接口, 拿到数据后使用 `SetEx` 异步写回 Redis(避免阻塞当前请求流), 随后根据金额判定是否放行.
+3. Pay 远程接口宕机/超时降级(Fail-Open):
+   - 当 Pay 服务返回非 200 或网络调用失败时, 打印 Error 日志并自动执行 `ResumeHttpRequest()` 降级放行, 防止由于计费中心故障导致全网 AI 流量雪崩.
+4. 单次唤醒原则保证:
+   - 每个异步分支的终点均有明确的 `return`, 杜绝在同一个 HTTP 请求生命周期中重复触发 `ResumeHttpRequest`, 确保 Envoy 内部状态机始终保持稳定.
+
+
+
 
 ---------------------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------
-
----------------------------------------------------------------------------------------------
