@@ -1,0 +1,138 @@
+# 1. 资源类型定义
+apiVersion: networking.higress.io/v1 # Higress 专有的网络扩展 API 版本
+kind: McpBridge # 资源类型: Mesh Configuration Protocol 桥接器
+metadata:
+  name: default # 桥接器实例名称, Ingress 的 backend 会显式引用此 default 实例
+  namespace: higress-system # 归属于 Higress 控制面系统命名空间
+spec:
+  # 2. 外部正向代理配置池(Outbound Forward Proxies)
+  # 用于配置出网代理(如 HTTP/SOCKS5 代理).
+  # 当网关需要访问受地域限制的模型(如海外官方 OpenAI/Anthropic)时, 可在此定义代理节点.
+  # 当前为空切片 [], 表示网关所在宿主网络具备直接访问公网及内网的能力, 无需中继正向代理.
+  proxies: []
+
+  # 3. 服务注册源与服务发现池(Service Registries)
+  # 定义了网关数据面(Envoy)需要连接的所有异构上游服务节点, 涵盖内网基础设施、微服务及 AI 算力集群
+  registries:
+    # -------------------------------------------------------------------------------------
+    # [类型 A: 集群内基础架构服务 / Infrastructure Services]
+    # -------------------------------------------------------------------------------------
+    - domain: redis-master.infra.svc.cluster.local # K8s 内部集群 FQDN 域名, 指向基础设施命名空间下的 Redis 主节点
+      name: redis # 逻辑注册源名称. 可在 Ingress 中通过 redis.dns:6379 引用
+      port: 6379 # Redis 默认通信端口
+      type: dns # 服务发现类型: DNS 解析. Envoy 在后台周期性解析该域名获取 Pod IP
+
+    - domain: pay-api.maas.svc.cluster.local # 指向业务计费支付服务的内部微服务
+      name: pay # 逻辑名称: pay.dns:28889
+      port: 28889 # 业务服务自定义通信端口
+      type: dns
+
+    # -------------------------------------------------------------------------------------
+    # [类型 B: 公网商业大模型 SaaS 供应商 / Commercial Public LLM Providers]
+    # 走公共网络, 强制开启 HTTPS 通信, 以域名形式提供服务
+    # -------------------------------------------------------------------------------------
+    - domain: api.gpugeek.com # 算力平台/大模型中转 API 真实物理域名
+      name: llm-provider-1.internal # 核心设计: 赋予其虚拟逻辑别名(上游路由引用此名字解耦真实域名)
+      port: 443 # 标准 HTTPS 安全端口
+      protocol:
+        https # 关键配置: 声明上游协议为 HTTPS.
+        # 触发 Envoy 执行 TLS Origination(网关主动向上游发起 TLS 握手并校验证书)
+      proxyName: "" # 不使用出网代理, 直连目标
+      type: dns # DNS 动态解析(适应公网 CDN / Anycast 动态 IP 变更)
+
+    - domain: ai-cds.wair.ac.cn # 太初/中科院智算中心大模型 API 域名
+      name: llm-provider-4.internal # 映射为 provider-4(在前序 Ingress 110 中用于 taichu_llm)
+      port: 443
+      protocol: https
+      proxyName: ""
+      type: dns
+
+    - domain: api.deepseek.com # DeepSeek 官方商业 API 接入点
+      name: llm-provider-5.internal # 映射为 provider-5(在前序 Ingress 111 中用于 DPSK 流量分担)
+      port: 443
+      protocol: https
+      proxyName: ""
+      type: dns
+
+    - domain: ai-cds.wair.ac.cn # 再次指向智算中心, 但赋予不同的内部标识
+      name: llm-provider-10.internal # 映射为 provider-10(在前序 Ingress 116 中专用于 taichu_o1 深度思考推理模型)
+      port: 443
+      protocol: https
+      proxyName: ""
+      type: dns
+
+    - domain: aimasscloud.com # 第三方企业大模型 MaaS 云平台域名
+      name: llm-provider-15.internal
+      port: 443
+      protocol: https
+      proxyName: ""
+      type: dns
+
+    - domain: aimasscloud.com
+      name: llm-provider-16.internal # 映射为 provider-16(在前序 Ingress 128 中用于特定模型 10087)
+      port: 443
+      protocol: https
+      proxyName: ""
+      type: dns
+
+    - domain: api.gpugeek.com
+      name: llm-provider-20.internal # 映射为 provider-20(在前序 Ingress 137 中用于 Doubao 豆包模型)
+      port: 443
+      protocol: https
+      proxyName: ""
+      type: dns
+
+    - domain: api.deepseek.com
+      name: llm-provider-26.internal # 映射为 provider-26(在前序 Ingress 155 中用于 LYJDPSK 模型)
+      port: 443
+      protocol: https
+      proxyName: ""
+      type: dns
+
+    - domain: api.moonshot.cn # 月之暗面(Moonshot Kimi)官方商业 API
+      name: llm-provider-28.internal # 映射为 provider-28(在前序 Ingress 157 中用于 LYJKIMI 模型)
+      port: 443
+      protocol: https
+      proxyName: ""
+      type: dns
+
+    # -------------------------------------------------------------------------------------
+    # [类型 C: K8s 内部集群自建私有推理服务 / Private Self-Hosted vLLM Instance]
+    # 部署在同一 K8s 集群的 GPU 节点上, 通过 ClusterIP 发现, 走内网 HTTP 明文传输
+    # -------------------------------------------------------------------------------------
+    - domain: qwen3-8-27b-vllm.service-1.svc.cluster.local # 指向 service-1 命名空间下的自建 vLLM 推理 Pod 服务
+      name: llm-provider-39.internal # 映射为 provider-39(在前序 Ingress 169 中用于 qwen_lc)
+      port: 8000 # vLLM 默认暴露的 OpenAI 兼容 HTTP 端口
+      protocol: http # 内网微服务通信, 走轻量级明文 HTTP 协议, 避免 TLS 加解密 CPU 损耗
+      proxyName: ""
+      type: dns # 依赖 K8s CoreDNS 解析 Service 对应的 ClusterIP
+
+    # -------------------------------------------------------------------------------------
+    # [类型 D: 机房物理裸机算力节点 / Bare-Metal Static GPU Server]
+    # 直连内网固定的物理机或边缘网段, 零 DNS 寻址
+    # -------------------------------------------------------------------------------------
+    - domain: 172.16.10.51:8091 # 直接指定内网固定物理机 IP 与端口
+      name: llm-provider-40.internal # 映射为 provider-40(在前序 Ingress 170 中用于 qwen2.5-7B-instruct)
+      port: 8091 # 物理机上部署的推理服务端口
+      protocol: http # 内网 HTTP 通信
+      proxyName: ""
+      type:
+        static # 核心差异项: static 类型！
+        # 告诉 Envoy 这是静态直连端点, 无需做任何 DNS 查询, 直接建立 TCP 链接
+
+    # -------------------------------------------------------------------------------------
+    # [类型 E: 更多商业模型供应商扩展 / Other Commercial AI Providers]
+    # -------------------------------------------------------------------------------------
+    - domain: api.minimax.chat # MiniMax(名之梦)官方商业大模型 API 接入点
+      name: llm-provider-46.internal # 为后续 MiniMax 语音/文本多模态模型准备的专属上游
+      port: 443
+      protocol: https
+      proxyName: ""
+      type: dns
+
+    - domain: api.deepseek.com
+      name: llm-provider-47.internal # DeepSeek 冗余/多租户独立上游
+      port: 443
+      protocol: https
+      proxyName: ""
+      type: dns

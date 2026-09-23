@@ -1,0 +1,1017 @@
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1099 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":""}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"我们需要"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"理解"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"用户的问题"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1095 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"。"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"用户问"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"：“"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"😀 "}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1124 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"你可以提供"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"哪些服务"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"？” "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"这是一个非常"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1111 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"常见"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"的问题，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"用户想知道"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"我能"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 834 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"做什么，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"有哪些"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"功能。"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1113 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"作为AI"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"助手，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"我需要清晰"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、全面"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1105 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、有条"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"理地"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"介绍"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"我的能力"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1115 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"范围，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"同时保持"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"友好和"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"热情。\n\n"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1099 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"考虑到"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"用户"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"用了"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"微笑"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1099 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"表情，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"说明"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"态度"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"积极"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 834 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"。我应该"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"用中文"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"回答，"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1939 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"列出"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"主要"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"服务类别"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"，比如"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"回答问题"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、写作"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、编程"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1102 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、翻译"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、创意"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"分析、"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1105 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"学习辅导"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、日常"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"助手"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"等等"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1102 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"。还要"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"强调"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"我是"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"免费的"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 834 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"，支持"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"长上下文"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"，可以"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1099 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"处理"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"文件上传"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"（"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"图像"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 825 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、PDF"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、Word"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、Excel"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1105 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、PPT"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"等"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"），支持"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"联网搜索"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1117 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"（需要"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"手动开启"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"），以及"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"语音输入"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 828 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"（App"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"端）。"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"同时要"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1099 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"说明"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"知识"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"截止日期"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"和"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1093 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"局限性"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"但"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"主要"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1115 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"突出优势"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"。\n\n回答"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"要结构"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"清晰，"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1093 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"但"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"不要太"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"冗"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"长。"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1112 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"可以用分类"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"的方式"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"，比如"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"：\n\n"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1098 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"文字处理"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"与创作"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"\n-"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1098 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":" 编程"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"与"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"技术支持\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"- "}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1106 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"学习与"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"教育\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"分析与决策"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1094 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"\n-"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":" 翻译"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"与语言"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"\n-"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1109 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":" 文件"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"处理（"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"上传图像"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、文档"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 554 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"等并"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"提取文字"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1377 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"信息"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"）\n-"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":" 联网"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"搜索（"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"需手动"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 823 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"开启）\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"语音"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1094 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"输入（"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"App）\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"长"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1098 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"上下文"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"（1"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"M tokens"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"）\n"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1099 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"免费"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"使用\n\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"还可以"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1111 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"提及一些"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"特色，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"比如可以"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"读取"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1102 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"链接"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"内容，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"可以"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"处理超"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1102 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"长文本"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"（"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"如整"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"本书）。"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1108 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"同时也要"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"坦诚"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"说明我是"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"文本"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1108 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"模型，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"不能识别"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"图像"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"内容（"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1117 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"但可以"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"读取图像"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"中的文字"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"），没有"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 832 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"多"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"模态识别"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"能力。\n\n"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1108 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"考虑到"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"用户可能"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"想知道"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"我能"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1108 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"提供"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"哪些“"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"服务”，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"而不是"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1099 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"技术"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"规格"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"，所以"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"重点"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1114 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"放在我能"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"帮助"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"用户完成"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"什么任务"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1099 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"。"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"例如："}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"撰写"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"文章、"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1102 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"代码"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"调试、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"学习"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"辅导、"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1099 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"头脑"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"风暴、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"翻译"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"文档"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1111 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、总结"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"纪要"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、数据分析"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、角色"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 838 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"扮演、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"情感支持"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"等等。\n\n"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1105 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"回答"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"应该热情"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"、积极"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"，并"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1109 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"鼓励用户"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"提出"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"具体需求"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"。\n\n"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1105 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"现在"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"组织"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"语言："}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"开头问候"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1102 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"，感谢"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"提问"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"，然后"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"列举"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1108 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"主要服务"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"类别，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"每个类别"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"下"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 825 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"简单"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"举例"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"。最后"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 825 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"强调"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"免费和"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"易用"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1102 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"性，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"邀请"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"用户提出"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"需求"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1097 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"。\n\n注意"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"语气"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"："}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"用"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1096 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"“"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"我"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"”、“您"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"”，"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 828 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"保持专业"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"但亲切"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"。"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 833 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"可以适当"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"使用emo"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"ji增加"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 831 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"亲和力"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"，但"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"不要过度"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1118 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"。\n\n还要"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"注意用户"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"可能来自"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"中国，"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1099 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"需要"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"符合当地"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"习惯"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"。"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1105 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"提及"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"联网"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"搜索时"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"说明需要"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 831 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"手动开启"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"，文件"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"上传"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1115 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"支持常见"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"格式。\n\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"知识"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"截止日期"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1092 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"：202"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"5年"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"5月"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"。但"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1102 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"服务"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"描述"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"中"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"不需要特别"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1112 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"强调，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"除非用户"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"问起"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"。\n\n现在"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1049 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"开始写"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":null,"reasoning_content":"回答。"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"你好"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"呀"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1007 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"！"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"😊 "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"很高兴为你"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"介绍我能"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 753 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"提供的服务"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"简单"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1004 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"来说，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"我就是"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"你的全能"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"AI"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 753 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"助手，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"可以在"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"很多"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1000 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"方面帮"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"到你：\n\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"**"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"📝"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 999 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":" 文字"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"创作与"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"编辑"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"**\n-"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1000 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":" 写"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"文章、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"故事"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、诗歌"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 994 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、剧本"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、歌词"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"- "}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 999 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"润色"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、改写"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、总结"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 994 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"扩"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"写文本"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"\n-"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":" 起草"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 753 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"邮件、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"报告、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"方案"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 748 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、简历"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"\n\n**"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"💻"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 751 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":" 编程"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"与技术**\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"- "}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 998 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"写代码"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"Debug"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、代码"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1003 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"优化\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"解释技术"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"概念、"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1504 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"算法、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"架构\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"支持多种"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"语言"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"（Python"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 745 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、Java"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、C"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"++、"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1005 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"JavaScript等"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"）\n\n**"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"📚"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":" 学习"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1005 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"与教育"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"**\n-"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":" 解答"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"学科问题"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1008 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"（数学"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、物理"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、历史"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、文学"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1003 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"等）\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"辅导作业"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、讲解"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1003 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"知识点\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"提供学习"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"计划"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 998 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、备考"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"建议\n\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"**"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"🌍 "}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 252 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"翻译与"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1497 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"语言**\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"多语言"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"互译"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"（中"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"英日"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 747 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"韩法"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"德等"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"）\n-"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1000 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":" 语法"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"检查"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、用"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"词建议"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 994 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"\n-"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":" 帮助"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"练习"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"外语"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 993 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"写作"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"或"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"对话\n\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"**"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1004 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"🔍 "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"信息分析与"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"处理**\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"- "}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 999 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"阅读并"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"分析"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"你"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"上传的"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1002 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"文档（"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"PDF、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"Word、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"Excel、"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 996 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"PPT、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"TXT"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、图片"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"中的"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 748 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"文字）\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"总结"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1002 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"长文"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、提取"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"关键信息"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"\n-"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1009 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":" 数据"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"整理、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"逻辑推理"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、头脑"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 998 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"风暴\n\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"**"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"💡 "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"创意与"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 744 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"灵感**\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"起"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1005 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"名"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、策划"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"活动、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"设计游戏"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 997 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"角色扮演"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、模拟"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1003 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"对话\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"提供建议"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、开拓"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1001 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"思路\n\n"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"**"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"🌐 "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"联网搜索"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 749 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"**"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"（需"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"手动开启"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1000 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"）\n-"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":" 查询"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"实时"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"信息、"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1002 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"新闻、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"天气、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"股票等"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"\n-"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1010 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":" 验证"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"事实、"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"获取最新"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"资料\n\n"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 998 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"**"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"🎙️"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":" 其他"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"特色**\n"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 999 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"- "}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"支持超"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"长上下文"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"（1"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 755 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"M tokens"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"，可"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"一次处理"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 252 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"整本书"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1003 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"）\n-"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":" App"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"端支持"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"语音输入"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 997 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"\n-"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":" 完全"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"免费，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"不限"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1011 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"次数使用"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"\n\n简单"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"说："}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"**有问题"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 996 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"找我就"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"对了！"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"** "}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1011 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"无论是工作"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"学习"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"、创作"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"娱乐，"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 1002 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"还是日常"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"琐"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"事，"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"我都很"}}],"usage":null,"metrics":null}
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 2196 bytes, endOfStream: false, Chunk Data: data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"乐意帮忙"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"。你现在"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"有什么需要"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"我做的"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"吗？"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":null,"index":0,"delta":{"content":"😄"}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[{"finish_reason":"stop","index":0,"delta":{"content":null}}],"usage":null,"metrics":null}
+
+data: {"id":"cds_c54c77d1-d3cf-454f-8e70-b6b10dd1b7ca","object":"chat.completion.chunk","created":1790133807,"model":"Vendor3/DeepSeek-V4-Flash","choices":[],"usage":{"prompt_tokens":91,"completion_tokens":870,"total_tokens":961,"prompt_tokens_details":{"cache_creation":{}},"completion_tokens_details":{"reasoning_tokens":468}},"metrics":{"input_token_count":91,"output_token_count":870,"predict_time":36.565998562}}
+
+data: [DONE]
+
+[AI-STATISTICS-TRACE] [onHttpStreamingBody] >>> Received SSE Chunk. Length: 0 bytes, endOfStream: true, Chunk Data:

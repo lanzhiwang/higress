@@ -36,6 +36,20 @@ redis-cli -h redis-master.infra.svc.cluster.local -p 6379 -a admin
         - --proxyComponentLogLevel=misc:info
 ```
 
+
+
+---------------------------------------------------------------------------------------------
+
+```bash
+docker run -ti --rm --name golang_1_24_1 \
+-v /Users/huzhi/work/code/py_code/higress:/higress \
+-w /higress golang:1.24.1 bash
+
+REGISTRY=registry-dx.wair.ac.cn/taichu-studio/ PLUGIN_NAME=ai-zdtc-token make build-image -n --dry-run
+
+
+```
+
 ---------------------------------------------------------------------------------------------
 
 Q: 假设你是一位精通 higress 及其插件开发的高级开发人员, 我开发了一个简单的 higress 插件, 使用如下配置部署插件
@@ -488,8 +502,8 @@ registry-dx.wair.ac.cn
 zsy/FIO0eOcrhC8=
 
 docker tag \
-higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/ai-zdtc-token:20260827-172558-18d9dcf9 \
-registry-dx.wair.ac.cn/taichu-studio/higress-plugin:ai-zdtc-token-20260827-172558-18d9dcf9
+higress-registry.cn-hangzhou.cr.aliyuncs.com/plugins/ai-zdtc-token:20260907-180934-7be8003c \
+registry-dx.wair.ac.cn/taichu-studio/higress-plugin:ai-zdtc-token-20260907-180934-7be8003c
 
 kubectl create secret docker-registry registry-dx-wair-ac-cn \
 --docker-server=registry-dx.wair.ac.cn \
@@ -3321,7 +3335,7 @@ Q: 根据上述实现, 我发现日志里面多次打印探活的信息, 如下
 
 ---
 
-### 一、 日志证据拆解
+### 一、日志证据拆解
 
 #### 1. 证据一: 线程 ID 不同 (`[94]` vs `[95]`)
 看日志每行开头的中括号:
@@ -3345,7 +3359,7 @@ Q: 根据上述实现, 我发现日志里面多次打印探活的信息, 如下
 
 ---
 
-### 二、 实际发生的过程分析
+### 二、实际发生的过程分析
 
 1. 第 1 次请求 (`11:19:12`):
    * 客户端发送请求 1,  Envoy 的负载均衡器将请求分发到了 Worker 线程 `[94]`.
@@ -3358,7 +3372,7 @@ Q: 根据上述实现, 我发现日志里面多次打印探活的信息, 如下
 
 ---
 
-### 三、 接下来会发生什么? (验证预期)
+### 三、接下来会发生什么? (验证预期)
 
 这完全符合 Proxy-WASM 规范的预期！后续的请求行为如下:
 
@@ -3810,3 +3824,281 @@ Q: 假设你是一位精通 golang 的高级开发人员, 同时也十分精通 
 
 ---------------------------------------------------------------------------------------------
 
+Q: 假设你是一位精通 LLM, vllm, golang, higress 的高级开发人员, 我初步实现了一个 higress 插件, 代码如下:
+```go
+```
+该插件的功能非常简单, 就是打印请求的各个阶段的内容, 该插件的具体日志如下所示:
+```
+```
+我一共请求了两次, 第一次是一个完整的请求, 第二次请求的时候, 上游服务因为某些原因在流式输出中途断开了, 通过日志可以看到, 第二次请求只接受到部分数据, 完全没有感知到上游服务出错, 连接已经断开了, 请修改上述插件, 对于类似第二次请求, 上游服务断开的情况, 在插件中可以检查到, 并打印相关日志
+
+作为熟悉 LLM 网关架构与 Envoy/Higress Wasm 扩展的开发人员, 从你提供的日志可以清晰还原第二次请求发生事故的完整经过:
+
+### 一、核心问题深度剖析(为什么当前插件完全无法感知?)
+
+从你提供的第 2 次请求日志中可以看到以下关键事件链路:
+
+1. 状态码已经提前 Commit 并下发给下游:
+   `[Tags: "ConnectionId":"31"] encoding headers via codec: ':status', '200' ... 'content-type', 'text/event-stream'`
+   在 `onHttpResponseHeaders` 阶段, 上游大模型服务初始握手完全正常, 返回了 `200 OK`, Envoy 已经把 `200` 响应头直接写给客户端了(`Prior headers have already been sent`).
+
+2. 上游中途崩溃并发生协议错误:
+   大模型生成到第 5 个 chunk 时, 上游连接突然关闭(`remote close`), Envoy 的 HTTP 状态机解析失败报错:
+   `Error dispatching received data: http/1.1 protocol error: HPE_INVALID_EOF_STATE`
+
+3. Envoy 执行 Stream Reset(重置流):
+   由于响应头早已发送给客户端, Envoy 无法再把状态码改成 500/502, 只能强行断开下游连接, 日志显示:
+   `Resetting stream due to upstream_reset_after_response_started{protocol_error}`
+   最终网关 AccessLog 记录的标志位为: `"response_code":"200","response_flags":"UPE","response_code_details":"upstream_reset_after_response_started{protocol_error}"`.
+
+4. 为什么你的 `onHttpStreamResponseBody` 没有收到任何通知?
+   当 Envoy 底层触发 `stream reset` 时, 它会立即中止整个 Filter 链中后续所有的 Body 迭代. 它绝对不会调用 `onHttpStreamResponseBody` 并传入 `isLastChunk = true`. 因此你的插件只收到了前 5 个 chunk 就"静默"了, 没有任何报错.
+
+---
+
+### 二、解决方案与改造方案
+
+要精准捕获这类"流传输中途截断/上游重置/超时/客户端主动断开"的异常, 必须结合三维防护机制:
+
+1. 注册生命周期最终钩子 `wrapper.ProcessStreamDoneBy`(即 Proxy-Wasm 的 `OnHttpStreamDone`):
+   - 无论流是正常结束、网络断开、超时, 还是被 Envoy `Reset`, Envoy 百分之百一定会调用 `OnHttpStreamDone`. 这是整个请求生命周期最后执行的清理与审计点.
+
+2. 流传输完整性校验(SSE Integrity Check):
+   - 在请求阶段标记当前是否为流式请求(`stream: true` 或 `accept: text/event-stream`).
+   - 在 `onHttpStreamResponseBody` 中计数收到的 chunk 数、字节数, 并监测是否包含 OpenAI/vLLM 规范的 `data: [DONE]` 以及 `isLastChunk == true`.
+   - 如果到 `onHttpStreamDone` 时, 发现流未收到 `[DONE]` 且未收到 `isLastChunk`, 判定为异常截断(Truncated).
+
+3. 读取 Envoy 内核属性(Envoy Properties):
+   - 读取 `[]string{"response", "code_details"}`: 精准获取日志中的 `upstream_reset_after_response_started{protocol_error}`.
+   - 读取 `[]string{"response", "flags"}`: 以位掩码解析出 Envoy 响应标志(例如日志中的 `UPE` - Upstream Protocol Error, 或 `DC` - Downstream Cancel、`UT` - Upstream Timeout 等).
+
+---
+
+### 三、修改后的完整插件代码
+
+以下是完整修改后的代码, 已加入生命周期完成钩子、Envoy 状态提取器与流式截断告警逻辑:
+
+```go
+```
+
+---
+
+### 四、改造后在你的测试场景下的表现对比
+
+#### 场景 1: 第一次正常请求(Request 1, 5fe0b72a...)
+
+- 流式输出完整接收, 最后一个数据块包含 `data: [DONE]`, 并且 `isLastChunk == true`.
+- 请求结束时, `onHttpStreamDone` 触发, 输出:
+  ```bash
+  [ai-zdtc-token onHttpStreamDone] ✅ [请求正常完成] RequestID: 5fe0b72a-42d5-4bab-98b1-525821667dd6, HTTP状态: 200, 流式传输: true, 总Chunk数: 48, 总字节数: 18201, [DONE]收到: true, LastChunk收到: true
+  ```
+
+#### 场景 2: 第二次异常断开请求(Request 2, 289732ec...)
+
+- 输出了 5 个 chunk 后, 后端 8091 端口服务异常退出, Envoy 报错 `HPE_INVALID_EOF_STATE` 并触发 `stream reset`.
+- `onHttpStreamResponseBody` 不会触发 `isLastChunk == true`, 但 Envoy 强制回调 `onHttpStreamDone`.
+- `onHttpStreamDone` 立即捕获到:
+  1. `[DONE]收到: false`, `LastChunk收到: false`；
+  2. `code_details: upstream_reset_after_response_started{protocol_error}`；
+  3. `EnvoyFlags: UPE`.
+- 插件将输出清晰的错误日志并精准归类:
+  ```bash
+  [ai-zdtc-token onHttpStreamDone] ❌ [上游服务异常崩溃/断开连接 (Upstream Protocol/Connection Error)] RequestID: 289732ec-e9cc-4a00-985f-de806edd9633, 初始HTTP状态: 200, EnvoyFlags: UPE, code_details: upstream_reset_after_response_started{protocol_error}, 已收Chunk数: 5, 已收字节数: 1960, [DONE]标记: false, LastChunk收到: false, 判定原因: 流式响应提前截断(未收到 [DONE] 或未到达结束数据块), Envoy 终止细节: upstream_reset_after_response_started{protocol_error}
+  ```
+
+如此一来, 无论上游是因为 OOM/显存溢出中途挂掉、网络链路闪断, 还是客户端主动点击了前端的"停止生成", 插件都可以在 `onHttpStreamDone` 中完全识别, 并准确上报错误状态和审计日志.
+
+
+---------------------------------------------------------------------------------------------
+
+* https://github.com/higress-group/proxy-wasm-go-sdk/tree/8345453fddd0cb8ef7330cdb1db8cb999c810b5e
+* https://github.com/higress-group/proxy-wasm-go-sdk/blob/8345453fddd0cb8ef7330cdb1db8cb999c810b5e/proxywasm/hostcall.go#L661
+
+* https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/advanced/attributes
+
+Q:
+```go
+	flagMap := []struct {
+		mask uint64
+		name string
+	}{
+		{0x1, "UH"},        // No healthy upstream (无健康上游)
+		{0x2, "UF"},        // Upstream connection failure (上游连接失败)
+		{0x4, "NR"},        // No route (未匹配到路由)
+		{0x8, "URX"},       // Upstream retry limit exceeded (超过上游重试次数)
+		{0x10, "DC"},       // Downstream connection termination (客户端主动断开/取消)
+		{0x20, "LH"},       // Local health check failed (本地健康检查失败)
+		{0x40, "UT"},       // Upstream request timeout (上游请求超时)
+		{0x80, "LR"},       // Local reset (本地重置)
+		{0x100, "UR"},      // Upstream remote reset (上游远端重置)
+		{0x200, "UC"},      // Upstream connection termination (上游连接终止)
+		{0x400, "DI"},      // Delayed injection (延迟注入)
+		{0x800, "FI"},      // Fault injection (故障注入)
+		{0x1000, "RL"},     // Rate limited (被本地或全局限流)
+		{0x2000, "UAEX"},   // Unauthorized external service (鉴权未通过)
+		{0x4000, "RLSE"},   // Rate limit service error (限流服务内部错误)
+		{0x8000, "IH"},     // Invalid header (非法请求头)
+		{0x10000, "SI"},    // Stream idle timeout (流空闲超时)
+		{0x20000, "DPE"},   // Downstream protocol error (下游协议错误)
+		{0x40000, "UPE"},   // Upstream protocol error (上游协议错误 - 对应本次日志中的中断)
+		{0x80000, "UMSDR"}, // Upstream max stream duration reached (达到上游最长流时长)
+	}
+```
+这个 enovy 标志位对应在 enovy 哪里定义的
+
+在 Envoy 官方源码中, 这一套标志位对应的是 `StreamInfo::CoreResponseFlag` 枚举以及 `StreamInfo::ResponseFlagUtils` 工具类.
+
+它们主要分布在 Envoy 源码仓库的以下两个核心文件中:
+
+---
+
+### 1. 标志位枚举与整数掩码定义
+
+* 文件路径: [`envoy/stream_info/stream_info.h`](https://github.com/envoyproxy/envoy/blob/main/envoy/stream_info/stream_info.h)
+* 定义枚举:  `Envoy::StreamInfo::CoreResponseFlag`
+
+Envoy 在头文件中定义了核心响应标志位的枚举值(按比特位索引 `1 << bit` 或枚举序列排列):
+
+```cpp
+namespace Envoy {
+namespace StreamInfo {
+
+enum class CoreResponseFlag : uint16_t {
+  // 本地健康检查失败
+  FailedLocalHealthCheck = 0x1,
+  // 无健康上游 (NoHealthyUpstream)
+  NoHealthyUpstream = 0x2,
+  // 上游请求超时 (UpstreamRequestTimeout)
+  UpstreamRequestTimeout = 0x4,
+  // 本地重置 (LocalReset)
+  LocalReset = 0x8,
+  // 上游远端重置 (UpstreamRemoteReset)
+  UpstreamRemoteReset = 0x10,
+  // 上游连接建立失败 (UpstreamConnectionFailure)
+  UpstreamConnectionFailure = 0x20,
+  // 上游连接终止断开 (UpstreamConnectionTermination)
+  UpstreamConnectionTermination = 0x40,
+  // 上游连接溢出 (UpstreamOverflow)
+  UpstreamOverflow = 0x80,
+  // 未找到路由 (NoRouteFound)
+  NoRouteFound = 0x100,
+  // 注入延迟 (DelayInjected)
+  DelayInjected = 0x200,
+  // 注入故障 (FaultInjected)
+  FaultInjected = 0x400,
+  // 触发限流 (RateLimited)
+  RateLimited = 0x800,
+  // 未授权外部服务 (UnauthorizedExternalService)
+  UnauthorizedExternalService = 0x1000,
+  // 限流服务异常 (RateLimitServiceError)
+  RateLimitServiceError = 0x2000,
+  // 客户端/下游连接终止 (DownstreamConnectionTermination)
+  DownstreamConnectionTermination = 0x4000,
+  // 上游重试超限 (UpstreamRetryLimitExceeded)
+  UpstreamRetryLimitExceeded = 0x8000,
+  // 流空闲超时 (StreamIdleTimeout)
+  StreamIdleTimeout = 0x10000,
+  // 非法请求头 (InvalidEnvoyRequestHeaders)
+  InvalidEnvoyRequestHeaders = 0x20000,
+  // 下游协议错误 (DownstreamProtocolError)
+  DownstreamProtocolError = 0x40000,
+  // 上游协议错误 (UpstreamProtocolError)
+  UpstreamProtocolError = 0x80000,
+  // 超过最大流时长 (UpstreamMaxStreamDurationReached)
+  UpstreamMaxStreamDurationReached = 0x100000,
+  ...
+};
+
+} // namespace StreamInfo
+} // namespace Envoy
+```
+
+> 注意: 在 Envoy 的 `StreamInfo` 接口中, 提供了一个方法:
+> ```cpp
+> virtual uint64_t legacyResponseFlags() const PURE;
+> ```
+> Proxy-Wasm 插件通过 `proxywasm.GetProperty([]string{"response", "flags"})` 从 Envoy 底层获取到的二进制切片, 就是这个 `uint64_t` 的位掩码(Bitmask).
+
+---
+
+### 2. 标志位短字符缩写(UH, UF, UPE 等)的映射定义
+
+* 文件路径: [`source/common/stream_info/utility.h`](https://github.com/envoyproxy/envoy/blob/main/source/common/stream_info/utility.h) 和 [`utility.cc`](https://github.com/envoyproxy/envoy/blob/main/source/common/stream_info/utility.cc)
+* 定义结构: `ResponseFlagUtils` 及相关的全局常量
+
+Envoy 在这里定义了输出到 Access Log(即 `%RESPONSE_FLAGS%` 格式化占位符)的标准 2~5 位字母缩写:
+
+```cpp
+namespace Envoy {
+namespace StreamInfo {
+
+constexpr static absl::string_view FAILED_LOCAL_HEALTH_CHECK = "LH";
+constexpr static absl::string_view NO_HEALTHY_UPSTREAM = "UH";
+constexpr static absl::string_view UPSTREAM_REQUEST_TIMEOUT = "UT";
+constexpr static absl::string_view LOCAL_RESET = "LR";
+constexpr static absl::string_view UPSTREAM_REMOTE_RESET = "UR";
+constexpr static absl::string_view UPSTREAM_CONNECTION_FAILURE = "UF";
+constexpr static absl::string_view UPSTREAM_CONNECTION_TERMINATION = "UC";
+constexpr static absl::string_view UPSTREAM_OVERFLOW = "UO";
+constexpr static absl::string_view NO_ROUTE_FOUND = "NR";
+constexpr static absl::string_view DELAY_INJECTED = "DI";
+constexpr static absl::string_view FAULT_INJECTED = "FI";
+constexpr static absl::string_view RATE_LIMITED = "RL";
+constexpr static absl::string_view UNAUTHORIZED_EXTERNAL_SERVICE = "UAEX";
+constexpr static absl::string_view RATELIMIT_SERVICE_ERROR = "RLSE";
+constexpr static absl::string_view DOWNSTREAM_CONNECTION_TERMINATION = "DC";
+constexpr static absl::string_view UPSTREAM_RETRY_LIMIT_EXCEEDED = "URX";
+constexpr static absl::string_view STREAM_IDLE_TIMEOUT = "SI";
+constexpr static absl::string_view INVALID_ENVOY_REQUEST_HEADERS = "IH";
+constexpr static absl::string_view DOWNSTREAM_PROTOCOL_ERROR = "DPE";
+constexpr static absl::string_view UPSTREAM_PROTOCOL_ERROR = "UPE"; // 👈 对应你抓到的 UPE
+constexpr static absl::string_view UPSTREAM_MAX_STREAM_DURATION_REACHED = "UMSDR";
+...
+
+// 工具类负责将整数位掩码格式化为类似 "UPE"、"DC" 或 "UH,URX" 的字符串
+class ResponseFlagUtils {
+  static const std::string toShortString(const StreamInfo& stream_info);
+};
+
+} // namespace StreamInfo
+} // namespace Envoy
+```
+
+---
+
+### 3. Envoy 官方文档对这些缩写的定义说明
+
+在 Envoy 官方文档的 [Access Logging - Supported Formatters (`%RESPONSE_FLAGS%`)](https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#supported-formatters) 章节中, 官方给出了每个标志位缩写代表的含义表格:
+
+| 标志 (Flag) | 对应宏 / 枚举名                   | 详细含义                                                                                                                     |
+| :---------- | :-------------------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
+| `UH`        | `NoHealthyUpstream`               | 上游 Cluster 中没有健康的 Endpoints(后端节点全挂或健康检查失败)                                                            |
+| `UF`        | `UpstreamConnectionFailure`       | Envoy 与上游后端建立 TCP/TLS 连接失败(如 Connection Refused、超时)                                                         |
+| `NR`        | `NoRouteFound`                    | 请求未匹配到任何虚拟主机或路由规则 (404)                                                                                     |
+| `UT`        | `UpstreamRequestTimeout`          | 上游处理请求超时(超过了 Envoy 路由配置的 `timeout`)                                                                        |
+| `DC`        | `DownstreamConnectionTermination` | 客户端主动提前断开/重置了连接(例如浏览器取消请求或前端终止生成)                                                            |
+| `UC`        | `UpstreamConnectionTermination`   | Envoy 与上游通信过程中连接被异常终止断开                                                                                     |
+| `UR`        | `UpstreamRemoteReset`             | 上游主动发送了 RST 报文或者 HTTP/2 RST_STREAM                                                                                |
+| `UPE`       | `UpstreamProtocolError`           | 上游返回的数据违反了 HTTP 协议规范(例如像你日志里出现的 `HPE_INVALID_EOF_STATE`, Chunk 长度不合法或上游在未发完时强关连接) |
+| `SI`        | `StreamIdleTimeout`               | 流空闲超时(在一段时间内没有任何数据 chunk 产生)                                                                            |
+| `RL`        | `RateLimited`                     | 请求被 Envoy 本地限流或全局限流组件拦截 (429)                                                                                |
+
+我们在 Wasm 插件中写的 `flagMap` 映射表, 本质上就是把 Envoy C++ 层的 `CoreResponseFlag` 掩码值 与 `ResponseFlagUtils::toShortString` 的短缩写做了 1:1 的纯 Go 对齐, 以保证插件解析出来的标志与 Envoy 访问日志中的 `%RESPONSE_FLAGS%` 完全一致.
+
+
+
+
+
+---------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------------------

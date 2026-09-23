@@ -1,0 +1,769 @@
+apiVersion: v1
+items:
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        # [转发目标] 直接转发到 Kubernetes 集群内的本地微服务(模型元数据中心)
+        higress.io/destination: model.model-service.svc.cluster.local:8888
+        # [路径大小写忽略] 提高路由容错率, 使 /v1/Models 与 /v1/models 等同生效
+        higress.io/ignore-path-case: "true"
+        # [HTTP 方法限定] 严格限制只有 GET 请求才匹配此路由, 防止 POST 等非幂等请求误入
+        higress.io/match-method: GET
+      labels:
+        # 绑定至 Higress 全局默认域名
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/resource-definer: higress
+      name: a
+      namespace: higress-system
+    spec:
+      ingressClassName: higress # 声明由 Higress 控制器接管此 Ingress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  # 使用 Higress 专有的 McpBridge 资源解耦实际的后端服务发现
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /v1/models # 拦截标准的模型列表查询路径
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment: PLEASE DO NOT EDIT DIRECTLY. This resource is managed by Higress.
+        # [核心转发目标] 100% 流量转发到名为 llm-provider-4 的外部 DNS 域名上游, 走 HTTPS 443 端口
+        higress.io/destination: 100% llm-provider-4.internal.dns:443
+
+        # [AI 场景重试开关] 开启上游故障时自动切换下一节点的重试能力
+        higress.io/enable-proxy-next-upstream: "true"
+
+        # [核心模型分发条件] 关键点: 严格匹配内部请求头 x-higress-llm-model 的值为 taichu_llm
+        # 只有调用 taichu_llm 模型的请求才会被本路由命中！
+        higress.io/exact-match-header-x-higress-llm-model: taichu_llm
+
+        higress.io/ignore-path-case: "true"
+
+        # [重试触发条件] 发生网络错误、连接超时, 特别包含 non_idempotent(非幂等 POST 重试)！
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        # [单次请求超时阈值] 设为 120 秒, 容忍大模型漫长的 Prefill 和思考时间
+        higress.io/proxy-next-upstream-timeout: "120"
+        # [最大重试次数] 最多尝试 3 次 upstream
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true" # 标记为内部路由, 供前面配置的 ai-statistics 插件做过滤
+        higress.io/resource-definer: higress
+      name: ai-route-110.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        # [加权负载均衡] 流量按 34% : 33% : 33% 比例切分:
+        # provider-1 分担 67% (34+33), provider-5 分担 33%
+        # 实现了多供应商(或同供应商多 API-Key 实例)的加权流量调度与热备
+        higress.io/destination: |-
+          34% llm-provider-1.internal.dns:443
+          33% llm-provider-1.internal.dns:443
+          33% llm-provider-5.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        # 精确路由匹配模型标识: DPSK
+        higress.io/exact-match-header-x-higress-llm-model: DPSK
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-111.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: |-
+          30% llm-provider-4.internal.dns:443
+          35% llm-provider-1.internal.dns:443
+          35% llm-provider-1.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: DEEPSEEK
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-115.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-10.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: taichu_o1
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-116.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-1.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: TTTT
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-117.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-16.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: "10087"
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-128.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-20.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: lanzhiwang/Doubao-Seed-1.6-fla
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-137.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-1.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: OPXO
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-139.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-26.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: LYJDPSK
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-155.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-28.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: LYJKIMI
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-157.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-39.internal.dns:8000
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: qwen_lc
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-169.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        # [静态内网服务发现] 区别于 .internal.dns, 此处为 .internal.static:8091
+        # 指向私有内网固定 IP 服务(如物理机 GPU 节点上托管的开源 Qwen2.5 7B 模型)
+        higress.io/destination: 100% llm-provider-40.internal.static:8091
+        higress.io/enable-proxy-next-upstream: "true"
+        # 模型精确匹配: 开源社区规范命名的 qwen2.5-7B-instruct
+        higress.io/exact-match-header-x-higress-llm-model: qwen2.5-7B-instruct
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-170.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-1.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: qwen-plus
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-173.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-1.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: qwen-vl-max
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-180.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-1.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: qwen-vl-plus
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-181.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-1.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: qwen-vl-plus1
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-182.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-1.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: qwenvl-plus121
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-183.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-1.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: "111"
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-190.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        higress.io/comment:
+          PLEASE DO NOT EDIT DIRECTLY. This resource is managed by
+          Higress.
+        higress.io/destination: 100% llm-provider-1.internal.dns:443
+        higress.io/enable-proxy-next-upstream: "true"
+        higress.io/exact-match-header-x-higress-llm-model: "34"
+        higress.io/ignore-path-case: "true"
+        higress.io/proxy-next-upstream: error,timeout,non_idempotent
+        higress.io/proxy-next-upstream-timeout: "120"
+        higress.io/proxy-next-upstream-tries: "3"
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/internal: "true"
+        higress.io/resource-definer: higress
+      name: ai-route-202.internal
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Prefix
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+  - apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      annotations:
+        # 转发至 Higress Console 运维管理控制台微服务
+        higress.io/destination: higress-console.higress-system.svc.cluster.local:8080
+        # [开启 URL 重写]
+        higress.io/enable-rewrite: "true"
+        # [重写目标路径] 当用户访问根路径 "/" 时, 自动重写为 "/landing" 并透传给控制台
+        higress.io/rewrite-path: /landing
+      labels:
+        higress.io/domain_higress-default-domain: "true"
+        higress.io/resource-definer: higress
+      name: default
+      namespace: higress-system
+    spec:
+      ingressClassName: higress
+      rules:
+        - http:
+            paths:
+              - backend:
+                  resource:
+                    apiGroup: networking.higress.io
+                    kind: McpBridge
+                    name: default
+                path: /
+                pathType: Exact # 精确匹配根路径 "/"
+      tls:
+        - secretName: default
+    status:
+      loadBalancer: {}
+kind: List
+metadata:
+  resourceVersion: ""

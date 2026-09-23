@@ -1,0 +1,175 @@
+# 1. Kubernetes CRD 规范定义
+apiVersion: extensions.higress.io/v1alpha1 # Higress 扩展插件的 API 组与版本
+kind: WasmPlugin # 资源类型: WebAssembly 插件实例
+metadata:
+  name: ai-statistics-1.0.0 # 插件实例的唯一标识(通常包含插件名和配置版本)
+  namespace: higress-system # 部署在 Higress 控制面所在的系统命名空间
+spec:
+  # 2. 全局默认配置(兜底规则)
+  defaultConfig:
+    enable: true # 当某个 Ingress/路由没有匹配到特定的 matchRules 时, 默认激活此插件
+
+  defaultConfigDisable: false # 不禁用默认配置(设为 true 则未匹配 matchRules 的路由完全不执行该插件)
+
+  # 3. 生产高可用与容灾策略(核心保护项)
+  failStrategy:
+    FAIL_OPEN # 故障策略设为"旁路放行(Fail Open)".
+    # 若 Wasm 虚拟机出现未捕获 Panic、OOM 崩溃或底层 ABI 超时,
+    # Envoy 将自动绕过当前插件继续转发流量, 绝不影响下游业务主流程!
+
+  # 4. 镜像拉取策略与凭证
+  imagePullPolicy: UNSPECIFIED_POLICY # 镜像拉取策略(未指定时遵循 Higress 默认策略: 通常本地有则优先使用, 无则拉取)
+  imagePullSecret: ms-secret # 访问企业私有镜像仓库所需的 Kubernetes Secret 密钥名称
+
+  # 5. 细粒度路由匹配规则(分流配置核心)
+  matchRules:
+    # -------------------------------------------------------------------------------------
+    # [规则组 A]: 全量合规审计模式(针对核心内部路由: ai-route-110, 111, 113)
+    # 深度解析 Payload: 提取租户身份、还原用户最新提问、流式重组大模型完整答复, 用于内容风控与问答审计.
+    # -------------------------------------------------------------------------------------
+    - config:
+        attributes:
+          # (1) 提取调用方租户标识
+          - apply_to_log: true # 将提取结果写入 Envoy 访问日志(ai_log)
+            apply_to_span: false # 不写入分布式链路追踪(节约 APM 索引空间)
+            key: consumer # 写入日志的字段名
+            value: x-mse-consumer # HTTP 请求头名称(由上游 MSE/网关鉴权插件认证后注入的租户标识)
+            value_source: request_header # 声明从请求头(RequestHeader)中读取
+
+          # (2) 提取用户最新的提问内容(Prompt)
+          - apply_to_log: true
+            apply_to_span: false
+            key: question # 写入日志的字段名
+            value: messages.@reverse.0.content # GJSON 语法: 将 messages 历史对话数组反转, 取第 0 个元素的 content, 即用户最新提问
+            value_source: request_body # 触发 Go 插件的 shouldBufferRequestBody=true, 全量缓冲请求体
+
+          # (3) 流式拼接大模型的完整答复(Answer)
+          - apply_to_log: true
+            apply_to_span: false
+            key: answer # 写入日志的字段名
+            rule: append # 合并规则为追加(Append): 流式接收多个 chunk 时, 将文本增量拼接还原成完整回复
+            value: choices.0.delta.content # OpenAI SSE 标准格式下的生成内容增量字段路径
+            value_source: response_streaming_body # 触发 Go 插件的 shouldBufferStreamingBody=true, 在 Wasm 中聚合 SSE chunk
+      configDisable: false # 启用该规则配置
+      ingress:
+        - ai-route-110.internal # 绑定的 K8s Ingress / Higress 路由名称
+
+    - config:
+        attributes:
+          - apply_to_log: true
+            apply_to_span: false
+            key: consumer
+            value: x-mse-consumer
+            value_source: request_header
+          - apply_to_log: true
+            apply_to_span: false
+            key: question
+            value: messages.@reverse.0.content
+            value_source: request_body
+          - apply_to_log: true
+            apply_to_span: false
+            key: answer
+            rule: append
+            value: choices.0.delta.content
+            value_source: response_streaming_body
+      configDisable: false
+      ingress:
+        - ai-route-111.internal # 绑定路由 111
+
+    - config:
+        attributes:
+          - apply_to_log: true
+            apply_to_span: false
+            key: consumer
+            value: x-mse-consumer
+            value_source: request_header
+          - apply_to_log: true
+            apply_to_span: false
+            key: question
+            value: messages.@reverse.0.content
+            value_source: request_body
+          - apply_to_log: true
+            apply_to_span: false
+            key: answer
+            rule: append
+            value: choices.0.delta.content
+            value_source: response_streaming_body
+      configDisable: false
+      ingress:
+        - ai-route-113.internal # 绑定路由 113
+
+    # -------------------------------------------------------------------------------------
+    # [规则组 B]: 极速轻量模式(针对大规模调用路由: ai-route-114 ~ 164 等)
+    # 开启 use_default_response_attributes: 零 Body 缓冲、只收集 Token 统计与首字时延(TTFT), 追求极致吞吐.
+    # -------------------------------------------------------------------------------------
+    - config:
+        use_default_response_attributes:
+          true # 触发 Go 代码中的轻量模式!
+          # valueLengthLimit 自动收缩为 4000,
+          # shouldBufferStreamingBody 保持 false, 彻底避免 Wasm 堆内存拼接文本
+      configDisable: false
+      ingress:
+        - ai-route-114.internal # 绑定路由 114
+    - config:
+        use_default_response_attributes: true
+      configDisable: false
+      ingress:
+        - ai-route-115.internal # 绑定路由 115
+    - config:
+        use_default_response_attributes: true
+      configDisable: false
+      ingress:
+        - ai-route-116.internal
+    - config:
+        use_default_response_attributes: true
+      configDisable: false
+      ingress:
+        - ai-route-132.internal
+    - config:
+        use_default_response_attributes: true
+      configDisable: false
+      ingress:
+        - ai-route-133.internal
+    - config:
+        use_default_response_attributes: true
+      configDisable: false
+      ingress:
+        - ai-route-153.internal
+    - config:
+        use_default_response_attributes: true
+      configDisable: false
+      ingress:
+        - ai-route-154.internal
+    - config:
+        use_default_response_attributes: true
+      configDisable: false
+      ingress:
+        - ai-route-155.internal
+    - config:
+        use_default_response_attributes: true
+      configDisable: false
+      ingress:
+        - ai-route-158.internal
+    - config:
+        use_default_response_attributes: true
+      configDisable: false
+      ingress:
+        - ai-route-163.internal
+    - config:
+        use_default_response_attributes: true
+      configDisable: false
+      ingress:
+        - ai-route-164.internal
+
+  # 6. Envoy Filter 链执行生命周期与优先级
+  phase: UNSPECIFIED_PHASE # 未显式指定阶段, Envoy 将根据 priority 将其插入通用扩展 Filter 链中
+  priority:
+    900 # 执行优先级设为 900(高数值).
+    # 保证该插件在认证鉴权插件(通常 priority=1000)之后执行,
+    # 确保此时 x-mse-consumer 请求头已被上游鉴权插件成功解密并注入!
+
+  # 7. Wasm 制品 OCI 镜像分发地址
+  url:
+    oci://registry-dx.wair.ac.cn/taichu-studio/ai-statistics:20260922-184530-7be8003c
+    # 指向企业自建 OCI 镜像仓库中编译出的 WebAssembly 模块二进制.
+    # 带有年月日、时分秒以及 Git commit 短哈希 (7be8003c), 具备严格的制品不可变性与版本回溯能力.
