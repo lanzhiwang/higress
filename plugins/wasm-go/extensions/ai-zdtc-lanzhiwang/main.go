@@ -21,7 +21,7 @@ const (
 	ctxKeyUUID      = "ai-zdtc-lanzhiwang-req-uuid"
 	ctxKeyStartTime = "ai-zdtc-lanzhiwang-start-time"
 
-	// 默认请求体最大缓冲上限 (100MB)
+	// 默认最大缓冲上限 (100MB)
 	defaultMaxBodyBytes uint32 = 100 * 1024 * 1024
 )
 
@@ -176,6 +176,7 @@ func onHttpResponseHeaders(ctx wrapper.HttpContext, config PluginConfig) types.A
 		// 流式 SSE 响应: 不缓冲, 保持打字机毫秒级流式下发
 		log.Infof(traceLogPrefix+"[%s][onHttpResponseHeaders] Streaming SSE response detected ('text/event-stream'). Allowing direct streaming", reqUUID)
 	}
+	ctx.SetResponseBodyBufferLimit(defaultMaxBodyBytes)
 
 	return types.ActionContinue
 }
