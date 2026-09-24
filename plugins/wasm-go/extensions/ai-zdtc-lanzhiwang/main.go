@@ -214,8 +214,27 @@ func onHttpResponseBody(ctx wrapper.HttpContext, config PluginConfig, body []byt
 		preview = fmt.Sprintf(" | Content: %s", formatBodyPreview(body, config.MaxBodyLogLen))
 	}
 
-	log.Infof(traceLogPrefix+"[%s][onHttpResponseBody] >>> Received Full HTTP Response Body. Length: %d bytes%s",
-		reqUUID, len(body), preview)
+	// 1. 调用 Higress SDK 标准解析完整响应体中的 Token 消耗
+	usage := tokenusage.GetTokenUsage(ctx, body)
+
+	// 2. 检查是否有额外 Token 明细（例如思考链推理 Token、Prompt 缓存命中 Token）
+	var extraTokenDetails string
+	if rTokens, ok := usage.OutputTokenDetails["reasoning_tokens"]; ok && rTokens > 0 {
+		extraTokenDetails += fmt.Sprintf(", ReasoningTokens: %d", rTokens)
+	}
+	if cTokens, ok := usage.InputTokenDetails["cached_tokens"]; ok && cTokens > 0 {
+		extraTokenDetails += fmt.Sprintf(", CachedTokens: %d", cTokens)
+	}
+
+	// 3. 分流打印日志（确保占位符严格匹配）
+	if usage.TotalToken > 0 {
+		log.Infof(traceLogPrefix+"[%s][onHttpResponseBody] >>> Received Full HTTP Response Body. Length: %d bytes | [TokenUsage] Model: '%s', InputTokens: %d, OutputTokens: %d, TotalTokens: %d%s%s",
+			reqUUID, len(body), usage.Model, usage.InputToken, usage.OutputToken, usage.TotalToken, extraTokenDetails, preview)
+	} else {
+		// 上游报错 (如 4xx/5xx) 或非 LLM 响应时无 Token 统计
+		log.Infof(traceLogPrefix+"[%s][onHttpResponseBody] >>> Received Full HTTP Response Body. Length: %d bytes (No Token Usage)%s",
+			reqUUID, len(body), preview)
+	}
 
 	return types.ActionContinue
 }
