@@ -9,6 +9,7 @@ import (
 	"github.com/higress-group/proxy-wasm-go-sdk/proxywasm"
 	"github.com/higress-group/proxy-wasm-go-sdk/proxywasm/types"
 	"github.com/higress-group/wasm-go/pkg/log"
+	"github.com/higress-group/wasm-go/pkg/tokenusage"
 	"github.com/higress-group/wasm-go/pkg/wrapper"
 	"github.com/tidwall/gjson"
 )
@@ -190,8 +191,15 @@ func onHttpStreamingResponseBody(ctx wrapper.HttpContext, config PluginConfig, d
 		preview = fmt.Sprintf(" | Chunk Data: %s", formatBodyPreview(data, config.MaxBodyLogLen))
 	}
 
-	log.Infof(traceLogPrefix+"[%s][onHttpStreamingResponseBody] >>> Received SSE Response Chunk. Length: %d bytes, endOfStream: %v%s",
-		reqUUID, len(data), endOfStream, preview)
+	// 标准 Token 消耗解析 (提取 input_token, output_token, total_token, model)
+	if usage := tokenusage.GetTokenUsage(ctx, data); usage.TotalToken > 0 {
+		log.Infof(traceLogPrefix+"[%s][onHttpStreamingResponseBody] >>> Received SSE Response Chunk. Length: %d bytes, endOfStream: %v%s | [TokenUsage] Model: '%s', InputTokens: %d, OutputTokens: %d, TotalTokens: %d",
+			reqUUID, len(data), endOfStream, preview,
+			usage.Model, usage.InputToken, usage.OutputToken, usage.TotalToken)
+	} else {
+		log.Infof(traceLogPrefix+"[%s][onHttpStreamingResponseBody] >>> Received SSE Response Chunk. Length: %d bytes, endOfStream: %v%s",
+			reqUUID, len(data), endOfStream, preview)
+	}
 
 	// 原样透传数据块给客户端
 	return data
