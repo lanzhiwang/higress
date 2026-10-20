@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/binary"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -243,6 +245,59 @@ func onHttpResponseBody(ctx wrapper.HttpContext, config PluginConfig, body []byt
 func onStreamDone(ctx wrapper.HttpContext, config PluginConfig) {
 	reqUUID := getUUID(ctx)
 
+	// 1. 获取上游 HTTP 响应状态码 (优先获取响应头 :status, 兜底读取 Envoy 属性 response.code)
+	// https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/advanced/attributes
+	// https://github.com/envoyproxy/envoy/blob/main/envoy/stream_info/stream_info.h
+	statusCode, _ := proxywasm.GetHttpResponseHeader(":status")
+	if statusCode == "" {
+		if codeBytes, err := proxywasm.GetProperty([]string{"response", "code"}); err == nil && len(codeBytes) > 0 {
+			if len(codeBytes) >= 8 {
+				statusCode = strconv.FormatUint(binary.LittleEndian.Uint64(codeBytes), 10)
+			} else if len(codeBytes) >= 4 {
+				statusCode = strconv.Itoa(int(binary.LittleEndian.Uint32(codeBytes)))
+			}
+		}
+	}
+	if statusCode == "" {
+		statusCode = "-"
+	}
+
+	// 2. 获取上游服务实际连接的目标地址 (IP:Port)
+	upstreamAddress := "-"
+	if addrBytes, err := proxywasm.GetProperty([]string{"upstream", "address"}); err == nil && len(addrBytes) > 0 {
+		upstreamAddress = string(addrBytes)
+	}
+
+	// 3. 获取上游目标集群名称 (Cluster Name)
+	clusterName := "-"
+	if clusterBytes, err := proxywasm.GetProperty([]string{"cluster_name"}); err == nil && len(clusterBytes) > 0 {
+		clusterName = string(clusterBytes)
+	}
+
+	// 4. 获取 Envoy 响应标志 (如 UF: 上游连接失败, UT: 超时, UH: 无健康节点等)
+	responseFlags := "-"
+	if flagsBytes, err := proxywasm.GetProperty([]string{"response", "flags"}); err == nil && len(flagsBytes) >= 4 {
+		var flags uint64
+		if len(flagsBytes) >= 8 {
+			flags = binary.LittleEndian.Uint64(flagsBytes)
+		} else {
+			flags = uint64(binary.LittleEndian.Uint32(flagsBytes))
+		}
+		if flags > 0 {
+			responseFlags = parseResponseFlags(flags)
+		}
+	}
+
+	// 5. 获取 Envoy 内部响应详情 (如 via_upstream, upstream_reset_before_response_started 等)
+	codeDetails := "-"
+	if detailsBytes, err := proxywasm.GetProperty([]string{"response", "code_details"}); err == nil && len(detailsBytes) > 0 {
+		codeDetails = string(detailsBytes)
+	}
+
+	// 上游服务全量状态与路由链路元数据
+	log.Infof(traceLogPrefix+"[%s][onStreamDone] >>> Upstream Service Status: Status: %s, Address: %s, Cluster: %s, ResponseFlags: %s, Details: %s",
+		reqUUID, statusCode, upstreamAddress, clusterName, responseFlags, codeDetails)
+
 	var totalLatency int64
 	if val := ctx.GetContext(ctxKeyStartTime); val != nil {
 		if startTime, ok := val.(int64); ok {
@@ -292,4 +347,46 @@ func formatBodyPreview(data []byte, maxLen int) string {
 		return fmt.Sprintf("%q ...[truncated %d bytes]... %q", data[:half], len(data)-maxLen, data[len(data)-half:])
 	}
 	return fmt.Sprintf("%q", data)
+}
+
+// parseResponseFlags 将 Envoy 响应标志二进制位图解析为可读的标准标识字符串 (如 UF, UT, UH 等)
+func parseResponseFlags(flags uint64) string {
+	if flags == 0 {
+		return "-"
+	}
+	var res []string
+	flagMap := []struct {
+		mask uint64
+		name string
+	}{
+		{0x1, "LH"},        // Local service failed health check
+		{0x2, "UH"},        // No healthy upstream hosts
+		{0x4, "UT"},        // Upstream request timeout
+		{0x8, "LR"},        // Connection local reset
+		{0x10, "UR"},       // Upstream remote reset
+		{0x20, "UF"},       // Upstream connection failure
+		{0x40, "UC"},       // Upstream connection termination
+		{0x80, "UO"},       // Upstream overflow (circuit breaking)
+		{0x100, "NR"},      // No route configured
+		{0x200, "DI"},      // Fault injection delay
+		{0x400, "FI"},      // Fault injection abort
+		{0x800, "RL"},      // Rate limited locally
+		{0x1000, "UAEX"},   // Unauthorized external service
+		{0x2000, "RLSE"},   // Rate limit service error
+		{0x4000, "DC"},     // Downstream connection termination
+		{0x8000, "URX"},    // Upstream retry limit reached
+		{0x10000, "SI"},    // Stream idle timeout
+		{0x20000, "IH"},    // Invalid header
+		{0x40000, "DPE"},   // Downstream protocol error
+		{0x80000, "UMSDR"}, // Upstream max stream duration reached
+	}
+	for _, item := range flagMap {
+		if flags&item.mask != 0 {
+			res = append(res, item.name)
+		}
+	}
+	if len(res) == 0 {
+		return fmt.Sprintf("0x%x", flags)
+	}
+	return strings.Join(res, ",")
 }
